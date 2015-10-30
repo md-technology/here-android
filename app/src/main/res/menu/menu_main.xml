@@ -3,4 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:title="@string/map_style">
+        <menu>
+            <item android:id="@+id/action_map_style_amap_satellite"
+                android:icon="@android:drawable/ic_menu_share"
+                android:title="Amap Satellite" />
+            <item android:id="@+id/action_map_style_osm_water"
+                android:icon="@android:drawable/ic_menu_share"
+                android:title="OSM Water" />
+            <item android:id="@+id/action_map_style_mapbox_streets"
+                android:icon="@android:drawable/ic_menu_share"
+                android:title="Mapbox Streets" />
+            <item android:id="@+id/action_map_style_emerald"
+                android:icon="@android:drawable/ic_menu_send"
+                android:title="Emerald" />
+            <item android:id="@+id/action_map_style_light"
+                android:icon="@android:drawable/ic_menu_send"
+                android:title="Light" />
+            <item android:id="@+id/action_map_style_dark"
+                android:icon="@android:drawable/ic_menu_send"
+                android:title="Dark" />
+            <item android:id="@+id/action_map_style_satellite"
+                android:icon="@android:drawable/ic_menu_send"
+                android:title="Satellite" />
+            <item android:id="@+id/action_map_style_satellite_streets"
+                android:icon="@android:drawable/ic_menu_send"
+                android:title="Satellite Streets" />
+        </menu>
+    </item>
 </menu>

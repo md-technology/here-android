@@ -4,4 +4,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="access_token">sk.eyJ1IjoiYW55cG9zc2libGUiLCJhIjoiY2lnYzg1enpuMnQ1aHVxa21oY2RqMDRzYiJ9.MX2dNooZRcjUcIkgDXVUKA</string>
+
+    <string name="map_style">Map style</string>
 </resources>
