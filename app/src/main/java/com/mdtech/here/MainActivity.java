@@ -1,6 +1,6 @@
 package com.mdtech.here;
 
-import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -10,12 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.Sprite;
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -23,9 +23,10 @@ import com.mapbox.mapboxsdk.geometry.LatLngZoom;
 import com.mapbox.mapboxsdk.views.MapView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private MapView mapView = null;
-    private SpriteFactory spriteFactory = null;
+    public SpriteFactory spriteFactory = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +41,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                Log.d(LOG_TAG, "mapView location:");
+                Log.d(LOG_TAG, mapView.fromScreenLocation(new PointF(0, mapView.getRootView().getHeight())).toString());
+                Log.d(LOG_TAG, mapView.fromScreenLocation(new PointF(mapView.getRootView().getMeasuredWidth(), 0)).toString());
+
+
                 mapView.setCenterCoordinate(new LatLngZoom(new LatLng(mapView.getMyLocation()), 16));
 
                 mapView.addMarker(new MarkerOptions()
                         .position(new LatLng(32.3, 121))
                         .title("Test add marker")
                         .icon(spriteFactory.fromResource(R.drawable.dic_launcher)));
-
             }
         });
 
@@ -67,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setZoomLevel(5);
         mapView.onCreate(savedInstanceState);
 
-        spriteFactory = new SpriteFactory(mapView);
+        spriteFactory = mapView.getSpriteFactory();
+
+
     }
 
     @Override
