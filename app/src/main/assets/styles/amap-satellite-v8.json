@@ -7,7 +7,7 @@
   "sources": {
     "amapSatellite": {
       "type": "raster",
-      "tileSize": 256,
+      "tileSize": 200,
       "minzoom": 3,
       "maxzoom": 18,
       "tiles": [
@@ -18,7 +18,7 @@
     },
     "amapRoad": {
       "type": "raster",
-      "tileSize": 256,
+      "tileSize": 200,
       "minzoom": 3,
       "maxzoom": 18,
       "tiles": [
