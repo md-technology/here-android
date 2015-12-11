@@ -1,5 +1,6 @@
 package com.mdtech.social.api.impl;
 
+import com.mdtech.social.api.AlbumOperations;
 import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.PhotoOperations;
 import com.mdtech.social.api.Ponmap;
@@ -15,7 +16,7 @@ import org.springframework.social.support.ClientHttpRequestFactorySelector;
 public class PonmapTemplate extends AbstractOAuth2ApiBinding implements Ponmap {
 
     private UserOperations userOperations;
-    private TravelOperations travelOperations;
+    private AlbumOperations albumOperations;
     private PanoramioOperations panoramioOperations;
     private PhotoOperations photoOperations;
 
@@ -25,8 +26,8 @@ public class PonmapTemplate extends AbstractOAuth2ApiBinding implements Ponmap {
     }
 
     @Override
-    public TravelOperations travelOperations() {
-        return travelOperations;
+    public AlbumOperations albumOperations() {
+        return albumOperations;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class PonmapTemplate extends AbstractOAuth2ApiBinding implements Ponmap {
 
     private void initSubApis() {
         userOperations = new UserTemplate(getRestTemplate(), isAuthorized());
-        travelOperations = new TravelTemplate(getRestTemplate(), isAuthorized());
+        albumOperations = new AlbumTemplate(getRestTemplate(), isAuthorized());
         panoramioOperations = new PanoramioTemplate(getRestTemplate(), isAuthorized());
         photoOperations = new PhotoTemplate(getRestTemplate(), isAuthorized());
     }

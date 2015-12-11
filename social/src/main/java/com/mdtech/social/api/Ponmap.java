@@ -8,11 +8,11 @@ import org.springframework.social.ApiBinding;
 public interface Ponmap extends ApiBinding {
 
     /**
-     * 旅行相册
+     * 专辑
      *
      * @return
      */
-    TravelOperations travelOperations();
+    AlbumOperations albumOperations();
 
     /**
      * 用户账户
