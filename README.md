@@ -17,3 +17,7 @@ sdk.dir=C\:\\dev\\programs\\Android\\sdk
 
 Phone's screen resolution and styles tileSize relationship
 
+## mapbox-gl-style-spec
+npm install -g mapbox-gl-style-spec
+$ gl-style-validate style.json
+$ gl-style-migrate bright-v7.json > bright-v8.json

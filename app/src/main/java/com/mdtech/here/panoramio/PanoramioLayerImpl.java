@@ -59,18 +59,18 @@ public class PanoramioLayerImpl extends AbstractPanoramioLayer
 
     }
 
-    private void request(MapStatus mapStatus) {
-        Projection proj = map.getProjection();
-
-        Log.d(TAG, "panoramio request map size is " + mapView.getWidth() + " " + mapView.getHeight());
-
-        LatLng southwest = proj.fromScreenLocation(new Point(0, mapView.getHeight()));
-        LatLng northeast = proj.fromScreenLocation(new Point(mapView.getWidth(), 0));
-
-        Log.d(TAG, "panoramio request map bounds is (" + southwest.latitude + ", "
-                + southwest.longitude + ") (" + northeast.latitude + ", "
-                + northeast.longitude + ")");
-        Log.d(TAG, "panoramio request zoom is " + mapStatus.zoom + " vendor is ");
+//    private void request(MapStatus mapStatus) {
+//        Projection proj = map.getProjection();
+//
+//        Log.d(TAG, "panoramio request map size is " + mapView.getWidth() + " " + mapView.getHeight());
+//
+//        LatLng southwest = proj.fromScreenLocation(new Point(0, mapView.getHeight()));
+//        LatLng northeast = proj.fromScreenLocation(new Point(mapView.getWidth(), 0));
+//
+//        Log.d(TAG, "panoramio request map bounds is (" + southwest.latitude + ", "
+//                + southwest.longitude + ") (" + northeast.latitude + ", "
+//                + northeast.longitude + ")");
+//        Log.d(TAG, "panoramio request zoom is " + mapStatus.zoom + " vendor is ");
 
         // switch RetrofitSpice to spring social lib
 //        PanoramioRetrofitSpiceRequest request = new PanoramioRetrofitSpiceRequest(
@@ -82,13 +82,13 @@ public class PanoramioLayerImpl extends AbstractPanoramioLayer
 //        // 不能使用缓存
 //        spiceManager.execute(request, new PanoramioRequestListener());
 
-        getPanoramio(southwest.latitude,
-                southwest.longitude,
-                northeast.latitude,
-                northeast.longitude,
-                mapStatus.zoom);
+//        getPanoramio(southwest.latitude,
+//                southwest.longitude,
+//                northeast.latitude,
+//                northeast.longitude,
+//                mapStatus.zoom);
 
-    }
+//    }
 
     @Override
     public void displayPanoramioPhoto(List<Photo> photoList) {

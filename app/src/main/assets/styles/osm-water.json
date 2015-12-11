@@ -1,9 +1,35 @@
 {
   "version": 8,
+  "transition": {
+    "duration": 300,
+    "delay": 0
+  },
+  "sprite": "mapbox://sprites/mapbox/streets-v8",
   "sources": {
-    "osm": {
-      "type": "vector",
-      "tiles": ["https://vector.mapzen.com/osm/all/{z}/{x}/{y}.mvt?api_key=vector-tiles-LM25tq4"]
+    "amapSatellite": {
+      "type": "raster",
+      "tileSize": 200,
+      "minzoom": 3,
+      "maxzoom": 18,
+      "tiles": [
+        "http://webst01.is.autonavi.com/appmaptile.png?lang=zh_cn&size=1&scale=1&style=6&x={x}&y={y}&z={z}",
+        "http://webst02.is.autonavi.com/appmaptile.png?lang=zh_cn&size=1&scale=1&style=6&x={x}&y={y}&z={z}",
+        "http://webst03.is.autonavi.com/appmaptile.png?lang=zh_cn&size=1&scale=1&style=6&x={x}&y={y}&z={z}",
+        "http://webst04.is.autonavi.com/appmaptile.png?lang=zh_cn&size=1&scale=1&style=6&x={x}&y={y}&z={z}"]
+    },
+    "countries": {
+      "type": "geojson",
+      "data": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-77.0323, 38.9131]
+        },
+        "properties": {
+          "title": "Mapbox DC",
+          "marker-symbol": "monument"
+        }
+      }
     }
   },
   "layers": [
@@ -11,17 +37,13 @@
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#41afa5"
+        "background-color": "grey"
       }
     }, {
-      "id": "water",
-      "type": "fill",
-      "source": "osm",
-      "source-layer": "water",
-      "filter": ["==", "$type", "Polygon"],
-      "paint": {
-        "fill-color": "#3887be"
-      }
+      "id": "satellite",
+      "type": "raster",
+      "source": "amapSatellite",
+      "source-layer": "satellite"
     }
   ]
 }

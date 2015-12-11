@@ -9,9 +9,9 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
     compile "org.apache.httpcomponents:httpclient:$httpComponentsVersion"
     compile "org.springframework.security:spring-security-crypto:$springSecurityVersion"
-    compile "log4j:log4j:$log4jVersion"
+    compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
 
-    testCompile 'junit:junit:[4,)'
+    testCompile 'junit:junit:4.12'
 }
 
 repositories {

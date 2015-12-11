@@ -1,5 +1,8 @@
 package com.mdtech.here;
 
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,17 +13,35 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.cocoahero.android.geojson.GeoJSON;
+import com.cocoahero.android.geojson.GeoJSONObject;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
+import com.mapbox.mapboxsdk.annotations.Sprite;
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngZoom;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.mdtech.here.geojson.mapbox.GeoJSONOverlay;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -46,13 +67,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d(LOG_TAG, mapView.fromScreenLocation(new PointF(0, mapView.getRootView().getHeight())).toString());
                 Log.d(LOG_TAG, mapView.fromScreenLocation(new PointF(mapView.getRootView().getMeasuredWidth(), 0)).toString());
 
+                // set user's location
+                mapView.setCenterCoordinate(new LatLng(mapView.getMyLocation()));
 
-                mapView.setCenterCoordinate(new LatLngZoom(new LatLng(mapView.getMyLocation()), 16));
-
+                // add a demo marker
                 mapView.addMarker(new MarkerOptions()
                         .position(new LatLng(32.3, 121))
                         .title("Test add marker")
                         .icon(spriteFactory.fromResource(R.drawable.dic_launcher)));
+
+                // draw a GeoJSON overlay
+//                new DrawGeoJSON().execute();
+
+                // Load GeoJSON file
+                try {
+                    InputStream inputStream = getAssets().open("countries.geo.json");
+                    GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
+                    geoJSONOverlay.addTo(mapView);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -68,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //map
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setStyleUrl("asset://styles/amap-satellite-v8.json");
+//        mapView.setStyleUrl("asset://styles/osm-water.json");
+//        mapView.getSpriteFactory()
 //        mapView.setStyleUrl(Style.MAPBOX_STREETS);
         mapView.setCenterCoordinate(new LatLng(40.73581, -1.99155));
         mapView.setZoomLevel(5);
@@ -143,11 +180,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
+            mapView.removeAllAnnotations();
 
         } else if (id == R.id.nav_share) {
+            try {
+                InputStream inputStream = getAssets().open("china.geo.json");
+                GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
+                geoJSONOverlay.addTo(mapView);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else if (id == R.id.nav_send) {
+            try {
+                InputStream inputStream = getAssets().open("countries.geo.json");
+                GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
+                geoJSONOverlay.addTo(mapView);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -190,4 +242,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
 }
