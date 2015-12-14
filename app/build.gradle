@@ -10,6 +10,9 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        buildConfigField("boolean", "ENABLE_DEBUG_TOOLS", "false")
+        buildConfigField("String", "INPERSON_TIMEZONE", "\"${inperson_timezone}\"")
     }
     packagingOptions {
         exclude 'META-INF/ASL2.0'
@@ -24,6 +27,13 @@ android {
         exclude 'META-INF/spring.schemas'
         exclude 'META-INF/spring.tooling'
     }
+
+    configurations.compile {
+//        exclude module: 'spring-core'
+        exclude module: 'spring-web'
+        exclude module: 'commons-logging'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -37,11 +47,16 @@ dependencies {
     compile project(':social')
 
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:design:23.0.0'
+    compile "com.android.support:appcompat-v7:$android_support_lib_version"
+    compile "com.android.support:cardview-v7:$android_support_lib_version"
+    compile "com.android.support:design:$android_support_lib_version"
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:2.3.0@aar') {
         transitive = true
     }
 
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile "com.squareup.picasso:picasso:$squareup_picasso_version"
+
+    compile "org.springframework.android:spring-android-auth:$spring_android_auth"
+    compile "org.springframework.android:spring-android-rest-template:$spring_android_version"
+    compile "org.apache.httpcomponents:httpclient-android:$apache_httpclient_android"
 }

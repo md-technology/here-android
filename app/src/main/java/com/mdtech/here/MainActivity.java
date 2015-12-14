@@ -111,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.onCreate(savedInstanceState);
 
         spriteFactory = mapView.getSpriteFactory();
-
-
     }
 
     @Override

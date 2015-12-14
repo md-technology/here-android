@@ -16,30 +16,15 @@
 
 package com.mdtech.here;
 
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import java.util.TimeZone;
 
 /**
- * {@link android.support.v7.app.AppCompatActivity} used for the view
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/11/2015.
+ * Created by Tiven.wang on 12/14/2015.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
+public class Config {
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public static final TimeZone CONFERENCE_TIMEZONE =
+            TimeZone.getTimeZone(null);
 
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
 }

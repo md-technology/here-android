@@ -3,11 +3,11 @@ apply plugin: 'java'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 //    compile 'org.springframework.android:spring-android-auth:1.0.1.RELEASE'
-    compile "org.springframework.social:spring-social-core:$springSocialVersion"
+    compile "org.springframework.social:spring-social-core:$spring_social_version"
 //    compile "org.springframework.social:spring-social-web:$springSocialVersion"
     compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    compile "org.apache.httpcomponents:httpclient:$httpComponentsVersion"
+    compile "org.apache.httpcomponents:httpclient:$http_components_version"
     compile "org.springframework.security:spring-security-crypto:$springSecurityVersion"
     compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
 
