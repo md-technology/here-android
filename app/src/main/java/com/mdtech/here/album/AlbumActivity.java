@@ -16,13 +16,24 @@
 
 package com.mdtech.here.album;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.mdtech.here.R;
 import com.mdtech.here.ui.BaseActivity;
+import com.mdtech.social.api.Ponmap;
+import com.mdtech.social.api.json.Album;
 
+import java.math.BigInteger;
+
+import static com.mdtech.here.util.LogUtils.LOGI;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -35,18 +46,55 @@ public class AlbumActivity extends BaseActivity {
     protected MapView mMapView = null;
     public SpriteFactory mSpriteFactory = null;
 
+    public static final String EXTRA_ALBUM_ID =
+            "com.mdtech.here.EXTRA_ALBUM_ID";
+
+    // Identifies a particular Loader being used in this component
+    private static final int ALBUM_LOADER = 0;
+
+    private BigInteger mAlbumId;
+
+    private Ponmap mApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_album);
 
-        //map
+        // map
         mMapView = (MapView) findViewById(R.id.mapview);
         mMapView.setStyleUrl("asset://styles/amap-satellite-v8.json");
         mMapView.onCreate(savedInstanceState);
 
         mSpriteFactory = mMapView.getSpriteFactory();
+
+        if (savedInstanceState != null) {
+            CharSequence id = savedInstanceState.getCharSequence(EXTRA_ALBUM_ID);
+            if(!TextUtils.isEmpty(id)) {
+                mAlbumId = new BigInteger(id.toString());
+            }
+
+        } else if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            CharSequence id = bundle.getCharSequence(EXTRA_ALBUM_ID);
+            if(!TextUtils.isEmpty(id)) {
+                mAlbumId = new BigInteger(id.toString());
+            }
+//            mCurrentUri = getIntent().getData();
+        }
+
+        mApi = getApi();
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if(null != mAlbumId) {
+            new AlbumTask(mAlbumId).execute();
+        }
+
     }
 
     @Override
@@ -83,5 +131,42 @@ public class AlbumActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Disable going back to the MainActivity
+        moveTaskToBack(true);
+    }
+
+    protected class AlbumTask extends AsyncTask<Void, Void, Album> {
+
+        private BigInteger mId;
+
+        AlbumTask(BigInteger id) {
+            mId = id;
+        }
+
+        @Override
+        protected Album doInBackground(Void... params) {
+            try {
+                return mApi.albumOperations().get(mId);
+            }catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Album album) {
+            if(null != album) {
+                LOGI(TAG, "Loaded album");
+                LOGI(TAG, album.getName());
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
     }
 }

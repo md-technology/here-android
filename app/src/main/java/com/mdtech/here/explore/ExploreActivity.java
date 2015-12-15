@@ -18,6 +18,7 @@ package com.mdtech.here.explore;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,6 +28,9 @@ import com.mdtech.here.album.AlbumActivity;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.util.AccountUtils;
 
+import java.math.BigInteger;
+
+import static com.mdtech.here.util.LogUtils.LOGE;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -36,6 +40,8 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class ExploreActivity extends BaseActivity {
 
     private static final String TAG = makeLogTag(ExploreActivity.class);
+    public static final String EXTRA_ALBUM_ID =
+            "com.mdtech.here.EXTRA_ALBUM_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +49,22 @@ public class ExploreActivity extends BaseActivity {
 
         setContentView(R.layout.activity_explore);
 
-        Button button = (Button)findViewById(R.id.explore_ok_button);
+        final Button button = (Button)findViewById(R.id.explore_ok_button);
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                CharSequence albumId = button.getText();
+                if (TextUtils.isEmpty(albumId)) {
+                    LOGE(TAG, "Album id is empty");
+                    return;
+                }
                 Intent intent = new Intent(v.getContext(), AlbumActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence(EXTRA_ALBUM_ID, albumId);
+                intent.putExtras(bundle);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
 

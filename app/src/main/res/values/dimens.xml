@@ -33,4 +33,6 @@
     <dimen name="stream_card_corner_radius">0dp</dimen>
     <dimen name="card_corner_radius">2dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="navdrawer_profile_image_size">40dp</dimen>
 </resources>

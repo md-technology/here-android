@@ -16,4 +16,6 @@
     <color name="divider">#1f000000</color>
 
     <color name="flat_button_text">#ff008094</color>
+
+    <color name="light_content_scrim">#0d000000</color>
 </resources>

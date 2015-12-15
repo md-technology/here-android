@@ -16,6 +16,9 @@
 
 package com.mdtech.social.api.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigInteger;
 
 /**
@@ -26,7 +29,8 @@ public class MapType {
     private BigInteger id;
     private String name;
     private String baseLayer;
-//    TODO private overLayers
+    @JsonIgnore
+    private Object overLayers;
 
 
     public BigInteger getId() {
@@ -51,5 +55,13 @@ public class MapType {
 
     public void setBaseLayer(String baseLayer) {
         this.baseLayer = baseLayer;
+    }
+
+    public Object getOverLayers() {
+        return overLayers;
+    }
+
+    public void setOverLayers(Object overLayers) {
+        this.overLayers = overLayers;
     }
 }

@@ -16,6 +16,7 @@
 
 package com.mdtech.here.ui;
 
+import android.accounts.Account;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
@@ -30,11 +31,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.mdtech.here.AppApplication;
 import com.mdtech.here.R;
+import com.mdtech.here.util.AccountUtils;
+import com.mdtech.here.util.ImageLoader;
 import com.mdtech.here.util.LoginAndAuthHelper;
 import com.mdtech.here.welcome.WelcomeActivity;
+import com.mdtech.social.api.Ponmap;
+import com.mdtech.social.connect.PonmapConnectionFactory;
+
+import org.springframework.social.connect.ConnectionRepository;
 
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
@@ -55,6 +64,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
     private int mNormalStatusBarColor;
 
+    private ImageLoader mImageLoader;
+
+    protected ConnectionRepository mConnectionRepository;
+    protected PonmapConnectionFactory mConnectionFactory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +82,8 @@ public abstract class BaseActivity extends AppCompatActivity
             return;
         }
 
+        mImageLoader = new ImageLoader(this);
+
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         sp.registerOnSharedPreferenceChangeListener(this);
 
@@ -80,11 +95,8 @@ public abstract class BaseActivity extends AppCompatActivity
         mThemedStatusBarColor = getResources().getColor(R.color.theme_primary_dark);
         mNormalStatusBarColor = mThemedStatusBarColor;
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if(null != navigationView) {
-            navigationView.setNavigationItemSelectedListener(this);
-        }
-
+        mConnectionRepository = getApplicationContext().getConnectionRepository();
+        mConnectionFactory = getApplicationContext().getConnectionFactory();
     }
 
     @Override
@@ -103,6 +115,11 @@ public abstract class BaseActivity extends AppCompatActivity
 //        } else {
 //            LOGW(TAG, "No view with ID main_content to fade in.");
 //        }
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if(null != navigationView) {
+            navigationView.setNavigationItemSelectedListener(this);
+        }
     }
 
     /**
@@ -128,7 +145,47 @@ public abstract class BaseActivity extends AppCompatActivity
      * shows the user's Google+ cover photo as background.
      */
     private void setupAccountBox() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if(null == navigationView) {
+            return;
+        }
+        View header = navigationView.getHeaderView(0);
+        final View chosenAccountView = header.findViewById(R.id.chosen_account_view);
+        Account chosenAccount = AccountUtils.getActiveAccount(this);
+        if(null == chosenAccount) {
+            return;
+        }
 
+        ImageView coverImageView = (ImageView) chosenAccountView.findViewById(R.id.profile_cover_image);
+        ImageView profileImageView = (ImageView) chosenAccountView.findViewById(R.id.profile_image);
+        TextView nameTextView = (TextView) chosenAccountView.findViewById(R.id.profile_name_text);
+        TextView email = (TextView) chosenAccountView.findViewById(R.id.profile_email_text);
+
+        String name = AccountUtils.getHereName(this);
+        if (name == null) {
+            nameTextView.setVisibility(View.GONE);
+        } else {
+            nameTextView.setVisibility(View.VISIBLE);
+            nameTextView.setText(name);
+        }
+
+        String imageUrl = AccountUtils.getHereImageUrl(this);
+        if (imageUrl != null) {
+            mImageLoader.loadImage(imageUrl, profileImageView);
+        }
+
+        String coverImageUrl = AccountUtils.getHereCoverUrl(this);
+        // TODO cover profile image
+        if (coverImageUrl != null) {
+            chosenAccountView.findViewById(R.id.profile_cover_image_placeholder).setVisibility(View.GONE);
+            coverImageView.setVisibility(View.VISIBLE);
+//            coverImageView.setContentDescription(getResources().getString(
+//                    R.string.navview_header_user_image_content_description));
+            mImageLoader.loadImage(coverImageUrl, coverImageView);
+            coverImageView.setColorFilter(getResources().getColor(R.color.light_content_scrim));
+        }
+
+        email.setText(chosenAccount.name);
     }
 
     @Override
@@ -165,5 +222,12 @@ public abstract class BaseActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected Ponmap getApi() {
+        if(null == mConnectionRepository) {
+            mConnectionRepository = getApplicationContext().getConnectionRepository();
+        }
+        return mConnectionRepository.getPrimaryConnection(Ponmap.class).getApi();
     }
 }

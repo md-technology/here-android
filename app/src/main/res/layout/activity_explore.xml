@@ -44,7 +44,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_ok"
+            android:text="26750881779292192047881277021"
             android:id="@+id/explore_ok_button"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>

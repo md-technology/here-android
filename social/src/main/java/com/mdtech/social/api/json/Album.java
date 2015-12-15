@@ -16,6 +16,7 @@
 
 package com.mdtech.social.api.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigInteger;
@@ -36,6 +37,13 @@ public class Album {
     private MapType map;
     @JsonProperty("create_date")
     private Date createDate;
+    private int commentCount;
+    private int likeCount;
+    private String[] tags;
+    @JsonIgnore
+    private Object[] photos;
+    @JsonIgnore
+    private Object featureCollection;
 //    private featureCollection
 
     public BigInteger getId() {
@@ -100,5 +108,45 @@ public class Album {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    public Object[] getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Object[] photos) {
+        this.photos = photos;
+    }
+
+    public Object getFeatureCollection() {
+        return featureCollection;
+    }
+
+    public void setFeatureCollection(Object featureCollection) {
+        this.featureCollection = featureCollection;
     }
 }

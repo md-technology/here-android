@@ -46,7 +46,7 @@ public class AlbumOperationsTest extends AbstractOperationsTest {
 
     @Test
     public void testGet() {
-        BigInteger id = new BigInteger("26721875713082321527310143061");
+        BigInteger id = new BigInteger("26750881779292192047881277021");
         Album album = albumOperations.get(id);
 
         assertEquals(id, album.getId());

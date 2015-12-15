@@ -106,6 +106,12 @@ public class AccountUtils {
                 PREFIX_PREF_HERE_PROFILE_ID), null) : null;
     }
 
+    public static String getHereName(final Context context) {
+        SharedPreferences sp = getSharedPreferences(context);
+        return hasActiveAccount(context) ? sp.getString(makeAccountSpecificPrefKey(context,
+                PREFIX_PREF_HERE_NAME), null) : null;
+    }
+
     public static void setHereProfileId(final Context context, final String accountName, final String profileId) {
         SharedPreferences sp = getSharedPreferences(context);
         sp.edit().putString(makeAccountSpecificPrefKey(accountName, PREFIX_PREF_HERE_PROFILE_ID),

@@ -14,22 +14,19 @@ android {
         buildConfigField("boolean", "ENABLE_DEBUG_TOOLS", "false")
         buildConfigField("String", "INPERSON_TIMEZONE", "\"${inperson_timezone}\"")
     }
+
     packagingOptions {
         exclude 'META-INF/ASL2.0'
-        exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/license.txt'
         exclude 'META-INF/notice.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/spring.handlers'
-        exclude 'META-INF/spring.schemas'
-        exclude 'META-INF/spring.tooling'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
     }
 
+    // 因为spring-core与spring-android-core冲突
+    // spring-web与spring-android-rest-template冲突
     configurations.compile {
-//        exclude module: 'spring-core'
+        exclude module: 'spring-core'
         exclude module: 'spring-web'
         exclude module: 'commons-logging'
     }
@@ -56,7 +53,9 @@ dependencies {
 
     compile "com.squareup.picasso:picasso:$squareup_picasso_version"
 
-    compile "org.springframework.android:spring-android-auth:$spring_android_auth"
-    compile "org.springframework.android:spring-android-rest-template:$spring_android_version"
-    compile "org.apache.httpcomponents:httpclient-android:$apache_httpclient_android"
+    compile("org.springframework.android:spring-android-auth:$spring_android_auth")
+    compile("org.apache.httpcomponents:httpclient-android:$apache_httpclient_android")
+
+    // Glide library, used to handle asynchronous loading and caching of images.
+    compile 'com.github.bumptech.glide:glide:3.5.2'
 }
