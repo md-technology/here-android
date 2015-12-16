@@ -18,6 +18,7 @@ package com.mdtech.social.api.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mdtech.geojson.FeatureCollection;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -42,9 +43,8 @@ public class Album {
     private String[] tags;
     @JsonIgnore
     private Object[] photos;
-    @JsonIgnore
-    private Object featureCollection;
-//    private featureCollection
+
+    private FeatureCollection featureCollection;
 
     public BigInteger getId() {
         return id;
@@ -142,11 +142,11 @@ public class Album {
         this.photos = photos;
     }
 
-    public Object getFeatureCollection() {
+    public FeatureCollection getFeatureCollection() {
         return featureCollection;
     }
 
-    public void setFeatureCollection(Object featureCollection) {
+    public void setFeatureCollection(FeatureCollection featureCollection) {
         this.featureCollection = featureCollection;
     }
 }

@@ -19,28 +19,24 @@ package com.mdtech.here.geojson.mapbox;
 import android.graphics.Color;
 import android.os.AsyncTask;
 
-import com.cocoahero.android.geojson.Feature;
-import com.cocoahero.android.geojson.FeatureCollection;
-import com.cocoahero.android.geojson.GeoJSON;
-import com.cocoahero.android.geojson.GeoJSONObject;
-import com.cocoahero.android.geojson.Geometry;
-import com.cocoahero.android.geojson.LineString;
-import com.cocoahero.android.geojson.MultiLineString;
-import com.cocoahero.android.geojson.MultiPolygon;
-import com.cocoahero.android.geojson.Point;
-import com.cocoahero.android.geojson.Polygon;
-import com.cocoahero.android.geojson.Position;
-import com.cocoahero.android.geojson.PositionList;
-import com.cocoahero.android.geojson.Ring;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.mdtech.geojson.Feature;
+import com.mdtech.geojson.FeatureCollection;
+import com.mdtech.geojson.GeoJSONObject;
+import com.mdtech.geojson.Geometry;
+import com.mdtech.geojson.LineString;
+import com.mdtech.geojson.MultiLineString;
+import com.mdtech.geojson.MultiPolygon;
+import com.mdtech.geojson.Point;
+import com.mdtech.geojson.Polygon;
+import com.mdtech.geojson.Position;
+import com.mdtech.geojson.Ring;
 import com.mdtech.here.geojson.GeoJSONStyle;
 import com.mdtech.here.geojson.IGeoJSONOverlay;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +52,7 @@ import java.util.concurrent.BrokenBarrierException;
 public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> implements IGeoJSONOverlay {
 
     protected MapView map;
-    private InputStream geoJSONIS;
+    private GeoJSONObject source;
 
     private List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
     private List<PolygonOptions> polygons = new ArrayList<PolygonOptions>();
@@ -68,9 +64,9 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         super();
     }
 
-    public GeoJSONOverlay(InputStream geoJSONIS) {
+    public GeoJSONOverlay(FeatureCollection featureCollection) {
         super();
-        setSource(geoJSONIS);
+        setSource(featureCollection);
     }
 
     public void addTo(MapView map) {
@@ -89,12 +85,13 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     }
 
     @Override
-    public void setSource(InputStream geoJSON) {
-        geoJSONIS = geoJSON;
+    public void setSource(GeoJSONObject geoJSONObject) {
+        this.source = geoJSONObject;
     }
 
     @Override
     public void addFeature(Feature feature) {
+
         addFeature(feature, null);
     }
 
@@ -109,21 +106,21 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         }
 
         switch (geometry.getType()) {
-            case GeoJSON.TYPE_POINT:
+            case Geometry.TYPE_POINT:
                 addPoint((Point)geometry, style);
                 break;
-            case GeoJSON.TYPE_MULTI_POINT:
+            case Geometry.TYPE_MULTI_POINT:
                 break;
-            case GeoJSON.TYPE_LINE_STRING:
+            case Geometry.TYPE_LINE_STRING:
                 addLineString((LineString)geometry, style);
                 break;
-            case GeoJSON.TYPE_MULTI_LINE_STRING:
+            case Geometry.TYPE_MULTI_LINE_STRING:
                 addMultiLineString((MultiLineString) geometry, style);
                 break;
-            case GeoJSON.TYPE_POLYGON:
+            case Geometry.TYPE_POLYGON:
                 addPolygon((Polygon) geometry, style);
                 break;
-            case GeoJSON.TYPE_MULTI_POLYGON:
+            case Geometry.TYPE_MULTI_POLYGON:
                 addMultiPolygon((MultiPolygon) geometry, style);
                 break;
         }
@@ -237,8 +234,19 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         }
     }
 
+    private GeoJSONStyle getDefaultStyle() {
+        // default style
+        GeoJSONStyle style = new GeoJSONStyle();
+        style.setFill("blue");
+        style.setFillOpacity("0.3");
+        style.setStroke("blue");
+        style.setStrokeOpacity("0.8");
+        style.setStrokeWidth("2");
+        return style;
+    }
+
     public void addFeatureCollection(FeatureCollection featureCollection) {
-        GeoJSONStyle style = new GeoJSONStyle(featureCollection.getmProperties());
+        GeoJSONStyle style = getDefaultStyle().extend(featureCollection.getProperties());
         Iterator<Feature> featureIterator = featureCollection.getFeatures().iterator();
         while (featureIterator.hasNext()) {
             addFeature(featureIterator.next(), style);
@@ -247,26 +255,16 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
 
     @Override
     protected GeoJSONObject doInBackground(Void... params) {
-        try {
-            GeoJSONObject geoJSONObject = GeoJSON.parse(geoJSONIS);
-            geoJSONIS.close();
-            switch (geoJSONObject.getType()) {
-                case GeoJSON.TYPE_FEATURE_COLLECTION:
-                    addFeatureCollection((FeatureCollection) geoJSONObject);
-                    break;
-                case GeoJSON.TYPE_FEATURE:
-                    addFeature((Feature)geoJSONObject);
-                    break;
-                default:
-            }
-            return geoJSONObject;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        switch (source.getType()) {
+            case GeoJSONObject.TYPE_FEATURE_COLLECTION:
+                addFeatureCollection((FeatureCollection) source);
+                break;
+            case GeoJSONObject.TYPE_FEATURE:
+                addFeature((Feature) source);
+                break;
+            default:
         }
-
-        return null;
+        return source;
     }
 
     @Override

@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // Load GeoJSON file
                 try {
                     InputStream inputStream = getAssets().open("countries.geo.json");
-                    GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
-                    geoJSONOverlay.addTo(mapView);
+//                    GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
+//                    geoJSONOverlay.addTo(mapView);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -183,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_share) {
             try {
                 InputStream inputStream = getAssets().open("china.geo.json");
-                GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
-                geoJSONOverlay.addTo(mapView);
+//                GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
+//                geoJSONOverlay.addTo(mapView);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -192,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_send) {
             try {
                 InputStream inputStream = getAssets().open("countries.geo.json");
-                GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
-                geoJSONOverlay.addTo(mapView);
+//                GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(inputStream);
+//                geoJSONOverlay.addTo(mapView);
 
             } catch (IOException e) {
                 e.printStackTrace();

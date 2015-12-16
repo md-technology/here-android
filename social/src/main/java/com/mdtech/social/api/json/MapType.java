@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 /**
  * TODO insert class's header comments
@@ -29,8 +30,7 @@ public class MapType {
     private BigInteger id;
     private String name;
     private String baseLayer;
-    @JsonIgnore
-    private Object overLayers;
+    private Map<String, String> overLayers;
 
 
     public BigInteger getId() {
@@ -57,11 +57,11 @@ public class MapType {
         this.baseLayer = baseLayer;
     }
 
-    public Object getOverLayers() {
+    public Map<String, String> getOverLayers() {
         return overLayers;
     }
 
-    public void setOverLayers(Object overLayers) {
+    public void setOverLayers(Map<String, String> overLayers) {
         this.overLayers = overLayers;
     }
 }

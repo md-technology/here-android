@@ -16,10 +16,12 @@
 
 package com.mdtech.here.geojson;
 
-import com.cocoahero.android.geojson.Feature;
-import com.cocoahero.android.geojson.LineString;
-import com.cocoahero.android.geojson.Point;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.mdtech.geojson.Feature;
+import com.mdtech.geojson.FeatureCollection;
+import com.mdtech.geojson.GeoJSONObject;
+import com.mdtech.geojson.LineString;
+import com.mdtech.geojson.Point;
 
 import java.io.InputStream;
 
@@ -43,9 +45,9 @@ public interface IGeoJSONOverlay {
 
     /**
      *
-     * @param geoJSON
+     * @param geoJSONObject
      */
-    void setSource(InputStream geoJSON);
+    void setSource(GeoJSONObject geoJSONObject);
 
     /**
      *

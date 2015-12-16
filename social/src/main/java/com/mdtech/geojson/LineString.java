@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package com.mdtech.here;
+package com.mdtech.geojson;
 
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.util.List;
 
 /**
- * {@link android.support.v7.app.AppCompatActivity} used for the view
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/11/2015.
+ * Created by Tiven.wang on 12/16/2015.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+@JsonDeserialize(using = GeoJsonModule.LineStringDeserializer.class)
+public class LineString extends MultiPoint {
+
+    public LineString(List<Position> points) {
+        super(points);
+    }
+
+    public LineString(Position first, Position second, Position... others) {
+        super(first, second, others);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+    public String getType() {
+        return "LineString";
     }
 }

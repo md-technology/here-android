@@ -50,6 +50,11 @@ public class AlbumOperationsTest extends AbstractOperationsTest {
         Album album = albumOperations.get(id);
 
         assertEquals(id, album.getId());
+        assertEquals("Something is wrong", "FeatureCollection", album.getFeatureCollection().getType());
+
+        assertEquals("{}", album.getFeatureCollection().getProperties().get("style").asText());
+
+        log.info(album.getFeatureCollection().getProperties());
     }
 
 }

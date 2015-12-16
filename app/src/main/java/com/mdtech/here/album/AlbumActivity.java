@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.mdtech.here.R;
+import com.mdtech.here.geojson.mapbox.GeoJSONOverlay;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.social.api.Ponmap;
 import com.mdtech.social.api.json.Album;
@@ -159,9 +160,14 @@ public class AlbumActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Album album) {
-            if(null != album) {
+            if(null != album ) {
                 LOGI(TAG, "Loaded album");
                 LOGI(TAG, album.getName());
+
+                if(null != album.getFeatureCollection()) {
+                    GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(album.getFeatureCollection());
+                    geoJSONOverlay.addTo(mMapView);
+                }
             }
         }
 
