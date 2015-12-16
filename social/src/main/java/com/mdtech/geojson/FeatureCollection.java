@@ -16,49 +16,49 @@
 
 package com.mdtech.geojson;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class FeatureCollection {
-
-    private String type = "FeatureCollection";
-    private Map<String, String> properties = new HashMap<String, String>();
-
-    private List<Feature> features = new ArrayList<Feature>();
-
-    public List<Feature> getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(List<Feature> features) {
-        this.features = features;
-    }
-
-    public void addFeature(Feature feature) {
-        if(!this.features.contains(feature)) {
-            this.features.add(feature);
-        }
-    }
-
-    public void removeFeature(Feature feature) {
-        this.features.remove(feature);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-}
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//public class FeatureCollection {
+//
+//    private String type = "FeatureCollection";
+//    private Map<String, String> properties = new HashMap<String, String>();
+//
+//    private List<Feature> features = new ArrayList<Feature>();
+//
+//    public List<Feature> getFeatures() {
+//        return features;
+//    }
+//
+//    public void setFeatures(List<Feature> features) {
+//        this.features = features;
+//    }
+//
+//    public void addFeature(Feature feature) {
+//        if(!this.features.contains(feature)) {
+//            this.features.add(feature);
+//        }
+//    }
+//
+//    public void removeFeature(Feature feature) {
+//        this.features.remove(feature);
+//    }
+//
+//    public String getType() {
+//        return type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
+//
+//    public Map<String, String> getProperties() {
+//        return properties;
+//    }
+//
+//    public void setProperties(Map<String, String> properties) {
+//        this.properties = properties;
+//    }
+//}
