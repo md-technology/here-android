@@ -18,4 +18,8 @@
     <color name="flat_button_text">#ff008094</color>
 
     <color name="light_content_scrim">#0d000000</color>
+
+    <color name="navdrawer_background">#ffffffff</color>
+
+    <color name="filter_text">@color/app_primary_text</color>
 </resources>

@@ -46,7 +46,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile "com.android.support:appcompat-v7:$android_support_lib_version"
     compile "com.android.support:cardview-v7:$android_support_lib_version"
+    compile "com.android.support:recyclerview-v7:$android_support_lib_version"
     compile "com.android.support:design:$android_support_lib_version"
+    compile "com.android.support:appcompat-v7:$android_support_lib_version"
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:2.3.0@aar') {
         transitive = true
     }

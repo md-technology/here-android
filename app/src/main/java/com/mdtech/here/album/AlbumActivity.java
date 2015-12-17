@@ -22,7 +22,14 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.NavUtils;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -41,7 +48,7 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/14/2015.
  */
-public class AlbumActivity extends BaseActivity {
+public class AlbumActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = makeLogTag(AlbumActivity.class);
 
     protected MapView mMapView = null;
@@ -57,11 +64,25 @@ public class AlbumActivity extends BaseActivity {
 
     private Ponmap mApi;
 
+    private DrawerLayout mDrawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_album);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Add the back button to the toolbar.
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateUpOrBack(AlbumActivity.this, null);
+            }
+        });
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // map
         mMapView = (MapView) findViewById(R.id.mapview);
@@ -78,11 +99,12 @@ public class AlbumActivity extends BaseActivity {
 
         } else if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
-            CharSequence id = bundle.getCharSequence(EXTRA_ALBUM_ID);
-            if(!TextUtils.isEmpty(id)) {
-                mAlbumId = new BigInteger(id.toString());
+            if(null != bundle) {
+                CharSequence id = bundle.getCharSequence(EXTRA_ALBUM_ID);
+                if(!TextUtils.isEmpty(id)) {
+                    mAlbumId = new BigInteger(id.toString());
+                }
             }
-//            mCurrentUri = getIntent().getData();
         }
 
         mApi = getApi();
@@ -96,6 +118,18 @@ public class AlbumActivity extends BaseActivity {
             new AlbumTask(mAlbumId).execute();
         }
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

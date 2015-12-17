@@ -14,74 +14,43 @@
  * limitations under the License.
  */
 
-package com.mdtech.here.explore;
+package com.mdtech.here.user;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.mdtech.here.R;
-import com.mdtech.here.account.LoginActivity;
-import com.mdtech.here.album.AlbumActivity;
-import com.mdtech.here.ui.BaseActivity;
-import com.mdtech.here.util.AccountUtils;
-
-import java.math.BigInteger;
-
-import static com.mdtech.here.util.LogUtils.LOGE;
-import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/14/2015.
+ * Created by Tiven.wang on 12/17/2015.
  */
-public class ExploreActivity extends BaseActivity {
+public class AlbumListFragment extends Fragment {
 
-    private static final String TAG = makeLogTag(ExploreActivity.class);
-    public static final String EXTRA_ALBUM_ID =
-            "com.mdtech.here.EXTRA_ALBUM_ID";
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.user_album_frag, container, false);
 
-        setContentView(R.layout.activity_explore);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                                                     @Override
-                                                     public void onRefresh() {
-                                                         // Refresh items
-                                                         onItemsLoadComplete();
-                                                     }
-                                                 }
-        );
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.items_recycler_view);
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.album_recycler_view);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         String[] mDataset = new String[] {
@@ -99,52 +68,7 @@ public class ExploreActivity extends BaseActivity {
         mAdapter = new MyAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
 
-//        final Button button = (Button)findViewById(R.id.explore_ok_button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                CharSequence albumId = button.getText();
-//                if (TextUtils.isEmpty(albumId)) {
-//                    LOGE(TAG, "Album id is empty");
-//                    return;
-//                }
-//                Intent intent = new Intent(v.getContext(), AlbumActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putCharSequence(EXTRA_ALBUM_ID, albumId);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-////                finish();
-//            }
-//        });
-
-//        Button login = (Button)findViewById(R.id.explore_login_button);
-//        login.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (AccountUtils.hasActiveAccount(ExploreActivity.this)) {
-//                    Intent intent = new Intent(v.getContext(), AlbumActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Intent intent = new Intent(v.getContext(), LoginActivity.class);
-//                    startActivity(intent);
-////                    finish();
-//                }
-//
-//            }
-//        });
-
-    }
-
-    void onItemsLoadComplete() {
-        // Update the adapter and notify data set changed
-
-        // Stop refresh animation
-        mSwipeRefreshLayout.setRefreshing(false);
-        Snackbar.make(mSwipeRefreshLayout, "刷新成功", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        return root;
     }
 
     public static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {

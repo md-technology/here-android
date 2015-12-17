@@ -32,4 +32,12 @@
         <item name="android:paddingBottom">@dimen/spacing_normal</item>
     </style>
 
+    <style name="TextAppearance.Body1" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item> <!-- bug in AppCompat, can remove this when it's fixed -->
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+    <style name="TextAppearance.Filter" parent="TextAppearance.Body1">
+        <item name="android:textColor">@color/filter_text</item>
+    </style>
+
 </resources>

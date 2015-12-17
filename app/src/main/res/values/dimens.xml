@@ -35,4 +35,13 @@
     <dimen name="appbar_padding_top">8dp</dimen>
 
     <dimen name="navdrawer_profile_image_size">40dp</dimen>
+
+    <!-- UI elements -->
+    <dimen name="drawer_width">@dimen/match_parent</dimen>
+
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_height_inc_padding">16dp</dimen>
+    <dimen name="divider_height_inc_padding_top_only">8dp</dimen>
+    <dimen name="divider_padding_top">7dp</dimen>
+    <dimen name="divider_padding_bottom">8dp</dimen>
 </resources>

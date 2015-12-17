@@ -15,21 +15,18 @@
   ~ limitations under the License.
   -->
 
-<android.support.v4.widget.DrawerLayout
+<!-- A CardView that contains a TextView -->
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:here="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".explore.ExploreSessionsActivity"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    android:layout_height="200dp"
+    card_view:cardCornerRadius="4dp">
 
-    <include layout="@layout/app_bar_main"
+    <TextView
+        android:id="@+id/info_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <include layout="@layout/activity_album_alt_drawer_layout"></include>
-
-</android.support.v4.widget.DrawerLayout>
+</android.support.v7.widget.CardView>
