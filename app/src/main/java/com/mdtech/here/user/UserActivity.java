@@ -16,26 +16,29 @@
 
 package com.mdtech.here.user;
 
-import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.ui.BaseActivity;
+import com.mdtech.here.util.CircleTransformation;
+import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.model.User;
+import com.squareup.picasso.Picasso;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +50,16 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  */
 public class UserActivity extends BaseActivity {
     private static final String TAG = makeLogTag(UserActivity.class);
+
+    private BigInteger mUserId;
+    private User mUser;
+
+    private HereApi mApi;
+
+    private Picasso picasso;
+
+    private TextView mUserEmail;
+    private TextView mUserDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +77,15 @@ public class UserActivity extends BaseActivity {
             }
         });
 
+        mUserId = getIdFromBundle(savedInstanceState, Config.EXTRA_USER_ID);
+
+        mApi = getApi();
+
+        picasso = new Picasso.Builder(this).build();
+
+        mUserEmail = (TextView) findViewById(R.id.vUserEmail);
+        mUserDesc = (TextView) findViewById(R.id.vUserDesc);
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -76,14 +98,65 @@ public class UserActivity extends BaseActivity {
         super.onPostCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // get user then set user
+        if(null != mUserId) {
+            new UserTask(mUserId).execute();
+        }
+    }
+
+    private void setupUser(User user) {
+        mUser = user;
+
+        if(null != mUser.getProfileCover()) {
+            ImageView profileCover = (ImageView) findViewById(R.id.profile_cover_image);
+            picasso.load(getUrlFromOssKey(mUser.getProfileCover().getOssKey()))
+                    .into(profileCover);
+        }
+
+        if(null != mUser.getAvatar()) {
+            ImageView avatarImage = (ImageView) findViewById(R.id.ivUserProfilePhoto);
+            picasso.load(getUrlFromOssKey(mUser.getAvatar().getOssKey()))
+                    .transform(new CircleTransformation())
+                    .into(avatarImage);
+        }
+
+        mUserEmail.setText(mUser.getEmail());
+        mUserDesc.setText(mUser.getDescription());
+
+        setTitle(mUser.getName());
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new PhotoListFragment(mApi, mUserId), "图片");
         adapter.addFrag(new AlbumListFragment(), "CAT");
         adapter.addFrag(new DummyFragment(), "DOG");
         adapter.addFrag(new DummyFragment(), "MOUSE");
         viewPager.setAdapter(adapter);
+    }
+
+    class UserTask extends AsyncTask<Void, Void, User> {
+
+        private BigInteger mId;
+
+        public UserTask(BigInteger id) {
+            mId = id;
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            return mApi.userOperations().get(mId);
+        }
+
+        @Override
+        protected void onPostExecute(final User user) {
+            setupUser(user);
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
     }
 
     static class ViewPagerAdapter extends FragmentPagerAdapter {

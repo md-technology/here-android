@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mdtech.social.api.json;
+package com.mdtech.social.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

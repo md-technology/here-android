@@ -1,4 +1,4 @@
-package com.mdtech.social.api.json;
+package com.mdtech.social.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

@@ -1,6 +1,5 @@
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.Ponmap;
 import com.mdtech.social.connect.PonmapConnectionFactory;
 import com.mdtech.social.connect.PonmapServiceProvider;
 
@@ -42,7 +41,7 @@ public abstract class AbstractOperationsTest {
 
         assertNotNull(accessGrant.getAccessToken());
 
-        Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
+        Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
         connectionRepository.addConnection(connection);
     }
 
@@ -53,11 +52,11 @@ public abstract class AbstractOperationsTest {
 
         assertNotNull(accessGrant.getAccessToken());
 
-        Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
+        Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
         // 删除所有已存在连接
         connectionRepository.removeConnections(PonmapServiceProvider.PROVIDER_ID);
         connectionRepository.addConnection(connection);
-        connection = connectionRepository.findPrimaryConnection(Ponmap.class);
+        connection = connectionRepository.findPrimaryConnection(HereApi.class);
         assertTrue(!connection.hasExpired());
 
     }

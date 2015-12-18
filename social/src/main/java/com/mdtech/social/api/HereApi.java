@@ -5,7 +5,7 @@ import org.springframework.social.ApiBinding;
 /**
  * Created by any on 2014/10/29.
  */
-public interface Ponmap extends ApiBinding {
+public interface HereApi extends ApiBinding {
 
     /**
      * 专辑

@@ -1,6 +1,6 @@
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 
 import static org.junit.Assert.*;
 
@@ -30,9 +30,9 @@ public class PanoramioOperationsTest extends AbstractOperationsTest {
 
         assertNotNull(accessGrant.getAccessToken());
 
-        Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
-        Ponmap ponmapApi = connection.getApi();
-        panoramioOperations = ponmapApi.panoramioOperations();
+        Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
+        HereApi hereApiApi = connection.getApi();
+        panoramioOperations = hereApiApi.panoramioOperations();
 
     }
 

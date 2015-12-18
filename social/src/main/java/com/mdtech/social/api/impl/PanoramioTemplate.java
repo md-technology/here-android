@@ -1,7 +1,7 @@
 package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.PanoramioOperations;
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 
 import org.springframework.web.client.RestTemplate;
 

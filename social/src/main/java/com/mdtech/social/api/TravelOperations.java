@@ -1,6 +1,6 @@
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.json.Travel;
+import com.mdtech.social.api.model.Travel;
 
 /**
  * Created by any on 2014/10/29.

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by any on 2014/10/30.
  */
-public class PonmapProfile implements Serializable {
+public class UserProfile implements Serializable {
 
     private final String id;
 
@@ -23,7 +23,7 @@ public class PonmapProfile implements Serializable {
 
     private boolean login;
 
-    public PonmapProfile(String id, String username, String name) {
+    public UserProfile(String id, String username, String name) {
         this.id = id;
         this.username = username;
         this.name = name;

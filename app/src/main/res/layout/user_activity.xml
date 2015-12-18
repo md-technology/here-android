@@ -22,25 +22,77 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_height="192dp"
-        android:layout_width="match_parent">
+        android:id="@+id/appbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             here:layout_scrollFlags="scroll|exitUntilCollapsed">
             <ImageView
-                android:id="@+id/image"
+                android:id="@+id/profile_cover_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/dic_launcher"
+                android:layout_alignParentTop="true"
                 here:layout_collapseParallaxMultiplier="0.6"
                 here:layout_collapseMode="parallax" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:clipChildren="false">
+
+                <ImageView
+                    android:id="@+id/ivUserProfilePhoto"
+                    android:layout_width="@dimen/profile_image_size"
+                    android:layout_height="@dimen/profile_image_size"
+                    android:layout_marginRight="@dimen/fab_margin"/>
+
+                <LinearLayout
+                    android:id="@+id/vUserDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!--<TextView android:id="@+id/vUserName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp" />-->
+
+                    <TextView android:id="@+id/vUserEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#bbbbbb"
+                        android:textSize="12sp" />
+
+                    <TextView android:id="@+id/vUserDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Mobile development passionate."
+                        android:textColor="#ffffff"
+                        android:textSize="12sp" />
+
+                    <!--<Button
+                        android:id="@+id/btnFollow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="8dp"
+                        android:text="following"
+                        android:textColor="#ffffff"
+                        android:textSize="12sp" />-->
+
+                </LinearLayout>
+            </LinearLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"
-                android:title="User"
                 here:layout_collapseMode="pin"/>
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -50,7 +102,9 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
             android:background="?attr/colorPrimary"
+            here:layout_anchorGravity="bottom"
             here:tabMode="scrollable"/>
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
@@ -64,11 +118,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="0dp"
+        android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_menu_mylocation"
-        here:layout_anchor="@id/tabs"
-        here:layout_anchorGravity="center|left|start"
-        here:fabSize="mini"
         here:borderWidth="0dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

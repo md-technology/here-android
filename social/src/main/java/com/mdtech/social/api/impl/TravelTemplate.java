@@ -1,8 +1,8 @@
 package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.TravelOperations;
-import com.mdtech.social.api.json.Travel;
-import com.mdtech.social.api.json.TravelResponse;
+import com.mdtech.social.api.model.Travel;
+import com.mdtech.social.api.model.TravelResponse;
 
 import org.springframework.web.client.RestTemplate;
 

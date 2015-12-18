@@ -1,6 +1,4 @@
-package com.mdtech.social.api.json;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+package com.mdtech.social.api.model;
 
 public class AuthResponse extends AbstractResponse {
 

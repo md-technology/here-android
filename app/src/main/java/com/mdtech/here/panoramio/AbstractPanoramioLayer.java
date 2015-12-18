@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.mdtech.social.api.PanoramioOperations;
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 
 import java.util.List;
 

@@ -1,16 +1,24 @@
 package com.mdtech.social.api.impl;
 
-import com.mdtech.social.api.PonmapProfile;
+import com.mdtech.social.api.UserProfile;
 import com.mdtech.social.api.UserOperations;
-import com.mdtech.social.api.json.User;
-import com.mdtech.social.api.json.UserResponse;
+import com.mdtech.social.api.model.Photo;
+import com.mdtech.social.api.model.User;
+import com.mdtech.social.connect.PonmapServiceProvider;
 
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigInteger;
+import java.util.List;
 
 /**
  * Created by any on 2014/10/30.
  */
 public class UserTemplate extends AbstractPonmapOperations implements UserOperations {
+
+    private static final String PATH = "/user";
 
     private final RestTemplate restTemplate;
 
@@ -20,12 +28,12 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
     }
 
     @Override
-    public PonmapProfile getUserProfile() {
+    public UserProfile getUserProfile() {
         requireAuthorization();
-        User user = restTemplate.getForObject(BASE_API_URL + "/user" , User.class);
+        User user = restTemplate.getForObject(BASE_API_URL + PATH , User.class);
 
         if(null != user) {
-            PonmapProfile profile = new PonmapProfile(user.getId().toString(), user.getUsername(), user.getName());
+            UserProfile profile = new UserProfile(user.getId().toString(), user.getUsername(), user.getName());
             if(user.getAvatar() != null) {
                 profile.setImage(user.getAvatar().getOssKey());
             }
@@ -41,13 +49,28 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
     }
 
     @Override
-    public PonmapProfile getUserProfile(String userId) {
+    public UserProfile getUserProfile(BigInteger id) {
 
-        User user = restTemplate.getForObject(BASE_API_URL + "/user/"+userId, User.class);
+        User user = get(id);
 
-        PonmapProfile profile = new PonmapProfile(user.getId().toString(), user.getUsername(), user.getName());
+        UserProfile profile = new UserProfile(user.getId().toString(), user.getUsername(), user.getName());
 
         return profile;
+    }
+
+    @Override
+    public User get(BigInteger id) {
+        User user = restTemplate.getForObject(BASE_API_URL + PATH + "/" + id, User.class);
+        return user;
+    }
+
+    @Override
+    public List<Photo> getPhotos(BigInteger id, Integer pageSize, Integer pageNo) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+        parameters.add("pageSize", pageSize.toString());
+        parameters.add("pageNo", pageNo.toString());
+        return restTemplate.getForObject(
+                buildUri(PATH + "/" + id + "/photos", parameters), List.class);
     }
 
 }

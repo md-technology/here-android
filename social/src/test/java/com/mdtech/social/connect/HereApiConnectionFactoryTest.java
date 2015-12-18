@@ -1,8 +1,8 @@
 package com.mdtech.social.connect;
 
 import com.mdtech.social.api.PanoramioOperations;
-import com.mdtech.social.api.Ponmap;
-import com.mdtech.social.api.PonmapProfile;
+import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.UserProfile;
 import com.mdtech.social.api.UserOperations;
 
 import org.apache.commons.logging.Log;
@@ -16,12 +16,14 @@ import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.math.BigInteger;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class PonmapConnectionFactoryTest {
+public class HereApiConnectionFactoryTest {
 
-    private Log log = LogFactory.getLog(PonmapConnectionFactoryTest.class);
+    private Log log = LogFactory.getLog(HereApiConnectionFactoryTest.class);
 
     private ConnectionFactoryRegistry connectionFactoryRegistry;
     private OAuth2ConnectionFactory connectionFactory;
@@ -48,13 +50,13 @@ public class PonmapConnectionFactoryTest {
 
         assertNotNull(accessGrant.getAccessToken());
 
-        Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
+        Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
         connectionRepository.addConnection(connection);
-        connection = connectionRepository.findPrimaryConnection(Ponmap.class);
+        connection = connectionRepository.findPrimaryConnection(HereApi.class);
         assertTrue(!connection.hasExpired());
-        Ponmap ponmapApi = connection.getApi();
-        assertNotNull(ponmapApi);
-        PanoramioOperations panoramioOperations = ponmapApi.panoramioOperations();
+        HereApi hereApiApi = connection.getApi();
+        assertNotNull(hereApiApi);
+        PanoramioOperations panoramioOperations = hereApiApi.panoramioOperations();
         assertNotNull(panoramioOperations);
 
     }
@@ -70,19 +72,19 @@ public class PonmapConnectionFactoryTest {
 
         assertNotNull(accessGrant.getAccessToken());
 
-        Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
+        Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
         // 删除所有已存在连接
         connectionRepository.removeConnections(PonmapServiceProvider.PROVIDER_ID);
         connectionRepository.addConnection(connection);
-        connection = connectionRepository.findPrimaryConnection(Ponmap.class);
+        connection = connectionRepository.findPrimaryConnection(HereApi.class);
         assertTrue(!connection.hasExpired());
-        Ponmap ponmapApi = connection.getApi();
-        assertNotNull(ponmapApi);
+        HereApi hereApiApi = connection.getApi();
+        assertNotNull(hereApiApi);
 
-        UserOperations userOperations = ponmapApi.userOperations();
+        UserOperations userOperations = hereApiApi.userOperations();
         assertNotNull(userOperations);
 
-        PonmapProfile profile = userOperations.getUserProfile();
+        UserProfile profile = userOperations.getUserProfile();
 
         assertThat(profile.getUsername(), is("user"));
     }
@@ -96,19 +98,19 @@ public class PonmapConnectionFactoryTest {
 
         assertNotNull(accessGrant.getAccessToken());
 
-        Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
+        Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
 
         assertNotNull(connection);
 
-        Ponmap ponmapApi = connection.getApi();
+        HereApi hereApiApi = connection.getApi();
 
-        assertNotNull(ponmapApi);
+        assertNotNull(hereApiApi);
 
-        UserOperations userOperations = ponmapApi.userOperations();
+        UserOperations userOperations = hereApiApi.userOperations();
 
         assertNotNull(userOperations);
 
-        PonmapProfile profile = userOperations.getUserProfile("26449692454748190120520877226");
+        UserProfile profile = userOperations.getUserProfile(new BigInteger("26449692454748190120520877226"));
 
         assertNotNull(profile);
         assertNotNull(profile.getId());

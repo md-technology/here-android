@@ -1,4 +1,4 @@
-package com.mdtech.social.api.json;
+package com.mdtech.social.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,7 +16,7 @@ public class Travel {
     private Long userId;
     private String username;
 
-    private User user;
+    private com.mdtech.social.api.model.User user;
 
     private List<TravelSpot> spots = new ArrayList<TravelSpot>(0);
     private TravelSpot spot;
@@ -32,14 +32,14 @@ public class Travel {
     private String title;
     private String description;
 
-    private List<Photo> photos = new ArrayList<Photo>(0);
+    private List<com.mdtech.social.api.model.Photo> photos = new ArrayList<com.mdtech.social.api.model.Photo>(0);
 
     @JsonProperty("like_count")
     private Integer likeCount;
 
     // 相册封面图片
     @JsonProperty("album_cover")
-    private Photo albumCover;
+    private com.mdtech.social.api.model.Photo albumCover;
 
     // 图片数量
     @JsonProperty("photo_size")
@@ -128,16 +128,16 @@ public class Travel {
     public void setLikeCount(Integer likeCount) {
         this.likeCount = likeCount;
     }
-    public Photo getAlbumCover() {
+    public com.mdtech.social.api.model.Photo getAlbumCover() {
         return albumCover;
     }
-    public void setAlbumCover(Photo albumCover) {
+    public void setAlbumCover(com.mdtech.social.api.model.Photo albumCover) {
         this.albumCover = albumCover;
     }
-    public User getUser() {
+    public com.mdtech.social.api.model.User getUser() {
         return user;
     }
-    public void setUser(User user) {
+    public void setUser(com.mdtech.social.api.model.User user) {
         this.user = user;
     }
     public Integer getPhotoSize() {
@@ -153,11 +153,11 @@ public class Travel {
         this.messageId = messageId;
     }
 
-    public List<Photo> getPhotos() {
+    public List<com.mdtech.social.api.model.Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(List<com.mdtech.social.api.model.Photo> photos) {
         this.photos = photos;
     }
 }

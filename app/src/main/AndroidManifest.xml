@@ -38,10 +38,10 @@
         <activity
             android:name=".account.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".explore.ExploreActivity"></activity>
         <activity
             android:name=".user.UserActivity"
-            android:label="User"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".explore.ExploreActivity"></activity>
     </application>

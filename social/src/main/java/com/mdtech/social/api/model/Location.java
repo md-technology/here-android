@@ -1,4 +1,4 @@
-package com.mdtech.social.api.json;
+package com.mdtech.social.api.model;
 
 /**
  * Created by tiwen.wang on 7/8/2015.

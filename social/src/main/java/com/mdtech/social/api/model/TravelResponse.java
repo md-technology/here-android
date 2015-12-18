@@ -1,4 +1,4 @@
-package com.mdtech.social.api.json;
+package com.mdtech.social.api.model;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class TravelResponse extends AbstractResponse {
     private List<Travel> travels = null;
 
     private Travel travel;
-    private TravelSpot spot;
+    private com.mdtech.social.api.model.TravelSpot spot;
 
     public List<Travel> getTravels() {
         return travels;
@@ -28,11 +28,11 @@ public class TravelResponse extends AbstractResponse {
         this.travel = travel;
     }
 
-    public TravelSpot getSpot() {
+    public com.mdtech.social.api.model.TravelSpot getSpot() {
         return spot;
     }
 
-    public void setSpot(TravelSpot spot) {
+    public void setSpot(com.mdtech.social.api.model.TravelSpot spot) {
         this.spot = spot;
     }
 }

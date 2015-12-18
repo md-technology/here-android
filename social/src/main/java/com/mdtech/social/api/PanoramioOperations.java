@@ -1,6 +1,6 @@
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 
 import java.util.List;
 

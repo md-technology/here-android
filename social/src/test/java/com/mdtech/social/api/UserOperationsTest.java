@@ -16,45 +16,51 @@
 
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.model.Album;
+import com.mdtech.social.api.model.Photo;
+import com.mdtech.social.api.model.User;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/11/2015.
+ * Created by Tiven.wang on 12/18/2015.
  */
-public class AlbumOperationsTest extends AbstractOperationsTest {
+public class UserOperationsTest extends AbstractOperationsTest {
+    private Log log = LogFactory.getLog(UserOperationsTest.class);
 
-    private Log log = LogFactory.getLog(AlbumOperationsTest.class);
-
-    private AlbumOperations albumOperations;
+    private UserOperations userOperations;
 
     @Before
     public void setup() {
         super.setup();
         super.authenticateClient();
-        albumOperations = connectionRepository.findPrimaryConnection(HereApi.class).getApi().albumOperations();
+        userOperations = connectionRepository.findPrimaryConnection(HereApi.class).getApi().userOperations();
     }
 
     @Test
     public void testGet() {
-        BigInteger id = new BigInteger("26750881779292192047881277021");
-        Album album = albumOperations.get(id);
+        BigInteger id = new BigInteger("26449692454748190120520877226");
+        User user = userOperations.get(id);
 
-        assertEquals(id, album.getId());
-        assertEquals("Something is wrong", "FeatureCollection", album.getFeatureCollection().getType());
+        Assert.assertEquals("user", user.getUsername());
 
-        assertEquals("{}", album.getFeatureCollection().getProperties().get("style").asText());
+        log.info(user.getAvatar().getOssKey());
+    }
 
-        log.info(album.getFeatureCollection().getProperties());
+    @Test
+    public void testGetPhotos() {
+        BigInteger id = new BigInteger("26449692454748190120520877226");
+        List<Photo> photos = userOperations.getPhotos(id, 10, 0);
+
+        log.info(photos.size());
+
     }
 
 }

@@ -21,7 +21,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.mdtech.here.R;
-import com.mdtech.social.api.PonmapProfile;
+import com.mdtech.social.api.UserProfile;
+import com.mdtech.social.api.model.User;
 
 import java.lang.ref.WeakReference;
 
@@ -45,7 +46,7 @@ public class LoginAndAuthHelper {
         mAppContext = activity.getApplicationContext();
     }
 
-    public void onLogin(PonmapProfile currentUser) {
+    public void onLogin(UserProfile currentUser) {
 
         AccountUtils.setActiveAccount(mAppContext, currentUser.getUsername());
 
@@ -53,22 +54,18 @@ public class LoginAndAuthHelper {
         Log.d(TAG, "Saving ponmap profile ID: " + currentUser.getId());
         AccountUtils.setHereProfileId(mAppContext, currentUser.getUsername(), currentUser.getId());
         String imageUrl = currentUser.getImage();
-        if (imageUrl != null) {
-            imageUrl = mAppContext.getResources().getString(R.string.here_photo_base_url)+"/"+imageUrl;
-        }
         Log.d(TAG, "Saving plus image URL: " + imageUrl);
         AccountUtils.setHereImageUrl(mAppContext, currentUser.getUsername(), imageUrl);
         Log.d(TAG, "Saving plus display name: " + currentUser.getName());
         AccountUtils.setHereName(mAppContext, currentUser.getUsername(), currentUser.getName());
+
         imageUrl = currentUser.getCoverImage();
-        if (imageUrl != null) {
+        if(null != imageUrl) {
             Log.d(TAG, "Saving plus cover URL: " + imageUrl);
-            imageUrl = mAppContext.getResources().getString(R.string.here_photo_base_url)+"/"+imageUrl;
             AccountUtils.setHereCoverUrl(mAppContext, currentUser.getUsername(), imageUrl);
         } else {
             Log.d(TAG, "Profile has no cover.");
         }
-
     }
 
     public boolean logout() {

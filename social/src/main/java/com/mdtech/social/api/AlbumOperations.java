@@ -16,7 +16,7 @@
 
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.json.Album;
+import com.mdtech.social.api.model.Album;
 
 import java.math.BigInteger;
 

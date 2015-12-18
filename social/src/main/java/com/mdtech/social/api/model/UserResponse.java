@@ -1,4 +1,4 @@
-package com.mdtech.social.api.json;
+package com.mdtech.social.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,7 +15,7 @@ public class UserResponse extends AbstractResponse {
 	private Collection<Photo> photos;
 
     @JsonProperty("open_info")
-	private User openInfo;
+	private com.mdtech.social.api.model.User openInfo;
 	
 	private UserSettings settings;
 	
@@ -23,10 +23,10 @@ public class UserResponse extends AbstractResponse {
 	
 	private Circle circle;
 	
-	private List<User> followers;
+	private List<com.mdtech.social.api.model.User> followers;
 	
 	// 系统推荐关注
-	private List<User> follow;
+	private List<com.mdtech.social.api.model.User> follow;
 
     public static class PhotoInfo {
 
@@ -69,7 +69,7 @@ public class UserResponse extends AbstractResponse {
 	public static class Circle {
 		private Long id;
 		private String name;
-		private Set<User> users = new HashSet<User>(0);
+		private Set<com.mdtech.social.api.model.User> users = new HashSet<com.mdtech.social.api.model.User>(0);
 		public Long getId() {
 			return id;
 		}
@@ -82,10 +82,10 @@ public class UserResponse extends AbstractResponse {
 		public void setName(String name) {
 			this.name = name;
 		}
-		public Set<User> getUsers() {
+		public Set<com.mdtech.social.api.model.User> getUsers() {
 			return users;
 		}
-		public void setUsers(Set<User> users) {
+		public void setUsers(Set<com.mdtech.social.api.model.User> users) {
 			this.users = users;
 		}
 	}
@@ -98,11 +98,11 @@ public class UserResponse extends AbstractResponse {
         this.photos = photos;
     }
 
-    public User getOpenInfo() {
+    public com.mdtech.social.api.model.User getOpenInfo() {
         return openInfo;
     }
 
-    public void setOpenInfo(User openInfo) {
+    public void setOpenInfo(com.mdtech.social.api.model.User openInfo) {
         this.openInfo = openInfo;
     }
 
@@ -130,19 +130,19 @@ public class UserResponse extends AbstractResponse {
         this.circle = circle;
     }
 
-    public List<User> getFollowers() {
+    public List<com.mdtech.social.api.model.User> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<User> followers) {
+    public void setFollowers(List<com.mdtech.social.api.model.User> followers) {
         this.followers = followers;
     }
 
-    public List<User> getFollow() {
+    public List<com.mdtech.social.api.model.User> getFollow() {
         return follow;
     }
 
-    public void setFollow(List<User> follow) {
+    public void setFollow(List<com.mdtech.social.api.model.User> follow) {
         this.follow = follow;
     }
 }

@@ -18,41 +18,39 @@ package com.mdtech.here.ui;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mdtech.here.AppApplication;
+import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.account.LoginActivity;
 import com.mdtech.here.user.UserActivity;
 import com.mdtech.here.util.AccountUtils;
 import com.mdtech.here.util.ImageLoader;
 import com.mdtech.here.util.LoginAndAuthHelper;
 import com.mdtech.here.welcome.WelcomeActivity;
-import com.mdtech.social.api.Ponmap;
+import com.mdtech.social.api.HereApi;
 import com.mdtech.social.connect.PonmapConnectionFactory;
 
 import org.springframework.social.connect.ConnectionRepository;
+
+import java.math.BigInteger;
 
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
@@ -92,6 +90,14 @@ public abstract class BaseActivity extends AppCompatActivity
         // TODO del false
         if (false && WelcomeActivity.shouldDisplay(this)) {
             Intent intent = new Intent(this, WelcomeActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        Account chosenAccount = AccountUtils.getActiveAccount(this);
+        if(null == chosenAccount && !this.getClass().equals(LoginActivity.class)) {
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
@@ -226,6 +232,14 @@ public abstract class BaseActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     /**
      * This utility method handles Up navigation intents by searching for a parent activity and
      * navigating there if defined. When using this for an activity make sure to define both the
@@ -286,6 +300,29 @@ public abstract class BaseActivity extends AppCompatActivity
 
     }
 
+    protected BigInteger getIdFromBundle(Bundle savedInstanceState, String identifier) {
+        if (savedInstanceState != null) {
+            CharSequence id = savedInstanceState.getCharSequence(identifier);
+            if(!TextUtils.isEmpty(id)) {
+                return new BigInteger(id.toString());
+            }
+
+        } else if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            if(null != bundle) {
+                CharSequence id = bundle.getCharSequence(identifier);
+                if(!TextUtils.isEmpty(id)) {
+                    return new BigInteger(id.toString());
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getUrlFromOssKey(String ossKey) {
+        return getResources().getString(R.string.here_photo_base_url)+"/"+ossKey;
+    }
+
     // ***************************************
     // Activity methods
     // ***************************************
@@ -302,6 +339,9 @@ public abstract class BaseActivity extends AppCompatActivity
 
         if(id == R.id.nav_share) {
             Intent intent = new Intent(this, UserActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putCharSequence(Config.EXTRA_USER_ID, AccountUtils.getHereProfileId(getApplicationContext()));
+            intent.putExtras(bundle);
             startActivity(intent);
         }
         else if (id == R.id.nav_send) {
@@ -313,10 +353,10 @@ public abstract class BaseActivity extends AppCompatActivity
         return true;
     }
 
-    protected Ponmap getApi() {
+    protected HereApi getApi() {
         if(null == mConnectionRepository) {
             mConnectionRepository = getApplicationContext().getConnectionRepository();
         }
-        return mConnectionRepository.getPrimaryConnection(Ponmap.class).getApi();
+        return mConnectionRepository.getPrimaryConnection(HereApi.class).getApi();
     }
 }

@@ -1,7 +1,7 @@
 package com.mdtech.social.connect;
 
-import com.mdtech.social.api.Ponmap;
-import com.mdtech.social.api.impl.PonmapTemplate;
+import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.impl.HereApiTemplate;
 
 import org.springframework.social.oauth2.AbstractOAuth2ServiceProvider;
 import org.springframework.social.oauth2.OAuth2Template;
@@ -9,11 +9,10 @@ import org.springframework.social.oauth2.OAuth2Template;
 /**
  * Created by any on 2014/10/29.
  */
-public class PonmapServiceProvider extends AbstractOAuth2ServiceProvider<Ponmap> {
+public class PonmapServiceProvider extends AbstractOAuth2ServiceProvider<HereApi> {
 
     public static final String BASE_URL = "http://www.photoshows.cn";
     public static final String PROVIDER_ID = "ponmap";
-
 
     /**
      * Create a new {@link PonmapServiceProvider}.
@@ -27,7 +26,7 @@ public class PonmapServiceProvider extends AbstractOAuth2ServiceProvider<Ponmap>
     }
 
     @Override
-    public Ponmap getApi(String accessToken) {
-        return new PonmapTemplate(accessToken);
+    public HereApi getApi(String accessToken) {
+        return new HereApiTemplate(accessToken);
     }
 }

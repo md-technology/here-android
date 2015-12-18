@@ -1,13 +1,13 @@
 package com.mdtech.social.connect;
 
-import com.mdtech.social.api.Ponmap;
+import com.mdtech.social.api.HereApi;
 
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 
 /**
  * Created by any on 2014/10/29.
  */
-public class PonmapConnectionFactory extends OAuth2ConnectionFactory<Ponmap> {
+public class PonmapConnectionFactory extends OAuth2ConnectionFactory<HereApi> {
 
     /**
      * Create a {@link org.springframework.social.connect.support.OAuth2ConnectionFactory}.

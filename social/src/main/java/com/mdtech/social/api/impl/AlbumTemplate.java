@@ -17,8 +17,7 @@
 package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.AlbumOperations;
-import com.mdtech.social.api.json.Album;
-import com.mdtech.social.api.json.TravelResponse;
+import com.mdtech.social.api.model.Album;
 
 import org.springframework.web.client.RestTemplate;
 

@@ -1,6 +1,6 @@
 package com.mdtech.social.api;
 
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +22,7 @@ public class PhotoOperationsTest extends AbstractOperationsTest {
         super.setup();
         super.login();
 
-        photoOperations = connectionRepository.findPrimaryConnection(Ponmap.class).getApi().photoOperations();
+        photoOperations = connectionRepository.findPrimaryConnection(HereApi.class).getApi().photoOperations();
     }
 
     @Test

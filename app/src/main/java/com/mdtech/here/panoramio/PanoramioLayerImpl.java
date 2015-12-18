@@ -2,22 +2,16 @@ package com.mdtech.here.panoramio;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.Sprite;
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.mdtech.here.R;
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

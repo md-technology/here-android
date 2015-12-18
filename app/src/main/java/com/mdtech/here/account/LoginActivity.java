@@ -45,7 +45,7 @@ import android.widget.TextView;
 import com.mdtech.here.R;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.util.LoginAndAuthHelper;
-import com.mdtech.social.api.Ponmap;
+import com.mdtech.social.api.HereApi;
 import com.mdtech.social.connect.PonmapConnectionFactory;
 import com.mdtech.social.connect.PonmapServiceProvider;
 
@@ -342,7 +342,7 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
             // TODO: attempt authentication against a network service.
             try {
                 AccessGrant accessGrant = connectionFactory.getOAuthOperations().exchangeCredentialsForAccess(mEmail, mPassword, null);
-                Connection<Ponmap> connection = connectionFactory.createConnection(accessGrant);
+                Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
                 try {
                     // 移除所有已存在连接
                     connectionRepository.removeConnections(PonmapServiceProvider.PROVIDER_ID);

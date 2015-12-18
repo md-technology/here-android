@@ -27,4 +27,10 @@ public class Config {
     public static final TimeZone CONFERENCE_TIMEZONE =
             TimeZone.getTimeZone(null);
 
+    public static final String EXTRA_USER_ID =
+            "com.mdtech.here.EXTRA_USER_ID";
+
+    public static final String EXTRA_ALBUM_ID =
+            "com.mdtech.here.EXTRA_ALBUM_ID";
+
 }

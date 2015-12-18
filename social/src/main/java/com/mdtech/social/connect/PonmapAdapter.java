@@ -1,6 +1,6 @@
 package com.mdtech.social.connect;
 
-import com.mdtech.social.api.Ponmap;
+import com.mdtech.social.api.HereApi;
 
 import org.springframework.social.ApiException;
 import org.springframework.social.connect.ApiAdapter;
@@ -10,10 +10,10 @@ import org.springframework.social.connect.UserProfile;
 /**
  * Created by any on 2014/10/30.
  */
-public class PonmapAdapter implements ApiAdapter<Ponmap> {
+public class PonmapAdapter implements ApiAdapter<HereApi> {
 
     @Override
-    public boolean test(Ponmap api) {
+    public boolean test(HereApi api) {
         try {
             api.userOperations().getUserProfile();
             return true;
@@ -23,17 +23,17 @@ public class PonmapAdapter implements ApiAdapter<Ponmap> {
     }
 
     @Override
-    public void setConnectionValues(Ponmap api, ConnectionValues values) {
+    public void setConnectionValues(HereApi api, ConnectionValues values) {
 
     }
 
     @Override
-    public UserProfile fetchUserProfile(Ponmap api) {
+    public UserProfile fetchUserProfile(HereApi api) {
         return null;
     }
 
     @Override
-    public void updateStatus(Ponmap api, String message) {
+    public void updateStatus(HereApi api, String message) {
 
     }
 }

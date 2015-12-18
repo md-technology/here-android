@@ -1,7 +1,7 @@
 package com.mdtech.here.panoramio;
 
 import com.mdtech.social.api.PanoramioOperations;
-import com.mdtech.social.api.json.Photo;
+import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Target;
 
 import java.util.List;

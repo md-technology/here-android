@@ -16,18 +16,12 @@
 
 package com.mdtech.here.album;
 
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NavUtils;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -36,8 +30,8 @@ import com.mapbox.mapboxsdk.views.MapView;
 import com.mdtech.here.R;
 import com.mdtech.here.geojson.mapbox.GeoJSONOverlay;
 import com.mdtech.here.ui.BaseActivity;
-import com.mdtech.social.api.Ponmap;
-import com.mdtech.social.api.json.Album;
+import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.model.Album;
 
 import java.math.BigInteger;
 
@@ -62,7 +56,7 @@ public class AlbumActivity extends BaseActivity implements NavigationView.OnNavi
 
     private BigInteger mAlbumId;
 
-    private Ponmap mApi;
+    private HereApi mApi;
 
     private DrawerLayout mDrawerLayout;
 
@@ -91,21 +85,23 @@ public class AlbumActivity extends BaseActivity implements NavigationView.OnNavi
 
         mSpriteFactory = mMapView.getSpriteFactory();
 
-        if (savedInstanceState != null) {
-            CharSequence id = savedInstanceState.getCharSequence(EXTRA_ALBUM_ID);
-            if(!TextUtils.isEmpty(id)) {
-                mAlbumId = new BigInteger(id.toString());
-            }
+        mAlbumId = getIdFromBundle(savedInstanceState, EXTRA_ALBUM_ID);
 
-        } else if (getIntent() != null) {
-            Bundle bundle = getIntent().getExtras();
-            if(null != bundle) {
-                CharSequence id = bundle.getCharSequence(EXTRA_ALBUM_ID);
-                if(!TextUtils.isEmpty(id)) {
-                    mAlbumId = new BigInteger(id.toString());
-                }
-            }
-        }
+//        if (savedInstanceState != null) {
+//            CharSequence id = savedInstanceState.getCharSequence(EXTRA_ALBUM_ID);
+//            if(!TextUtils.isEmpty(id)) {
+//                mAlbumId = new BigInteger(id.toString());
+//            }
+//
+//        } else if (getIntent() != null) {
+//            Bundle bundle = getIntent().getExtras();
+//            if(null != bundle) {
+//                CharSequence id = bundle.getCharSequence(EXTRA_ALBUM_ID);
+//                if(!TextUtils.isEmpty(id)) {
+//                    mAlbumId = new BigInteger(id.toString());
+//                }
+//            }
+//        }
 
         mApi = getApi();
 

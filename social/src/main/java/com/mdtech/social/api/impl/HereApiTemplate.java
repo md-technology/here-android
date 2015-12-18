@@ -3,8 +3,7 @@ package com.mdtech.social.api.impl;
 import com.mdtech.social.api.AlbumOperations;
 import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.PhotoOperations;
-import com.mdtech.social.api.Ponmap;
-import com.mdtech.social.api.TravelOperations;
+import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.UserOperations;
 
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
@@ -13,14 +12,14 @@ import org.springframework.social.support.ClientHttpRequestFactorySelector;
 /**
  * Created by any on 2014/10/29.
  */
-public class PonmapTemplate extends AbstractOAuth2ApiBinding implements Ponmap {
+public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi {
 
     private UserOperations userOperations;
     private AlbumOperations albumOperations;
     private PanoramioOperations panoramioOperations;
     private PhotoOperations photoOperations;
 
-    public PonmapTemplate(String accessToken) {
+    public HereApiTemplate(String accessToken) {
         super(accessToken);
         initialize();
     }
