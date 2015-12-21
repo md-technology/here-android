@@ -1,5 +1,6 @@
 package com.mdtech.social.api;
 
+import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Photo;
 import com.mdtech.social.api.model.User;
 
@@ -41,4 +42,14 @@ public interface UserOperations {
      * @return
      */
     List<Photo> getPhotos(BigInteger id, Integer pageSize, Integer pageNo);
+
+
+    /**
+     *
+     * @param id
+     * @param pageSize
+     * @param pageNo
+     * @return
+     */
+    List<Album> getAlbums(BigInteger id, Integer pageSize, Integer pageNo);
 }

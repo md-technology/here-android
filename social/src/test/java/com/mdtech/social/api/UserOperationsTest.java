@@ -16,6 +16,7 @@
 
 package com.mdtech.social.api;
 
+import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Photo;
 import com.mdtech.social.api.model.User;
 
@@ -61,6 +62,14 @@ public class UserOperationsTest extends AbstractOperationsTest {
 
         log.info(photos.size());
 
+    }
+
+    @Test
+    public void testGetAlbums() {
+        BigInteger id = new BigInteger("26449692454748190120520877226");
+        List<Album> albums = userOperations.getAlbums(id, 10, 0);
+
+        log.info(albums.size());
     }
 
 }

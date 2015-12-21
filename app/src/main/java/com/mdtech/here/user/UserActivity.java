@@ -130,7 +130,7 @@ public class UserActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new PhotoListFragment(mApi, mUserId), "图片");
-        adapter.addFrag(new AlbumListFragment(), "CAT");
+        adapter.addFrag(new AlbumListFragment(mApi, mUserId), "专辑");
         adapter.addFrag(new DummyFragment(), "DOG");
         adapter.addFrag(new DummyFragment(), "MOUSE");
         viewPager.setAdapter(adapter);

@@ -40,6 +40,7 @@ public class Album {
     private Date createDate;
     private int commentCount;
     private int likeCount;
+    private Photo cover;
     private String[] tags;
     @JsonIgnore
     private Object[] photos;
@@ -148,5 +149,13 @@ public class Album {
 
     public void setFeatureCollection(FeatureCollection featureCollection) {
         this.featureCollection = featureCollection;
+    }
+
+    public Photo getCover() {
+        return cover;
+    }
+
+    public void setCover(Photo cover) {
+        this.cover = cover;
     }
 }

@@ -2,6 +2,7 @@ package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.UserProfile;
 import com.mdtech.social.api.UserOperations;
+import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Photo;
 import com.mdtech.social.api.model.User;
 import com.mdtech.social.connect.PonmapServiceProvider;
@@ -70,7 +71,16 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
         parameters.add("pageSize", pageSize.toString());
         parameters.add("pageNo", pageNo.toString());
         return restTemplate.getForObject(
-                buildUri(PATH + "/" + id + "/photos", parameters), List.class);
+                buildUri(PATH + "/" + id + "/photos", parameters), PhotoList.class);
+    }
+
+    @Override
+    public List<Album> getAlbums(BigInteger id, Integer pageSize, Integer pageNo) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+        parameters.add("pageSize", pageSize.toString());
+        parameters.add("pageNo", pageNo.toString());
+        return restTemplate.getForObject(
+                buildUri(PATH + "/" + id + "/albums", parameters), AlbumList.class);
     }
 
 }

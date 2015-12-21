@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package com.mdtech.here;
+package com.mdtech.social.api.impl;
 
-import java.util.TimeZone;
+import com.mdtech.social.api.model.Album;
+
+import java.util.ArrayList;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/14/2015.
+ * Created by Tiven.wang on 12/21/2015.
  */
-public class Config {
-
-    public static final TimeZone CONFERENCE_TIMEZONE =
-            TimeZone.getTimeZone(null);
-
-    public static final String EXTRA_USER_ID =
-            "com.mdtech.here.EXTRA_USER_ID";
-
-    public static final String EXTRA_ALBUM_ID =
-            "com.mdtech.here.EXTRA_ALBUM_ID";
-
-    public static final String OSS_STYLE_PREVIEW_SM = "@!photo-preview-sm";
-
+public class AlbumList extends ArrayList<Album> {
 }

@@ -320,7 +320,11 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     public String getUrlFromOssKey(String ossKey) {
-        return getResources().getString(R.string.here_photo_base_url)+"/"+ossKey;
+        return getUrlFromOssKey(ossKey, "");
+    }
+
+    public String getUrlFromOssKey(String ossKey, String ossStyle) {
+        return getResources().getString(R.string.here_photo_base_url)+"/"+ossKey + ossStyle;
     }
 
     // ***************************************
