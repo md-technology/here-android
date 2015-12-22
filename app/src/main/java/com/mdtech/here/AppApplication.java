@@ -28,10 +28,12 @@ import com.mdtech.social.connect.HereServiceProvider;
 import org.springframework.security.crypto.encrypt.AndroidEncryptors;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.NotConnectedException;
 import org.springframework.social.connect.sqlite.SQLiteConnectionRepository;
 import org.springframework.social.connect.sqlite.support.SQLiteConnectionRepositoryHelper;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 
+import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -64,7 +66,6 @@ public class AppApplication extends Application {
         this.mConnectionRepository = new SQLiteConnectionRepository(this.repositoryHelper,
                 this.connectionFactoryRegistry, AndroidEncryptors.text("password", "5c0744940b5c369b"));
 
-        checkConnection();
     }
 
     // ***************************************
@@ -89,14 +90,26 @@ public class AppApplication extends Application {
         return (HereConnectionFactory) this.connectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
     }
 
+    /**
+     * check if the primary connection has expired, then refresh
+     */
     public void checkConnection() {
-        final Connection<HereApi> connection = mConnectionRepository.getPrimaryConnection(HereApi.class);
+        LOGD(TAG, "check if the primary connection has expired");
+        final Connection<HereApi> connection;
+        try {
+            connection = mConnectionRepository.getPrimaryConnection(HereApi.class);
+            LOGD(TAG, "the primary connection exist");
+        }catch (NotConnectedException ncex) {
+            return;
+        }
         if(connection.hasExpired()) {
+            LOGD(TAG, "the primary connection has expired");
             (new AsyncTask<String, Void, Boolean>() {
                 @Override
                 protected Boolean doInBackground(String... params) {
                     try {
                         connection.refresh();
+                        LOGD(TAG, "the primary connection has refreshed");
                         return true;
                     }catch (Exception ex) {
                         return false;

@@ -16,7 +16,6 @@
 
 package com.mdtech.here.geojson;
 
-import com.mapbox.mapboxsdk.views.MapView;
 import com.mdtech.geojson.Feature;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.geojson.GeoJSONObject;

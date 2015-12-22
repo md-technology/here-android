@@ -49,9 +49,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$android_support_lib_version"
     compile "com.android.support:design:$android_support_lib_version"
     compile "com.android.support:appcompat-v7:$android_support_lib_version"
-    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:2.3.0@aar') {
-        transitive = true
-    }
+//    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:2.3.0@aar') {
+//        transitive = true
+//    }
 
     compile "com.squareup.picasso:picasso:$squareup_picasso_version"
 

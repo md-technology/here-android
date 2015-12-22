@@ -119,6 +119,9 @@ public abstract class BaseActivity extends AppCompatActivity
 
         mConnectionRepository = getApplicationContext().getmConnectionRepository();
         mConnectionFactory = getApplicationContext().getConnectionFactory();
+
+        // check the
+        getApplicationContext().checkConnection();
     }
 
     @Override
@@ -159,7 +162,7 @@ public abstract class BaseActivity extends AppCompatActivity
                 getResources().getColor(R.color.theme_primary_dark));
 
         if (mActionBarToolbar != null) {
-            mActionBarToolbar.setNavigationIcon(R.drawable.compass);
+            mActionBarToolbar.setNavigationIcon(R.drawable.side_nav_bar);
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
