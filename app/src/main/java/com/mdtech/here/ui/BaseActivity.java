@@ -46,8 +46,9 @@ import com.mdtech.here.util.ImageLoader;
 import com.mdtech.here.util.LoginAndAuthHelper;
 import com.mdtech.here.welcome.WelcomeActivity;
 import com.mdtech.social.api.HereApi;
-import com.mdtech.social.connect.PonmapConnectionFactory;
+import com.mdtech.social.connect.HereConnectionFactory;
 
+import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 
 import java.math.BigInteger;
@@ -80,7 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity
     private ImageLoader mImageLoader;
 
     protected ConnectionRepository mConnectionRepository;
-    protected PonmapConnectionFactory mConnectionFactory;
+    protected HereConnectionFactory mConnectionFactory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +117,7 @@ public abstract class BaseActivity extends AppCompatActivity
         mThemedStatusBarColor = getResources().getColor(R.color.theme_primary_dark);
         mNormalStatusBarColor = mThemedStatusBarColor;
 
-        mConnectionRepository = getApplicationContext().getConnectionRepository();
+        mConnectionRepository = getApplicationContext().getmConnectionRepository();
         mConnectionFactory = getApplicationContext().getConnectionFactory();
     }
 
@@ -350,6 +351,7 @@ public abstract class BaseActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_send) {
             new LoginAndAuthHelper(this).logout();
+            getApplicationContext().clearConnections();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -359,8 +361,9 @@ public abstract class BaseActivity extends AppCompatActivity
 
     protected HereApi getApi() {
         if(null == mConnectionRepository) {
-            mConnectionRepository = getApplicationContext().getConnectionRepository();
+            mConnectionRepository = getApplicationContext().getmConnectionRepository();
         }
+
         return mConnectionRepository.getPrimaryConnection(HereApi.class).getApi();
     }
 }

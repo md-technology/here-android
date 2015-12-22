@@ -12,15 +12,15 @@ import java.util.Map;
 /**
  * Created by any on 2014/10/31.
  */
-public class PonmapOAuth2Template extends OAuth2Template {
+public class HereOAuth2Template extends OAuth2Template {
 
-    private Log log = LogFactory.getLog(PonmapOAuth2Template.class);
+    private Log log = LogFactory.getLog(HereOAuth2Template.class);
 
-    public PonmapOAuth2Template(String clientId, String clientSecret, String authorizeUrl, String accessTokenUrl) {
+    public HereOAuth2Template(String clientId, String clientSecret, String authorizeUrl, String accessTokenUrl) {
         super(clientId, clientSecret, authorizeUrl, accessTokenUrl);
     }
 
-    public PonmapOAuth2Template(String clientId, String clientSecret, String authorizeUrl, String authenticateUrl, String accessTokenUrl) {
+    public HereOAuth2Template(String clientId, String clientSecret, String authorizeUrl, String authenticateUrl, String accessTokenUrl) {
         super(clientId, clientSecret, authorizeUrl, authenticateUrl, accessTokenUrl);
     }
 

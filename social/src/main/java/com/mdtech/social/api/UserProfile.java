@@ -29,6 +29,7 @@ public class UserProfile implements Serializable {
         this.name = name;
     }
 
+
     public String getId() {
         return id;
     }

@@ -18,14 +18,20 @@ public interface UserOperations {
      * @throws org.springframework.social.ApiException if there is an error while communicating with Facebook.
      * @throws org.springframework.social.MissingAuthorizationException if FacebookTemplate was not created with an access token.
      */
-    UserProfile getUserProfile();
+    org.springframework.social.connect.UserProfile getUserProfile();
 
     /**
      *
      * @param id
      * @return
      */
-    UserProfile getUserProfile(BigInteger id);
+    org.springframework.social.connect.UserProfile getUserProfile(BigInteger id);
+
+    /**
+     *
+     * @return
+     */
+    UserProfile getHereProfile();
 
     /**
      *

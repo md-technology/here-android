@@ -32,7 +32,7 @@ public class HereApiConnectionFactoryTest {
     @Before
     public void before() {
         connectionFactoryRegistry = new ConnectionFactoryRegistry();
-        connectionFactoryRegistry.addConnectionFactory(new PonmapConnectionFactory("ponmap-android-client", "92jasdjf8923oda"));
+        connectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory("ponmap-android-client", "92jasdjf8923oda"));
         connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory("ponmap");
 
         connectionRepository = new InMemoryUsersConnectionRepository(connectionFactoryRegistry).createConnectionRepository("user");
@@ -74,7 +74,7 @@ public class HereApiConnectionFactoryTest {
 
         Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
         // 删除所有已存在连接
-        connectionRepository.removeConnections(PonmapServiceProvider.PROVIDER_ID);
+        connectionRepository.removeConnections(HereServiceProvider.PROVIDER_ID);
         connectionRepository.addConnection(connection);
         connection = connectionRepository.findPrimaryConnection(HereApi.class);
         assertTrue(!connection.hasExpired());

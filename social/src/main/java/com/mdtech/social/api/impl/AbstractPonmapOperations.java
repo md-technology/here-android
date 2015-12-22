@@ -1,6 +1,6 @@
 package com.mdtech.social.api.impl;
 
-import com.mdtech.social.connect.PonmapServiceProvider;
+import com.mdtech.social.connect.HereServiceProvider;
 
 import org.springframework.social.MissingAuthorizationException;
 import org.springframework.social.support.URIBuilder;
@@ -14,7 +14,7 @@ import java.net.URI;
  */
 public class AbstractPonmapOperations {
 
-    static final String BASE_API_URL = PonmapServiceProvider.BASE_URL + "/api/rest";
+    static final String BASE_API_URL = HereServiceProvider.BASE_URL + "/api/rest";
 
     private final boolean isAuthorized;
 
@@ -27,7 +27,7 @@ public class AbstractPonmapOperations {
 
     protected void requireAuthorization() {
         if (!isAuthorized) {
-            throw new MissingAuthorizationException(PonmapServiceProvider.PROVIDER_ID);
+            throw new MissingAuthorizationException(HereServiceProvider.PROVIDER_ID);
         }
     }
 

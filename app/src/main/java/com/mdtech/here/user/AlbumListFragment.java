@@ -17,6 +17,7 @@
 package com.mdtech.here.user;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.album.AlbumActivity;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.ui.Pagable;
 import com.mdtech.social.api.HereApi;
@@ -128,12 +130,24 @@ public class AlbumListFragment extends Fragment implements View.OnClickListener 
         // Provide a reference to the views for each data item
         // Complex data items may need more than one view per item, and
         // you provide access to all the views for a data item in a view holder
-        public static class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             // each data item is just a string in this case
             public View mView;
+            public Album mAlbum;
+
             public ViewHolder(View v) {
                 super(v);
                 mView = v;
+                mView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AlbumActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence(Config.EXTRA_ALBUM_ID, mAlbum.getId().toString());
+                intent.putExtras(bundle);
+                mContext.startActivity(intent);
             }
         }
 
@@ -177,7 +191,7 @@ public class AlbumListFragment extends Fragment implements View.OnClickListener 
 
             title.setText(album.getTitle());
             desc.setText(album.getDescription());
-
+            holder.mAlbum = album;
         }
 
         // Return the size of your dataset (invoked by the layout manager)

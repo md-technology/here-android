@@ -46,8 +46,8 @@ import com.mdtech.here.R;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.util.LoginAndAuthHelper;
 import com.mdtech.social.api.HereApi;
-import com.mdtech.social.connect.PonmapConnectionFactory;
-import com.mdtech.social.connect.PonmapServiceProvider;
+import com.mdtech.social.connect.HereConnectionFactory;
+import com.mdtech.social.connect.HereServiceProvider;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -81,7 +81,7 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
 
     // Spring social connection
     private ConnectionRepository connectionRepository;
-    private PonmapConnectionFactory connectionFactory;
+    private HereConnectionFactory connectionFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,7 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
         mProgressView = findViewById(R.id.login_progress);
 
         // 设置spring social框架配置
-        this.connectionRepository = getApplicationContext().getConnectionRepository();
+        this.connectionRepository = getApplicationContext().getmConnectionRepository();
         this.connectionFactory = getApplicationContext().getConnectionFactory();
     }
 
@@ -345,11 +345,11 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
                 Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
                 try {
                     // 移除所有已存在连接
-                    connectionRepository.removeConnections(PonmapServiceProvider.PROVIDER_ID);
+                    connectionRepository.removeConnections(HereServiceProvider.PROVIDER_ID);
                     // persist connection to the repository
                     connectionRepository.addConnection(connection);
 
-                    new LoginAndAuthHelper(LoginActivity.this).onLogin(connection.getApi().userOperations().getUserProfile());
+                    new LoginAndAuthHelper(LoginActivity.this).onLogin(connection.getApi().userOperations().getHereProfile());
 
 //                    getApplicationContext().login(connection.getApi().userOperations().getUserProfile());
                 } catch (DuplicateConnectionException e) {

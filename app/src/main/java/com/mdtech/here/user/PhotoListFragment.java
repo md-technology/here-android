@@ -153,11 +153,27 @@ public class PhotoListFragment extends Fragment implements View.OnClickListener 
                 loadMorePhotos();
                 break;
         }
+    }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+            mAdapter.addPhotos((Collection<Photo>) savedInstanceState.get("photos"));
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's state here
+        outState.putSerializable("photos", mAdapter.mDataset);
     }
 
     public static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-        private List<Photo> mDataset = new ArrayList<Photo>();
+        private ArrayList<Photo> mDataset = new ArrayList<Photo>();
         private Context mContext;
         private Picasso picasso;
 

@@ -27,6 +27,7 @@ import android.view.View;
 
 import com.mapbox.mapboxsdk.annotations.SpriteFactory;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.geojson.mapbox.GeoJSONOverlay;
 import com.mdtech.here.ui.BaseActivity;
@@ -47,9 +48,6 @@ public class AlbumActivity extends BaseActivity implements NavigationView.OnNavi
 
     protected MapView mMapView = null;
     public SpriteFactory mSpriteFactory = null;
-
-    public static final String EXTRA_ALBUM_ID =
-            "com.mdtech.here.EXTRA_ALBUM_ID";
 
     // Identifies a particular Loader being used in this component
     private static final int ALBUM_LOADER = 0;
@@ -85,23 +83,7 @@ public class AlbumActivity extends BaseActivity implements NavigationView.OnNavi
 
         mSpriteFactory = mMapView.getSpriteFactory();
 
-        mAlbumId = getIdFromBundle(savedInstanceState, EXTRA_ALBUM_ID);
-
-//        if (savedInstanceState != null) {
-//            CharSequence id = savedInstanceState.getCharSequence(EXTRA_ALBUM_ID);
-//            if(!TextUtils.isEmpty(id)) {
-//                mAlbumId = new BigInteger(id.toString());
-//            }
-//
-//        } else if (getIntent() != null) {
-//            Bundle bundle = getIntent().getExtras();
-//            if(null != bundle) {
-//                CharSequence id = bundle.getCharSequence(EXTRA_ALBUM_ID);
-//                if(!TextUtils.isEmpty(id)) {
-//                    mAlbumId = new BigInteger(id.toString());
-//                }
-//            }
-//        }
+        mAlbumId = getIdFromBundle(savedInstanceState, Config.EXTRA_ALBUM_ID);
 
         mApi = getApi();
 

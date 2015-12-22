@@ -18,12 +18,15 @@ package com.mdtech.here;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 
 import com.mdtech.here.settings.SettingsUtils;
-import com.mdtech.social.connect.PonmapConnectionFactory;
-import com.mdtech.social.connect.PonmapServiceProvider;
+import com.mdtech.social.api.HereApi;
+import com.mdtech.social.connect.HereConnectionFactory;
+import com.mdtech.social.connect.HereServiceProvider;
 
 import org.springframework.security.crypto.encrypt.AndroidEncryptors;
+import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.sqlite.SQLiteConnectionRepository;
 import org.springframework.social.connect.sqlite.support.SQLiteConnectionRepositoryHelper;
@@ -42,7 +45,7 @@ public class AppApplication extends Application {
 
     private static final String TAG = makeLogTag(AppApplication.class);
     private ConnectionFactoryRegistry connectionFactoryRegistry;
-    private ConnectionRepository connectionRepository;
+    private ConnectionRepository mConnectionRepository;
     private SQLiteOpenHelper repositoryHelper;
 
     @Override
@@ -53,13 +56,15 @@ public class AppApplication extends Application {
 
         // create a new ConnectionFactoryLocator and populate it with Facebook ConnectionFactory
         this.connectionFactoryRegistry = new ConnectionFactoryRegistry();
-        this.connectionFactoryRegistry.addConnectionFactory(new PonmapConnectionFactory(getHereAppId(),
+        this.connectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory(getHereAppId(),
                 getHereAppSecret()));
 
         // set up the database and encryption
         this.repositoryHelper = new SQLiteConnectionRepositoryHelper(this);
-        this.connectionRepository = new SQLiteConnectionRepository(this.repositoryHelper,
+        this.mConnectionRepository = new SQLiteConnectionRepository(this.repositoryHelper,
                 this.connectionFactoryRegistry, AndroidEncryptors.text("password", "5c0744940b5c369b"));
+
+        checkConnection();
     }
 
     // ***************************************
@@ -76,12 +81,37 @@ public class AppApplication extends Application {
     // ***************************************
     // Public methods
     // ***************************************
-    public ConnectionRepository getConnectionRepository() {
-        return this.connectionRepository;
+    public ConnectionRepository getmConnectionRepository() {
+        return this.mConnectionRepository;
     }
 
-    public PonmapConnectionFactory getConnectionFactory() {
-        return (PonmapConnectionFactory) this.connectionFactoryRegistry.getConnectionFactory(PonmapServiceProvider.PROVIDER_ID);
+    public HereConnectionFactory getConnectionFactory() {
+        return (HereConnectionFactory) this.connectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
     }
 
+    public void checkConnection() {
+        final Connection<HereApi> connection = mConnectionRepository.getPrimaryConnection(HereApi.class);
+        if(connection.hasExpired()) {
+            (new AsyncTask<String, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(String... params) {
+                    try {
+                        connection.refresh();
+                        return true;
+                    }catch (Exception ex) {
+                        return false;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(Boolean auth) {
+                    super.onPostExecute(auth);
+                }
+            }).execute();
+        }
+    }
+
+    public void clearConnections() {
+        mConnectionRepository.removeConnections(HereServiceProvider.PROVIDER_ID);
+    }
 }

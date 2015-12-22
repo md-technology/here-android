@@ -1,7 +1,7 @@
 package com.mdtech.social.api;
 
-import com.mdtech.social.connect.PonmapConnectionFactory;
-import com.mdtech.social.connect.PonmapServiceProvider;
+import com.mdtech.social.connect.HereConnectionFactory;
+import com.mdtech.social.connect.HereServiceProvider;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -24,14 +24,9 @@ public abstract class AbstractOperationsTest {
     public void setup() {
 
         connectionFactoryRegistry = new ConnectionFactoryRegistry();
-        connectionFactoryRegistry.addConnectionFactory(new PonmapConnectionFactory("ponmap-android-client", "92jasdjf8923oda"));
-        connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory(PonmapServiceProvider.PROVIDER_ID);
+        connectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory("ponmap-android-client", "92jasdjf8923oda"));
+        connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
         connectionRepository = new InMemoryUsersConnectionRepository(connectionFactoryRegistry).createConnectionRepository("user");
-
-//        connectionFactoryRegistry = new ConnectionFactoryRegistry();
-//        connectionFactoryRegistry.addConnectionFactory(new PonmapConnectionFactory("my-trusted-client-with-secret", "somesecret"));
-//        connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory(PonmapServiceProvider.PROVIDER_ID);
-//        connectionRepository = new InMemoryUsersConnectionRepository(connectionFactoryRegistry).createConnectionRepository("user");
     }
 
     public void authenticateClient() {
@@ -54,7 +49,7 @@ public abstract class AbstractOperationsTest {
 
         Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
         // 删除所有已存在连接
-        connectionRepository.removeConnections(PonmapServiceProvider.PROVIDER_ID);
+        connectionRepository.removeConnections(HereServiceProvider.PROVIDER_ID);
         connectionRepository.addConnection(connection);
         connection = connectionRepository.findPrimaryConnection(HereApi.class);
         assertTrue(!connection.hasExpired());

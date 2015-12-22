@@ -5,7 +5,6 @@ import com.mdtech.social.api.UserOperations;
 import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Photo;
 import com.mdtech.social.api.model.User;
-import com.mdtech.social.connect.PonmapServiceProvider;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,7 +28,39 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
     }
 
     @Override
-    public UserProfile getUserProfile() {
+    public org.springframework.social.connect.UserProfile getUserProfile() {
+//        requireAuthorization();
+//        User user = restTemplate.getForObject(BASE_API_URL + PATH , User.class);
+//
+//        if(null != user) {
+//            UserProfile profile = new UserProfile(user.getId().toString(), user.getUsername(), user.getName());
+//            if(user.getAvatar() != null) {
+//                profile.setImage(user.getAvatar().getOssKey());
+//            }
+//            if(null != user.getProfileCover()) {
+//                profile.setCoverImage(user.getProfileCover().getOssKey());
+//            }
+//            profile.setEmail(user.getEmail());
+//            profile.setWebsite(user.getWebsite());
+//            profile.setLogin(true);
+//            return profile;
+//        }
+        return null;
+    }
+
+    @Override
+    public org.springframework.social.connect.UserProfile getUserProfile(BigInteger id) {
+//
+//        User user = get(id);
+//
+//        org.springframework.social.connect.UserProfile profile =
+//                new org.springframework.social.connect.UserProfile(user.getName(), "", "", user.getEmail(), user.getUsername());
+
+        return null;
+    }
+
+    @Override
+    public UserProfile getHereProfile() {
         requireAuthorization();
         User user = restTemplate.getForObject(BASE_API_URL + PATH , User.class);
 
@@ -47,16 +78,6 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
             return profile;
         }
         return null;
-    }
-
-    @Override
-    public UserProfile getUserProfile(BigInteger id) {
-
-        User user = get(id);
-
-        UserProfile profile = new UserProfile(user.getId().toString(), user.getUsername(), user.getName());
-
-        return profile;
     }
 
     @Override

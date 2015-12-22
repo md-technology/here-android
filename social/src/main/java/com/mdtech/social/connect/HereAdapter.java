@@ -10,7 +10,7 @@ import org.springframework.social.connect.UserProfile;
 /**
  * Created by any on 2014/10/30.
  */
-public class PonmapAdapter implements ApiAdapter<HereApi> {
+public class HereAdapter implements ApiAdapter<HereApi> {
 
     @Override
     public boolean test(HereApi api) {
@@ -29,7 +29,7 @@ public class PonmapAdapter implements ApiAdapter<HereApi> {
 
     @Override
     public UserProfile fetchUserProfile(HereApi api) {
-        return null;
+        return api.userOperations().getUserProfile();
     }
 
     @Override

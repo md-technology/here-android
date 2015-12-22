@@ -7,7 +7,7 @@ import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 /**
  * Created by any on 2014/10/29.
  */
-public class PonmapConnectionFactory extends OAuth2ConnectionFactory<HereApi> {
+public class HereConnectionFactory extends OAuth2ConnectionFactory<HereApi> {
 
     /**
      * Create a {@link org.springframework.social.connect.support.OAuth2ConnectionFactory}.
@@ -15,7 +15,7 @@ public class PonmapConnectionFactory extends OAuth2ConnectionFactory<HereApi> {
      * @param clientId
      * @param clientSecret
      */
-    public PonmapConnectionFactory(String clientId, String clientSecret) {
-        super(PonmapServiceProvider.PROVIDER_ID, new PonmapServiceProvider(clientId, clientSecret), new PonmapAdapter());
+    public HereConnectionFactory(String clientId, String clientSecret) {
+        super(HereServiceProvider.PROVIDER_ID, new HereServiceProvider(clientId, clientSecret), new HereAdapter());
     }
 }

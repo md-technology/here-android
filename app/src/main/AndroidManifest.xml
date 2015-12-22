@@ -43,7 +43,8 @@
         <activity
             android:name=".user.UserActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".explore.ExploreActivity"></activity>
+            android:parentActivityName=".explore.ExploreActivity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>
