@@ -109,6 +109,7 @@ public class AppApplication extends Application {
                 protected Boolean doInBackground(String... params) {
                     try {
                         connection.refresh();
+                        updateConnection(connection);
                         LOGD(TAG, "the primary connection has refreshed");
                         return true;
                     }catch (Exception ex) {
@@ -126,5 +127,14 @@ public class AppApplication extends Application {
 
     public void clearConnections() {
         mConnectionRepository.removeConnections(HereServiceProvider.PROVIDER_ID);
+    }
+
+    /**
+     * Support only one user, 因为SQLiteConnectionRepository的updateConnection更新不了
+     * @param connection
+     */
+    private void updateConnection(Connection<HereApi> connection) {
+        mConnectionRepository.removeConnections(connection.getKey().getProviderId());
+        mConnectionRepository.addConnection(connection);
     }
 }

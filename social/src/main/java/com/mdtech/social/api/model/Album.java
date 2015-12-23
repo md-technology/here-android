@@ -19,9 +19,11 @@ package com.mdtech.social.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mdtech.geojson.FeatureCollection;
+import com.mdtech.social.api.impl.PhotoList;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 /**
  * TODO insert class's header comments
@@ -42,8 +44,7 @@ public class Album {
     private int likeCount;
     private Photo cover;
     private String[] tags;
-    @JsonIgnore
-    private Object[] photos;
+    private PhotoList photos;
 
     private FeatureCollection featureCollection;
 
@@ -135,11 +136,11 @@ public class Album {
         this.tags = tags;
     }
 
-    public Object[] getPhotos() {
+    public PhotoList getPhotos() {
         return photos;
     }
 
-    public void setPhotos(Object[] photos) {
+    public void setPhotos(PhotoList photos) {
         this.photos = photos;
     }
 

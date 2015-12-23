@@ -40,10 +40,9 @@
             android:name=".welcome.WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".album.AlbumActivity"
+            android:name=".album.AlbumBaiduActivity"
             android:exported="false"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".explore.ExploreActivity" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".account.LoginActivity"
             android:label="@string/title_activity_login"

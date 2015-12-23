@@ -34,5 +34,8 @@ public class Config {
             "com.mdtech.here.EXTRA_ALBUM_ID";
 
     public static final String OSS_STYLE_PREVIEW_SM = "@!photo-preview-sm";
+    public static final String OSS_STYLE_PREVIEW_SSM = "@!panor-lg";
+
+    public static final String MARKER_PHOTO = "photo";
 
 }

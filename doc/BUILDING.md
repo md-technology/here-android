@@ -62,7 +62,10 @@ To build the app:
 
 1. Add your debug keystore to the project (save it as android/debug.keystore),
     or modify the build.gradle file to point to your key.
-
+    Find it in the user/.android folder or create it by command:
+``` 
+    keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US"
+``` 
 1. Choose Build > Make Project in Android Studio or run the following
     command in the project root directory:
    ```

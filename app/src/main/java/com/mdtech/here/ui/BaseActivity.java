@@ -42,11 +42,13 @@ import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
 import com.mdtech.here.user.UserActivity;
 import com.mdtech.here.util.AccountUtils;
+import com.mdtech.here.util.CircleTransformation;
 import com.mdtech.here.util.ImageLoader;
 import com.mdtech.here.util.LoginAndAuthHelper;
 import com.mdtech.here.welcome.WelcomeActivity;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.connect.HereConnectionFactory;
+import com.squareup.picasso.Picasso;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -61,7 +63,8 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  */
 public abstract class BaseActivity extends AppCompatActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
-        NavigationView.OnNavigationItemSelectedListener{
+        NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener {
 
     private static final String TAG = makeLogTag(BaseActivity.class);
 
@@ -82,6 +85,9 @@ public abstract class BaseActivity extends AppCompatActivity
 
     protected ConnectionRepository mConnectionRepository;
     protected HereConnectionFactory mConnectionFactory;
+
+    protected Picasso picasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +128,8 @@ public abstract class BaseActivity extends AppCompatActivity
 
         // check the
         getApplicationContext().checkConnection();
+
+        picasso = new Picasso.Builder(this).build();
     }
 
     @Override
@@ -214,7 +222,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
         String imageUrl = AccountUtils.getHereImageUrl(this);
         if (imageUrl != null) {
-            mImageLoader.loadImage(imageUrl, profileImageView);
+            picasso.load(getUrlFromOssKey(imageUrl))
+                    .transform(new CircleTransformation(2))
+                    .into(profileImageView);
+//            mImageLoader.loadImage(imageUrl, profileImageView);
         }
 
         String coverImageUrl = AccountUtils.getHereCoverUrl(this);
@@ -224,11 +235,29 @@ public abstract class BaseActivity extends AppCompatActivity
             coverImageView.setVisibility(View.VISIBLE);
 //            coverImageView.setContentDescription(getResources().getString(
 //                    R.string.navview_header_user_image_content_description));
-            mImageLoader.loadImage(coverImageUrl, coverImageView);
+            picasso.load(getUrlFromOssKey(coverImageUrl, Config.OSS_STYLE_PREVIEW_SM)).into(coverImageView);
+//            mImageLoader.loadImage(coverImageUrl, coverImageView);
             coverImageView.setColorFilter(getResources().getColor(R.color.light_content_scrim));
         }
 
         email.setText(chosenAccount.name);
+
+        profileImageView.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.profile_image:
+                Intent intent = new Intent(this, UserActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence(Config.EXTRA_USER_ID, AccountUtils.getHereProfileId(getApplicationContext()));
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            default:
+        }
+
     }
 
     @Override
@@ -345,7 +374,7 @@ public abstract class BaseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id == R.id.nav_share) {
+        if(id == R.id.nav_manage) {
             Intent intent = new Intent(this, UserActivity.class);
             Bundle bundle = new Bundle();
             bundle.putCharSequence(Config.EXTRA_USER_ID, AccountUtils.getHereProfileId(getApplicationContext()));

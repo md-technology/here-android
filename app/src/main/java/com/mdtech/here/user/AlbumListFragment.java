@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.album.AlbumActivity;
+import com.mdtech.here.album.AlbumBaiduActivity;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.ui.Pagable;
 import com.mdtech.social.api.HereApi;
@@ -143,7 +144,7 @@ public class AlbumListFragment extends Fragment implements View.OnClickListener 
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), AlbumActivity.class);
+                Intent intent = new Intent(v.getContext(), AlbumBaiduActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putCharSequence(Config.EXTRA_ALBUM_ID, mAlbum.getId().toString());
                 intent.putExtras(bundle);

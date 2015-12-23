@@ -102,3 +102,12 @@ your conference. Excessive notifications are a bad user experience!
 ## JVM proxy
 -Dhttp.proxyHost=bluecoat-proxy
 -Dhttp.proxyPort=8080
+
+## baidu key 
+24:6C:33:45:B0:B0:C8:28:F7:5A:DB:30:FB:2A:77:BF:03:E2:EE:E5
+
+## android isLoggable
+``` 
+setprop log.tag.<YOUR_LOG_TAG> <LEVEL>
+``` 
+$adb shell setprop log.tag.AlbumActivity D

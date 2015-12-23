@@ -2,7 +2,6 @@ package com.mdtech.social.connect;
 
 import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.HereApi;
-import com.mdtech.social.api.UserProfile;
 import com.mdtech.social.api.UserOperations;
 
 import org.apache.commons.logging.Log;
@@ -10,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
@@ -113,8 +113,7 @@ public class HereApiConnectionFactoryTest {
         UserProfile profile = userOperations.getUserProfile(new BigInteger("26449692454748190120520877226"));
 
         assertNotNull(profile);
-        assertNotNull(profile.getId());
-        assertEquals("26449692454748190120520877226", profile.getId());
+        assertNotNull(profile.getName());
         assertEquals("user", profile.getUsername());
         assertEquals("暗梅幽闻花", profile.getName());
 

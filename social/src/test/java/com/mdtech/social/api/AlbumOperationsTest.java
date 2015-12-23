@@ -55,6 +55,8 @@ public class AlbumOperationsTest extends AbstractOperationsTest {
         assertEquals("{}", album.getFeatureCollection().getProperties().get("style").asText());
 
         log.info(album.getFeatureCollection().getProperties());
+
+        log.info(album.getPhotos().size());
     }
 
 }

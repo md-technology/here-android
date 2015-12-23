@@ -21,6 +21,7 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.ColorInt;
 
 import com.squareup.picasso.Transformation;
 
@@ -30,7 +31,21 @@ import com.squareup.picasso.Transformation;
  */
 public class CircleTransformation implements Transformation {
 
-    private static final int STROKE_WIDTH = 6;
+    private float strokeWidth = 6;
+    private int color = Color.WHITE;
+    private Paint.Style style = Paint.Style.STROKE;
+
+    public CircleTransformation() {}
+
+    public CircleTransformation(float width) {
+        this.strokeWidth = width;
+    }
+
+    public CircleTransformation(@ColorInt int color, Paint.Style style, float width) {
+        this.color = color;
+        this.style = style;
+        this.strokeWidth = width;
+    }
 
     @Override
     public Bitmap transform(Bitmap source) {
@@ -53,14 +68,14 @@ public class CircleTransformation implements Transformation {
         avatarPaint.setShader(shader);
 
         Paint outlinePaint = new Paint();
-        outlinePaint.setColor(Color.WHITE);
-        outlinePaint.setStyle(Paint.Style.STROKE);
-        outlinePaint.setStrokeWidth(STROKE_WIDTH);
+        outlinePaint.setColor(this.color);
+        outlinePaint.setStyle(this.style);
+        outlinePaint.setStrokeWidth(this.strokeWidth);
         outlinePaint.setAntiAlias(true);
 
         float r = size / 2f;
         canvas.drawCircle(r, r, r, avatarPaint);
-        canvas.drawCircle(r, r, r - STROKE_WIDTH / 2, outlinePaint);
+        canvas.drawCircle(r, r, r - this.strokeWidth / 2, outlinePaint);
 
         squaredBitmap.recycle();
         return bitmap;
