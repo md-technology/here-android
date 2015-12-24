@@ -113,6 +113,7 @@ public class UserActivity extends BaseActivity {
             ImageView profileCover = (ImageView) findViewById(R.id.profile_cover_image);
             picasso.load(getUrlFromOssKey(mUser.getProfileCover().getOssKey()))
                     .into(profileCover);
+            profileCover.setColorFilter(getResources().getColor(R.color.light_content_scrim));
         }
 
         if(null != mUser.getAvatar()) {

@@ -5,4 +5,7 @@
     <dimen name="activity_horizontal_margin">64dp</dimen>
 
     <dimen name="drawer_width">320dp</dimen>
+
+    <!-- Map elements -->
+    <integer name="map_photo_marker_width">120</integer>
 </resources>

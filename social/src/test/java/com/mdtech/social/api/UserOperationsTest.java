@@ -56,6 +56,18 @@ public class UserOperationsTest extends AbstractOperationsTest {
     }
 
     @Test
+    public void testGetGroup() {
+        BigInteger id = new BigInteger("26494317932567731623693957073");
+        User user = userOperations.get(id);
+
+//        Assert.assertEquals("user", user.getMembers().size());
+
+        Assert.assertNotNull(user.getMembers());
+
+        log.info(user.getMembers().size());
+    }
+
+    @Test
     public void testGetPhotos() {
         BigInteger id = new BigInteger("26449692454748190120520877226");
         List<Photo> photos = userOperations.getPhotos(id, 10, 0);

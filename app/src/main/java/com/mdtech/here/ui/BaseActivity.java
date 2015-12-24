@@ -40,6 +40,7 @@ import com.mdtech.here.AppApplication;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
+import com.mdtech.here.album.AlbumBaiduActivity;
 import com.mdtech.here.user.UserActivity;
 import com.mdtech.here.util.AccountUtils;
 import com.mdtech.here.util.CircleTransformation;
@@ -374,10 +375,10 @@ public abstract class BaseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id == R.id.nav_manage) {
-            Intent intent = new Intent(this, UserActivity.class);
+        if(id == R.id.nav_camara) {
+            Intent intent = new Intent(this, AlbumBaiduActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putCharSequence(Config.EXTRA_USER_ID, AccountUtils.getHereProfileId(getApplicationContext()));
+            bundle.putCharSequence(Config.EXTRA_ALBUM_ID, "0");
             intent.putExtras(bundle);
             startActivity(intent);
         }

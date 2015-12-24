@@ -132,4 +132,5 @@ public class HereApiConnectionFactoryTest {
             assertEquals(400, ex.getStatusCode().value());
         }
     }
+
 }

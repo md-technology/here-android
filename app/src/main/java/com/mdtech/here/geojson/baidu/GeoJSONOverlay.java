@@ -30,6 +30,7 @@ import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.CoordinateConverter;
 import com.mdtech.geojson.Feature;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.geojson.GeoJSONObject;
@@ -68,12 +69,17 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     BitmapDescriptor bdA = BitmapDescriptorFactory
             .fromResource(R.drawable.dic_launcher);
 
+    // 将GPS设备采集的原始GPS坐标转换成百度坐标
+    CoordinateConverter converter  = new CoordinateConverter();
+
     public GeoJSONOverlay() {
         super();
+        // 设置坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
     }
 
     public GeoJSONOverlay(FeatureCollection featureCollection) {
-        super();
+        this();
         setSource(featureCollection);
     }
 
@@ -166,13 +172,22 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     }
 
     private void addMarker(Position position, GeoJSONStyle style) {
-        position.getLatitude();
         MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(position.getLatitude(), position.getLongitude()))
+                .position(covert(position))
                 .icon(bdA);
         options.title(style.getTitle());
 //        options.snippet(style.getDescription());
         markers.add(options);
+    }
+
+    /**
+     * 点转化成坐标对象
+     * @param position
+     * @return
+     */
+    private LatLng covert(Position position) {
+        return converter.coord(new LatLng(position.getLatitude(), position.getLongitude()))
+                .convert();
     }
 
     public void addPoint(Point point, GeoJSONStyle style) {
@@ -210,7 +225,7 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         Position position;
         while (iterator.hasNext()) {
             position = iterator.next();
-            latLngs.add(new LatLng(position.getLatitude(), position.getLongitude()));
+            latLngs.add(covert(position));
         }
     }
 

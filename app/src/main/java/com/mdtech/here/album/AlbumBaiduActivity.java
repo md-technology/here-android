@@ -38,6 +38,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.CoordinateConverter;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
@@ -46,6 +47,7 @@ import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import static com.baidu.mapapi.utils.CoordinateConverter.*;
 import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.LOGE;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
@@ -54,7 +56,7 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/23/2015.
  */
-public class AlbumBaiduActivity extends AlbumActivity {
+public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapLoadedCallback {
     private static final String TAG = makeLogTag(AlbumBaiduActivity.class);
 
     protected MapView mMapView = null;
@@ -69,6 +71,8 @@ public class AlbumBaiduActivity extends AlbumActivity {
     public MyLocationListenner myListener = new MyLocationListenner();
     boolean isFirstLoc = true;// 是否首次定位
 
+    // 将GPS设备采集的原始GPS坐标转换成百度坐标
+    CoordinateConverter converter  = new CoordinateConverter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class AlbumBaiduActivity extends AlbumActivity {
         mBaiduMap = mMapView.getMap();
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.setOnMapLoadedCallback(this);
         // 定位初始化
         mLocClient = new LocationClient(this);
         mLocClient.registerLocationListener(myListener);
@@ -93,6 +98,9 @@ public class AlbumBaiduActivity extends AlbumActivity {
         option.setScanSpan(1000);
         mLocClient.setLocOption(option);
         mLocClient.start();
+
+        // 设置坐标类型
+        converter.from(CoordType.GPS);
     }
 
     @Override
@@ -163,7 +171,9 @@ public class AlbumBaiduActivity extends AlbumActivity {
         if(null != photo.getLocation()) {
             double[] position = photo.getLocation().getPosition();
             MarkerOptions markerOption = new MarkerOptions();
-            markerOption.position(new LatLng(position[1], position[0]));
+            // sourceLatLng待转换坐标
+            converter.coord(new LatLng(position[1], position[0]));
+            markerOption.position(converter.convert());
             markerOption.title(photo.getTitle());
             markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location_black_24dp));
 
@@ -177,7 +187,8 @@ public class AlbumBaiduActivity extends AlbumActivity {
             // Trigger the download of the URL asynchronously into the image view.
             picasso.load(getUrlFromOssKey(photo.getOssKey(), Config.OSS_STYLE_PREVIEW_SSM)) //
                     .placeholder(R.drawable.ic_my_location_white_24dp) //
-//                    .resize(60, 60)
+                    .resize(getResources().getInteger(R.integer.map_photo_marker_width),
+                            getResources().getInteger(R.integer.map_photo_marker_width))
                     .into(pMarker);
         }
 
@@ -205,6 +216,11 @@ public class AlbumBaiduActivity extends AlbumActivity {
         mMapView.onDestroy();
         mMapView = null;
         super.onDestroy();
+    }
+
+    @Override
+    public void onMapLoaded() {
+        super.onMapLoaded();
     }
 
     /**

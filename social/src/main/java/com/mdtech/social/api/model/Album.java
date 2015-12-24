@@ -16,14 +16,11 @@
 
 package com.mdtech.social.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mdtech.geojson.FeatureCollection;
-import com.mdtech.social.api.impl.PhotoList;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 
 /**
  * TODO insert class's header comments

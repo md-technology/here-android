@@ -1,4 +1,4 @@
-package com.mdtech.social.api.impl;
+package com.mdtech.social.api.model;
 
 import com.mdtech.social.api.model.Photo;
 

@@ -2,9 +2,7 @@ package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.UserProfile;
 import com.mdtech.social.api.UserOperations;
-import com.mdtech.social.api.model.Album;
-import com.mdtech.social.api.model.Photo;
-import com.mdtech.social.api.model.User;
+import com.mdtech.social.api.model.*;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -92,7 +90,7 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
         parameters.add("pageSize", pageSize.toString());
         parameters.add("pageNo", pageNo.toString());
         return restTemplate.getForObject(
-                buildUri(PATH + "/" + id + "/photos", parameters), PhotoList.class);
+                buildUri(PATH + "/" + id + "/photos", parameters), com.mdtech.social.api.model.PhotoList.class);
     }
 
     @Override

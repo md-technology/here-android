@@ -54,7 +54,9 @@ public class GeoJSONStyle {
     public GeoJSONStyle extend(JsonNode properties) {
         GeoJSONStyle geoJSONStyle = new GeoJSONStyle();
         geoJSONStyle.setProperties(this);
-        geoJSONStyle.setProperties(properties);
+        if(null != properties) {
+            geoJSONStyle.setProperties(properties);
+        }
         return geoJSONStyle;
     }
 

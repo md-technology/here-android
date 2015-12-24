@@ -27,7 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mdtech.geojson.FeatureCollection;
+import com.mdtech.geojson.Point;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.ui.BaseActivity;
@@ -35,6 +37,8 @@ import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Photo;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Iterator;
 
@@ -90,7 +94,11 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
         setMapStyleChangeListener(ibMapStyle);
 
         if(null != mAlbumId) {
-            new AlbumTask(mAlbumId).execute();
+            if(mAlbumId.equals(new BigInteger("0"))) {
+//                new LocalGeoJSONTask().execute();
+            }else {
+                new AlbumTask(mAlbumId).execute();
+            }
         }
     }
 
@@ -185,4 +193,30 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
      * @param photo
      */
     abstract void addPhoto(Photo photo);
+
+    protected class LocalGeoJSONTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            addLocalGeoJSON();
+            return true;
+        }
+    }
+    private void addLocalGeoJSON() {
+        ObjectMapper deserializer = new ObjectMapper();
+        try {
+            InputStream inputStream = getAssets().open("aqis.geojson");
+            FeatureCollection featureCollection = deserializer.readValue(inputStream, FeatureCollection.class);
+            addGeoJSON(featureCollection);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void onMapLoaded() {
+        if(mAlbumId.equals(new BigInteger("0"))) {
+                new LocalGeoJSONTask().execute();
+        }
+    }
+
 }

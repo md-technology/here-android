@@ -319,8 +319,10 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
     @Override
     public void onBackPressed() {
         // Disable going back to the MainActivity
-        mAuthTask.onCancelled();
-        moveTaskToBack(true);
+        if(null != mAuthTask) {
+            mAuthTask.onCancelled();
+        }
+        super.onBackPressed();
     }
 
     /**

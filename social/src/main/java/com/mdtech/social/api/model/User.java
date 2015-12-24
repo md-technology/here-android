@@ -45,6 +45,9 @@ public class User {
     @JsonProperty("follow")
     private Boolean follow;
 
+    private User user;
+    private UserList members;
+
     public BigInteger getId() {
         return id;
     }
@@ -131,5 +134,37 @@ public class User {
 
     public void setMastheadCover(Cover mastheadCover) {
         this.mastheadCover = mastheadCover;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public UserList getMembers() {
+        return members;
+    }
+
+    public void setMembers(UserList members) {
+        this.members = members;
     }
 }

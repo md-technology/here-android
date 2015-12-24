@@ -45,4 +45,7 @@
     <dimen name="divider_height_inc_padding_top_only">8dp</dimen>
     <dimen name="divider_padding_top">7dp</dimen>
     <dimen name="divider_padding_bottom">8dp</dimen>
+
+    <!-- Map elements -->
+    <integer name="map_photo_marker_width">120</integer>
 </resources>

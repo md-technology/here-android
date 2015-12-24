@@ -111,3 +111,37 @@ your conference. Excessive notifications are a bad user experience!
 setprop log.tag.<YOUR_LOG_TAG> <LEVEL>
 ``` 
 $adb shell setprop log.tag.AlbumActivity D
+
+# proxy
+## git proxy config
+git config http.proxy http://user:pwd@server.com:port
+git config core.gitproxy '"proxy-command" for example.com'
+
+## npm proxy config
+npm config set proxy http://server:port 
+npm config set https-proxy http://server:port
+
+## bower proxy config
+Edit your .bowerrc file ( should be next to your bower.json file ) and add the wanted proxy configuration
+{
+    "proxy":"http://<host>:<port>",
+    "https-proxy":"http://<host>:<port>"
+}
+
+## gradle proxy config
+in file gradle.properties
+systemProp.https.proxyHost=bluecoat-proxy
+systemProp.https.proxyPort=8080
+systemProp.http.proxyUser=username
+systemProp.http.proxyPassword=xxx
+http://www.licheedev.com/2015/06/22/gradle-proxy-for-as-1-3/
+https://docs.gradle.org/current/userguide/build_environment.html
+
+## JVM proxy config
+-Dhttp.proxyHost=bluecoat-proxy
+-Dhttp.proxyPort=8080
+
+## maven proxy config
+${MAVEN_HOME}\conf\settings.xml  <proxies>节点
+gradle user home
+Gradle uses the directory .gradle in our home directory as the default Gradle user home directory. Here we can find for example the directory caches with downloaded dependencies. To change the Gradle user home directory we can set the environment variable GRADLE_USER_HOME and point it to another directory. The Gradle build script will look for this environment variable and then use the specified directory as the Gradle home directory.
