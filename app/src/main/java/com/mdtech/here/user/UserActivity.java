@@ -132,8 +132,9 @@ public class UserActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         viewPager.setOffscreenPageLimit(3);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new PhotoListFragment(mApi, mUserId), "图片");
-        adapter.addFrag(new AlbumListFragment(mApi, mUserId), "专辑");
+        adapter.addFrag(PhotoListFragment.newInstance(mApi, mUserId), "图片");
+        adapter.addFrag(AlbumListFragment.newInstance(mApi, mUserId), "专辑");
+        adapter.addFrag(UserListFragment.newInstance(mApi, mUserId), "组");
         adapter.addFrag(new DummyFragment(), "Map");
         viewPager.setAdapter(adapter);
     }

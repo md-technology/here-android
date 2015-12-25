@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/user_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
+    <Button android:id="@+id/btn_load_more"
+        android:layout_width="wrap_content"
+        android:layout_height="67dp"
+        android:text="Load"
+        android:layout_gravity="bottom|center"
+        android:contentDescription="load"
+        android:singleLine="true" />
+</android.support.design.widget.CoordinatorLayout>

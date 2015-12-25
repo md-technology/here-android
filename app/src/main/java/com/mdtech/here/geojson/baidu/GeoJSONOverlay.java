@@ -67,7 +67,7 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
 
     // 初始化全局 bitmap 信息，不用时及时 recycle
     BitmapDescriptor bdA = BitmapDescriptorFactory
-            .fromResource(R.drawable.dic_launcher);
+            .fromResource(R.drawable.ic_add_black_24dp);
 
     // 将GPS设备采集的原始GPS坐标转换成百度坐标
     CoordinateConverter converter  = new CoordinateConverter();

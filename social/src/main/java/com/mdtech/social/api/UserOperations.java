@@ -58,4 +58,13 @@ public interface UserOperations {
      * @return
      */
     List<Album> getAlbums(BigInteger id, Integer pageSize, Integer pageNo);
+
+    /**
+     *
+     * @param id
+     * @param pageSize
+     * @param pageNo
+     * @return
+     */
+    List<User> getGroups(BigInteger id, Integer pageSize, Integer pageNo);
 }

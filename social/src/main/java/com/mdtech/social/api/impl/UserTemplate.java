@@ -102,4 +102,16 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
                 buildUri(PATH + "/" + id + "/albums", parameters), AlbumList.class);
     }
 
+    @Override
+    public List<User> getGroups(BigInteger id, Integer pageSize, Integer pageNo) {
+        return restTemplate.getForObject(
+                buildUri(PATH + "/" + id + "/groups", getPagableParams(pageSize, pageNo)), UserList.class);
+    }
+
+    private MultiValueMap<String, String> getPagableParams(Integer pageSize, Integer pageNo) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+        parameters.add("pageSize", pageSize.toString());
+        parameters.add("pageNo", pageNo.toString());
+        return parameters;
+    }
 }

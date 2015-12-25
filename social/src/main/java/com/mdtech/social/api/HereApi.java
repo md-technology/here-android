@@ -2,10 +2,12 @@ package com.mdtech.social.api;
 
 import org.springframework.social.ApiBinding;
 
+import java.io.Serializable;
+
 /**
  * Created by any on 2014/10/29.
  */
-public interface HereApi extends ApiBinding {
+public interface HereApi extends ApiBinding, Serializable {
 
     /**
      * 专辑

@@ -84,4 +84,13 @@ public class UserOperationsTest extends AbstractOperationsTest {
         log.info(albums.size());
     }
 
+
+    @Test
+    public void testGetGroups() {
+        BigInteger id = new BigInteger("26449692454748190120520877226");
+        List<User> users = userOperations.getGroups(id, 10, 0);
+
+        log.info(users.size());
+    }
+
 }
