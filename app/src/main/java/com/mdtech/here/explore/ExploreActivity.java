@@ -17,7 +17,12 @@
 package com.mdtech.here.explore;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -49,13 +54,14 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class ExploreActivity extends BaseActivity {
 
     private static final String TAG = makeLogTag(ExploreActivity.class);
-    public static final String EXTRA_ALBUM_ID =
-            "com.mdtech.here.EXTRA_ALBUM_ID";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    // number of images to select
+    private static final int PICK_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,43 +105,13 @@ public class ExploreActivity extends BaseActivity {
         mAdapter = new MyAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
 
-//        final Button button = (Button)findViewById(R.id.explore_ok_button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                CharSequence albumId = button.getText();
-//                if (TextUtils.isEmpty(albumId)) {
-//                    LOGE(TAG, "Album id is empty");
-//                    return;
-//                }
-//                Intent intent = new Intent(v.getContext(), AlbumActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putCharSequence(EXTRA_ALBUM_ID, albumId);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-////                finish();
-//            }
-//        });
-
-//        Button login = (Button)findViewById(R.id.explore_login_button);
-//        login.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                if (AccountUtils.hasActiveAccount(ExploreActivity.this)) {
-//                    Intent intent = new Intent(v.getContext(), AlbumActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Intent intent = new Intent(v.getContext(), LoginActivity.class);
-//                    startActivity(intent);
-////                    finish();
-//                }
-//
-//            }
-//        });
-
+        FloatingActionButton fabBtn = (FloatingActionButton)findViewById(R.id.fab);
+        fabBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImageFromGallery();
+            }
+        });
     }
 
     void onItemsLoadComplete() {
@@ -146,6 +122,66 @@ public class ExploreActivity extends BaseActivity {
         Snackbar.make(mSwipeRefreshLayout, "刷新成功", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
+
+    void selectImageFromGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"),
+                PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
+                && null != data) {
+            Uri selectedImage = data.getData();
+            CameraActivity.openWithPhotoUri(this, selectedImage);
+
+//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//
+//            Cursor cursor = getContentResolver().query(selectedImage,
+//                    filePathColumn, null, null, null);
+//            cursor.moveToFirst();
+//
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+//
+//            decodeFile(picturePath);
+
+        }
+    }
+
+//    public void decodeFile(String filePath) {
+//        // Decode image size
+//        BitmapFactory.Options o = new BitmapFactory.Options();
+//        o.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(filePath, o);
+//
+//        // The new size we want to scale to
+//        final int REQUIRED_SIZE = 1024;
+//
+//        // Find the correct scale value. It should be the power of 2.
+//        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+//        int scale = 1;
+//        while (true) {
+//            if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE)
+//                break;
+//            width_tmp /= 2;
+//            height_tmp /= 2;
+//            scale *= 2;
+//        }
+//
+//        // Decode with inSampleSize
+//        BitmapFactory.Options o2 = new BitmapFactory.Options();
+//        o2.inSampleSize = scale;
+//        bitmap = BitmapFactory.decodeFile(filePath, o2);
+//
+//        image.setImageBitmap(bitmap);
+//    }
 
     public static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private String[] mDataset;

@@ -13,5 +13,11 @@ git init
 git remote add origin https://github.com/user/repository.git
 git push -u origin master
 
-## 
+## git pull 和 git fetch 区别
+``` 
+git pull = git fetch + merge to local
+``` 
+
+
+
 
