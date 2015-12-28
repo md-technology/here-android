@@ -44,7 +44,6 @@ import com.mdtech.here.album.AlbumBaiduActivity;
 import com.mdtech.here.user.UserActivity;
 import com.mdtech.here.util.AccountUtils;
 import com.mdtech.here.util.CircleTransformation;
-import com.mdtech.here.util.ImageLoader;
 import com.mdtech.here.util.LoginAndAuthHelper;
 import com.mdtech.here.welcome.WelcomeActivity;
 import com.mdtech.social.api.HereApi;
@@ -55,6 +54,8 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 
 import java.math.BigInteger;
+
+import butterknife.ButterKnife;
 
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
@@ -82,12 +83,21 @@ public abstract class BaseActivity extends AppCompatActivity
 
     private int mNormalStatusBarColor;
 
-    private ImageLoader mImageLoader;
-
     protected ConnectionRepository mConnectionRepository;
     protected HereConnectionFactory mConnectionFactory;
 
     protected Picasso picasso;
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        bindViews();
+    }
+
+    protected void bindViews() {
+        ButterKnife.bind(this);
+//        setupToolbar();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +120,6 @@ public abstract class BaseActivity extends AppCompatActivity
             finish();
             return;
         }
-
-        mImageLoader = new ImageLoader(this);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         sp.registerOnSharedPreferenceChangeListener(this);

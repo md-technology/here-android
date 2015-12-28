@@ -59,5 +59,7 @@ dependencies {
     compile("org.apache.httpcomponents:httpclient-android:$apache_httpclient_android")
 
     // Glide library, used to handle asynchronous loading and caching of images.
-    compile 'com.github.bumptech.glide:glide:3.5.2'
+//    compile 'com.github.bumptech.glide:glide:3.5.2'
+
+    compile 'com.jakewharton:butterknife:7.0.1'
 }

@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +47,8 @@ import com.mdtech.here.ui.BaseActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
+
 public class CameraActivity extends BaseActivity {
 
     public static final String ARG_TAKEN_PHOTO_URI = "arg_taken_photo_uri";
@@ -53,7 +56,10 @@ public class CameraActivity extends BaseActivity {
     private Uri photoUri;
     private int photoSize;
 
-    private ImageView ivPhoto;
+    @Bind(R.id.iv_photo)
+    ImageView ivPhoto;
+    @Bind(R.id.fab)
+    ImageButton btnUpload;
 
     public static void openWithPhotoUri(Activity openingActivity, Uri photoUri) {
         Intent intent = new Intent(openingActivity, CameraActivity.class);
@@ -71,11 +77,11 @@ public class CameraActivity extends BaseActivity {
 
         photoSize = getResources().getDimensionPixelSize(R.dimen.publish_photo_thumbnail_size);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+                Snackbar.make(view, "uploading", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -86,8 +92,6 @@ public class CameraActivity extends BaseActivity {
         } else {
             photoUri = savedInstanceState.getParcelable(ARG_TAKEN_PHOTO_URI);
         }
-
-        ivPhoto = (ImageView) findViewById(R.id.iv_photo);
 
         ivPhoto.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
