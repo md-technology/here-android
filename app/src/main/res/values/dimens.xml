@@ -48,4 +48,7 @@
 
     <!-- Map elements -->
     <integer name="map_photo_marker_width">120</integer>
+
+    <dimen name="publish_photo_thumbnail_size">96dp</dimen>
+
 </resources>
