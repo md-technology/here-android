@@ -36,6 +36,7 @@
 
     <dimen name="navdrawer_profile_image_size">40dp</dimen>
     <dimen name="profile_image_size">60dp</dimen>
+    <dimen name="margin_toolbar_height">75dp</dimen>
 
     <!-- UI elements -->
     <dimen name="drawer_width">@dimen/match_parent</dimen>

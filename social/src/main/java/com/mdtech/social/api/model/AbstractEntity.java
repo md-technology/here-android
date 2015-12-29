@@ -14,6 +14,8 @@ public class AbstractEntity implements Serializable {
     private String id;
     @JsonProperty("create_date")
     private Date createDate;
+    private String title;
+    private String description;
     private int commentCount;
     private int likeCount;
     private Set<String> tags;
@@ -56,5 +58,21 @@ public class AbstractEntity implements Serializable {
 
     public void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -2,13 +2,14 @@ package com.mdtech.social.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by tiwen.wang on 11/18/2014.
  */
-public class Comment {
+public class Comment implements Serializable {
     private Long id;
 
     private String type;

@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by any on 2014/9/28.
  */
-public class Photo extends AbstractEntity implements Comparable<Photo>, Serializable {
+public class Photo extends Image implements Comparable<Photo> {
 
     private String title;
     private String description;

@@ -1,9 +1,11 @@
 package com.mdtech.social.api.model;
 
+import java.io.Serializable;
+
 /**
  * Created by tiwen.wang on 7/8/2015.
  */
-public class Location {
+public class Location implements Serializable {
 
     private double[] position;
     private double alt;

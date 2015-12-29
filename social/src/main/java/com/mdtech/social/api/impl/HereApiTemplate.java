@@ -6,6 +6,8 @@ import com.mdtech.social.api.PhotoOperations;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.UserOperations;
 
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.support.ClientHttpRequestFactorySelector;
 
@@ -42,6 +44,13 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     @Override
     public PhotoOperations photoOperations() {
         return photoOperations;
+    }
+
+    @Override
+    protected FormHttpMessageConverter getFormMessageConverter() {
+        FormHttpMessageConverter formHttpMessageConverter = super.getFormMessageConverter();
+        formHttpMessageConverter.addPartConverter(getJsonMessageConverter());
+        return formHttpMessageConverter;
     }
 
     // private helpers

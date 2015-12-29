@@ -16,15 +16,22 @@
 
 package com.mdtech.here.explore;
 
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,15 +42,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
 import com.mdtech.here.album.AlbumActivity;
+import com.mdtech.here.service.PhotoPublishService;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.util.AccountUtils;
+import com.mdtech.social.api.model.Photo;
 
+import java.io.File;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
+import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.LOGE;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
@@ -60,11 +75,8 @@ public class ExploreActivity extends BaseActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    // number of images to select
-    private static final int PICK_IMAGE = 1;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_explore);
@@ -109,7 +121,7 @@ public class ExploreActivity extends BaseActivity {
         fabBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectImageFromGallery();
+                onGetPictureDialog(savedInstanceState).show();
             }
         });
     }
@@ -122,66 +134,6 @@ public class ExploreActivity extends BaseActivity {
         Snackbar.make(mSwipeRefreshLayout, "刷新成功", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
-
-    void selectImageFromGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-                PICK_IMAGE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
-                && null != data) {
-            Uri selectedImage = data.getData();
-            CameraActivity.openWithPhotoUri(this, selectedImage);
-
-//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//
-//            Cursor cursor = getContentResolver().query(selectedImage,
-//                    filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//
-//            decodeFile(picturePath);
-
-        }
-    }
-
-//    public void decodeFile(String filePath) {
-//        // Decode image size
-//        BitmapFactory.Options o = new BitmapFactory.Options();
-//        o.inJustDecodeBounds = true;
-//        BitmapFactory.decodeFile(filePath, o);
-//
-//        // The new size we want to scale to
-//        final int REQUIRED_SIZE = 1024;
-//
-//        // Find the correct scale value. It should be the power of 2.
-//        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-//        int scale = 1;
-//        while (true) {
-//            if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE)
-//                break;
-//            width_tmp /= 2;
-//            height_tmp /= 2;
-//            scale *= 2;
-//        }
-//
-//        // Decode with inSampleSize
-//        BitmapFactory.Options o2 = new BitmapFactory.Options();
-//        o2.inSampleSize = scale;
-//        bitmap = BitmapFactory.decodeFile(filePath, o2);
-//
-//        image.setImageBitmap(bitmap);
-//    }
 
     public static class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         private String[] mDataset;
@@ -231,4 +183,23 @@ public class ExploreActivity extends BaseActivity {
             return mDataset.length;
         }
     }
+
+    public Dialog onGetPictureDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        builder.setTitle("Select")
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (items[which].equals(items[0])) {
+                            CameraActivity.openTakePicture(ExploreActivity.this);
+                        } else if (items[which].equals(items[1])) {
+                            CameraActivity.openPickImage(ExploreActivity.this);
+                        } else if (items[which].equals(items[2])) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+        return builder.create();
+    }
+
 }

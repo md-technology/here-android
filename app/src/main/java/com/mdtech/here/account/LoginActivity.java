@@ -115,7 +115,7 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
         mProgressView = findViewById(R.id.login_progress);
 
         // 设置spring social框架配置
-        this.connectionRepository = getApplicationContext().getmConnectionRepository();
+        this.connectionRepository = getApplicationContext().getConnectionRepository();
         this.connectionFactory = getApplicationContext().getConnectionFactory();
     }
 

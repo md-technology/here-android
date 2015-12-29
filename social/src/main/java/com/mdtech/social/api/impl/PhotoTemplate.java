@@ -1,12 +1,17 @@
 package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.PhotoOperations;
+import com.mdtech.social.api.model.Image;
+import com.mdtech.social.api.model.Location;
 import com.mdtech.social.api.model.Photo;
 
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Set;
 
 /**
  * Created by tiwen.wang on 11/18/2014.
@@ -21,15 +26,15 @@ public class PhotoTemplate extends AbstractPonmapOperations implements PhotoOper
     }
 
     @Override
-    public Photo upload(String lat, String lng, String address, String vendor, String file) {
-
+    public Photo upload(Image image, Location location, Set<String> tags, String album, boolean is360, Resource file) {
         // URL Parameters
-        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
-        parts.add("files[]", new FileSystemResource(file));
-        parts.add("lat", lat);
-        parts.add("lng", lng);
-        parts.add("address", address);
-        parts.add("vendor", vendor);
+        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>(5);
+        parts.add("files[]", file);
+        parts.add("image", image);
+        parts.add("location", location);
+        parts.add("tags", tags);
+        parts.add("album", album);
+        parts.add("is360", is360);
 
         // Post
         return restTemplate.postForObject(BASE_API_URL + "/photo/upload", parts, Photo.class);

@@ -2,6 +2,7 @@ package com.mdtech.social.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 /**
  * Created by any on 2014/10/24.
  */
-public class User {
+public class User implements Serializable {
 
     private BigInteger id;
 

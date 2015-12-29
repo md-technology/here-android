@@ -82,7 +82,7 @@ public class AppApplication extends Application {
     // ***************************************
     // Public methods
     // ***************************************
-    public ConnectionRepository getmConnectionRepository() {
+    public ConnectionRepository getConnectionRepository() {
         return this.mConnectionRepository;
     }
 

@@ -19,6 +19,7 @@ package com.mdtech.social.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mdtech.geojson.FeatureCollection;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
@@ -26,7 +27,7 @@ import java.util.Date;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/11/2015.
  */
-public class Album {
+public class Album implements Serializable {
     private BigInteger id;
     private String name;
     private String title;

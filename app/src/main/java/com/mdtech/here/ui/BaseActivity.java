@@ -50,7 +50,6 @@ import com.mdtech.social.api.HereApi;
 import com.mdtech.social.connect.HereConnectionFactory;
 import com.squareup.picasso.Picasso;
 
-import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
 
 import java.math.BigInteger;
@@ -132,7 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity
         mThemedStatusBarColor = getResources().getColor(R.color.theme_primary_dark);
         mNormalStatusBarColor = mThemedStatusBarColor;
 
-        mConnectionRepository = getApplicationContext().getmConnectionRepository();
+        mConnectionRepository = getApplicationContext().getConnectionRepository();
         mConnectionFactory = getApplicationContext().getConnectionFactory();
 
         // check the
@@ -402,7 +401,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     protected HereApi getApi() {
         if(null == mConnectionRepository) {
-            mConnectionRepository = getApplicationContext().getmConnectionRepository();
+            mConnectionRepository = getApplicationContext().getConnectionRepository();
         }
 
         return mConnectionRepository.getPrimaryConnection(HereApi.class).getApi();

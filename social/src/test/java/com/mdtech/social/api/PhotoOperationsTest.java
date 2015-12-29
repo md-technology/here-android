@@ -1,11 +1,20 @@
 package com.mdtech.social.api;
 
+import com.mdtech.social.api.model.Image;
+import com.mdtech.social.api.model.Location;
 import com.mdtech.social.api.model.Photo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+
+import java.io.File;
+
 import static org.junit.Assert.*;
 
 /**
@@ -34,7 +43,33 @@ public class PhotoOperationsTest extends AbstractOperationsTest {
 
     @Test
     public void testUpload() {
-        String filePath = "C:\\dev\\data\\thumb.jpg";
-//        PhotoResponse photoResponse = photoOperations.upload("33", "110", "山东", "google", filePath);
+        String filePath = "C:\\dev\\resource\\_G7A1016.JPG";
+
+        Resource resource = new FileSystemResource(new File(filePath)) {
+            public String getFilename() throws IllegalStateException {
+                return "photo.jpg";
+            };
+        };
+
+        Image image = new Image();
+        image.setTitle("Test photo upload title");
+        image.setDescription("Test photo upload desc");
+
+        Location location = new Location();
+        location.setPosition(new double[]{33D,120D});
+        location.setAddress("Test photo upload address");
+        try {
+            Photo photo = photoOperations.upload(image, location, null, null, false, resource);
+
+            Assert.assertNotNull(photo);
+            Assert.assertNotNull(photo.getId());
+            Assert.assertNotNull(photo.getOssKey());
+
+            log.info(photo.getOssKey());
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
     }
 }
