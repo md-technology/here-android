@@ -32,6 +32,7 @@ import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.ui.AbstractListFragment;
 import com.mdtech.here.ui.BaseActivity;
+import com.mdtech.here.ui.OnRcvScrollListener;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Picasso;
@@ -66,6 +67,7 @@ public class PhotoListFragment extends AbstractListFragment {
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
 
         return root;
     }

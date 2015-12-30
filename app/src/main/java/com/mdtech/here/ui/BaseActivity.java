@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.mdtech.here.AppApplication;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
@@ -102,6 +103,10 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //                RecentTasksStyler.styleRecentTasksEntry(this);
+
+        //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+        //注意该方法要再setContentView方法之前实现
+        SDKInitializer.initialize(getApplicationContext());
 
         // Check if the EULA has been accepted; if not, show it.
         // TODO del false

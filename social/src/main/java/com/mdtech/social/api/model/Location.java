@@ -11,6 +11,11 @@ public class Location implements Serializable {
     private double alt;
     private String address;
 
+    public Location(){}
+    public Location(double lng, double lat){
+        position = new double[]{lng, lat};
+    }
+
     public double[] getPosition() {
         return position;
     }

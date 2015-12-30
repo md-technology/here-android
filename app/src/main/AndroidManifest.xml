@@ -60,6 +60,13 @@
             android:parentActivityName=".explore.ExploreActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".explore.AlbumSearchActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:exported="false"
+            android:theme="@style/Theme.Here.Search" />
+
+        <activity
             android:name=".explore.CameraActivity"
             android:label="@string/title_activity_camera"
             android:theme="@style/AppTheme.NoActionBar">

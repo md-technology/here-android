@@ -26,6 +26,7 @@
       android:layout_height="50dp"
       android:scaleType="centerCrop"
       android:layout_marginRight="5dp"
+      android:layout_marginLeft="5dp"
       android:id="@+id/iv_album_cover" />
   <LinearLayout
       android:layout_width="wrap_content"

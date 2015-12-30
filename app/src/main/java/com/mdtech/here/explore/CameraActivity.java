@@ -16,57 +16,51 @@
 
 package com.mdtech.here.explore;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.service.PhotoPublishService;
 import com.mdtech.here.ui.BaseActivity;
+import com.mdtech.here.user.UserActivity;
+import com.mdtech.here.util.AccountUtils;
 import com.mdtech.here.util.FileUtils;
+import com.mdtech.here.util.MapUtils;
+import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Image;
 import com.mdtech.social.api.model.Location;
 import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.math.BigInteger;
 import java.util.HashSet;
-import java.util.Locale;
 
 import butterknife.Bind;
 
-import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 public class CameraActivity extends BaseActivity {
@@ -85,10 +79,10 @@ public class CameraActivity extends BaseActivity {
     // number of images to select
     static final int REQUEST_PICK_IMAGE = 1;
     static final int REQUEST_TAKE_PICTURE = 2;
-    // directory name to store captured images and videos
-    private static final String IMAGE_DIRECTORY_NAME = "HereCamera";
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
+    static final int REQUEST_PICK_ALBUM = 3;
+
+    // permissions request
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Bind(R.id.iv_photo)
     ImageView ivPhoto;
@@ -98,6 +92,16 @@ public class CameraActivity extends BaseActivity {
     TextView etTitle;
     @Bind(R.id.et_description)
     TextView etDescription;
+    @Bind(R.id.btn_location)
+    Button btnLocation;
+    @Bind(R.id.btn_album)
+    Button btnAlbum;
+
+    private Location mLocation;
+    private Album mAlbum;
+
+    // Acquire a reference to the system Location Manager
+    LocationManager locationManager;
 
     public static void openWithPhotoUri(Activity openingActivity, Uri photoUri) {
         Intent intent = new Intent(openingActivity, CameraActivity.class);
@@ -143,19 +147,13 @@ public class CameraActivity extends BaseActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         photoSize = getResources().getDimensionPixelSize(R.dimen.publish_photo_thumbnail_size);
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                uploadPhoto();
-
-                Snackbar.make(view, "uploading", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        btnUpload.setOnClickListener(this);
+        btnAlbum.setOnClickListener(this);
+        btnLocation.setOnClickListener(this);
 
         // photo
         if (savedInstanceState == null) {
@@ -175,20 +173,74 @@ public class CameraActivity extends BaseActivity {
         });
 
         registerReceiver(receiver, new IntentFilter(PhotoPublishService.NOTIFICATION));
+
+        // location
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted.
+                    locate();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(null == photoUri) {
-            if(ARG_PICK_IMAGE.equals(cameraAction)) {
+        if (null == photoUri) {
+            if (ARG_PICK_IMAGE.equals(cameraAction)) {
                 dispatchPickImageIntent();
-            }else if(ARG_TAKE_PICTURE.equals(cameraAction)) {
+            } else if (ARG_TAKE_PICTURE.equals(cameraAction)) {
                 dispatchTakePictureIntent();
-            }else {
+            } else {
                 dispatchTakePictureIntent();
             }
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
+            case R.id.btn_album:
+                startActivityForResult(new Intent(this, AlbumSearchActivity.class), REQUEST_PICK_ALBUM);
+                break;
+            case R.id.btn_location:
+                startActivity(new Intent(this, AlbumSearchActivity.class));
+                break;
+            case R.id.fab:
+                uploadPhoto();
+                Snackbar.make(v, "uploading", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                break;
+            default:
+        }
+    }
+
+    private void loadImageInfo() {
+        Location location = MapUtils.getImageLocation(FileUtils.getPath(this, photoUri));
+        if(null == location) {
+            locate();
+        }else {
+            setLocation(location);
+        }
+
+        loadThumbnailPhoto();
     }
 
     private void loadThumbnailPhoto() {
@@ -248,6 +300,7 @@ public class CameraActivity extends BaseActivity {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(PhotoPublishService.NOTIFICATION));
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -258,13 +311,18 @@ public class CameraActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK
-                && null != data) {
-            photoUri = data.getData();
-            loadThumbnailPhoto();
-        }else if (requestCode == REQUEST_TAKE_PICTURE && resultCode == RESULT_OK) {
-            loadThumbnailPhoto();
-        }else {
+        if(resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_PICK_IMAGE && null != data) {
+                photoUri = data.getData();
+                loadImageInfo();
+            } else if (requestCode == REQUEST_TAKE_PICTURE) {
+                loadImageInfo();
+            } else if(requestCode == REQUEST_PICK_ALBUM) {
+                String id = data.getStringExtra(AlbumSearchActivity.ARG_ALBUM_ID);
+                updateAlbum(id);
+            }
+        }
+        else if(null == photoUri){
             finish();
         }
     }
@@ -278,7 +336,7 @@ public class CameraActivity extends BaseActivity {
 
     private void dispatchTakePictureIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+        photoUri = FileUtils.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, REQUEST_TAKE_PICTURE);
@@ -286,57 +344,88 @@ public class CameraActivity extends BaseActivity {
     }
 
     /**
-     * Creating file uri to store image/video
+     * 上传图片
      */
-    public Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    /*
-     * returning image / video
-     */
-    private static File getOutputMediaFile(int type) {
-
-        // External sdcard location
-        File mediaStorageDir = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                IMAGE_DIRECTORY_NAME);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LOGD(IMAGE_DIRECTORY_NAME, "Oops! Failed create "
-                        + IMAGE_DIRECTORY_NAME + " directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-                Locale.getDefault()).format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_" + timeStamp + ".jpg");
-        } else if (type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "VID_" + timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
-
     private void uploadPhoto() {
         Image image = new Image();
         image.setTitle(etTitle.getText().toString());
         image.setDescription(etDescription.getText().toString());
-        Location location = new Location();
+        Location location = mLocation;
 
         HashSet<String> tags = new HashSet<String>();
 
-        PhotoPublishService.startService(this, image, location, tags, "26750881779292192047881277021", false, photoUri);
+        if(null == mAlbum) {
+            Snackbar.make(this.btnUpload, "专辑不能为空", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            return;
+        }
+        PhotoPublishService.startService(this, image, location, tags, mAlbum.getId().toString(), false, photoUri);
+    }
+
+    /**
+     * 定位设备现在的位置
+     */
+    private void locate() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(android.location.Location location) {
+                setLocation(location);
+                // TODO remove listener
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        });
+    }
+
+    /**
+     * 设置gps位置
+     * @param location
+     */
+    private void setLocation(Location location) {
+        mLocation = location;
+        btnLocation.setText(location.getPosition()[0] + "," + location.getPosition()[1]);
+        MapUtils.newInstance().reverseGeoCode(new MapUtils.OnDeGeoCodeListener() {
+            @Override
+            public void onDeGeoCodeResult(Location location) {
+                if (!TextUtils.isEmpty(location.getAddress())) {
+                    btnLocation.setText(location.getAddress());
+                    mLocation = location;
+                }
+            }
+        }, location);
+    }
+
+    /**
+     * 设置gps位置
+     * @param location
+     */
+    private void setLocation(android.location.Location location) {
+        setLocation(new Location(location.getLongitude(), location.getLatitude()));
+    }
+
+    private void updateAlbum(String id) {
+        btnAlbum.setText(id);
+        mAlbum = new Album();
+        mAlbum.setId(new BigInteger(id));
     }
 }

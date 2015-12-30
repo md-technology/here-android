@@ -34,6 +34,7 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
     protected Integer pageSize = 10;
     protected Integer pageNo = 0;
     protected boolean pageEnd = false;
+    protected boolean isLoading = false;
 
     protected RecyclerView mRecyclerView;
     protected MyAdapter mAdapter;
@@ -57,6 +58,13 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
         mApi = (HereApi) getArguments().getSerializable(ARG_API);
         mId = (BigInteger) getArguments().getSerializable(ARG_ID);
 
+        mRecyclerView.addOnScrollListener(new OnRcvScrollListener() {
+            @Override
+            public void onLoadMore(int current_page) {
+                loadMore();
+            }
+        });
+
         picasso = new Picasso.Builder(getActivity()).build();
     }
 
@@ -69,10 +77,14 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
         }
     }
 
+    /**
+     * 加载更多
+     */
     protected void loadMore() {
-        if(pageEnd) {
+        if(pageEnd || isLoading) {
             return;
         }
+        isLoading = true;
         new LoadMoreTask().execute();
     }
 
@@ -98,6 +110,7 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
         }
         @Override
         protected void onPostExecute(final Integer size) {
+            isLoading = false;
             if(null != size) {
                 if(size < pageSize) {
                     pageEnd = true;
