@@ -3,6 +3,7 @@ package com.mdtech.social.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
  */
 public class AbstractEntity implements Serializable {
 
-    private String id;
+    private BigInteger id;
     @JsonProperty("create_date")
     private Date createDate;
     private String title;
@@ -20,11 +21,11 @@ public class AbstractEntity implements Serializable {
     private int likeCount;
     private Set<String> tags;
 
-    public String getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 

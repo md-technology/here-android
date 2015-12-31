@@ -32,6 +32,8 @@ import org.springframework.social.connect.NotConnectedException;
 import org.springframework.social.connect.sqlite.SQLiteConnectionRepository;
 import org.springframework.social.connect.sqlite.support.SQLiteConnectionRepositoryHelper;
 import org.springframework.social.connect.support.ConnectionFactoryRegistry;
+import org.springframework.social.connect.support.OAuth2ConnectionFactory;
+import org.springframework.social.oauth2.AccessGrant;
 
 import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
@@ -46,9 +48,10 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class AppApplication extends Application {
 
     private static final String TAG = makeLogTag(AppApplication.class);
-    private ConnectionFactoryRegistry connectionFactoryRegistry;
+    private ConnectionFactoryRegistry mConnectionFactoryRegistry;
     private ConnectionRepository mConnectionRepository;
-    private SQLiteOpenHelper repositoryHelper;
+    private SQLiteOpenHelper mRepositoryHelper;
+    private OAuth2ConnectionFactory mConnectionFactory;
 
     @Override
     public void onCreate() {
@@ -57,15 +60,16 @@ public class AppApplication extends Application {
         SettingsUtils.markDeclinedWifiSetup(getApplicationContext(), false);
 
         // create a new ConnectionFactoryLocator and populate it with Facebook ConnectionFactory
-        this.connectionFactoryRegistry = new ConnectionFactoryRegistry();
-        this.connectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory(getHereAppId(),
+        this.mConnectionFactoryRegistry = new ConnectionFactoryRegistry();
+        this.mConnectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory(getHereAppId(),
                 getHereAppSecret()));
 
         // set up the database and encryption
-        this.repositoryHelper = new SQLiteConnectionRepositoryHelper(this);
-        this.mConnectionRepository = new SQLiteConnectionRepository(this.repositoryHelper,
-                this.connectionFactoryRegistry, AndroidEncryptors.text("password", "5c0744940b5c369b"));
+        this.mRepositoryHelper = new SQLiteConnectionRepositoryHelper(this);
+        this.mConnectionRepository = new SQLiteConnectionRepository(this.mRepositoryHelper,
+                this.mConnectionFactoryRegistry, AndroidEncryptors.text("password", "5c0744940b5c369b"));
 
+        mConnectionFactory = (OAuth2ConnectionFactory) mConnectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
     }
 
     // ***************************************
@@ -87,7 +91,7 @@ public class AppApplication extends Application {
     }
 
     public HereConnectionFactory getConnectionFactory() {
-        return (HereConnectionFactory) this.connectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
+        return (HereConnectionFactory) this.mConnectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
     }
 
     /**
@@ -136,5 +140,15 @@ public class AppApplication extends Application {
     private void updateConnection(Connection<HereApi> connection) {
         mConnectionRepository.removeConnections(connection.getKey().getProviderId());
         mConnectionRepository.addConnection(connection);
+    }
+
+    /**
+     *  客户端授权
+     */
+    public Connection<HereApi> authenticateClient() {
+        AccessGrant accessGrant = mConnectionFactory.getOAuthOperations().authenticateClient("read");
+        Connection<HereApi> connection = mConnectionFactory.createConnection(accessGrant);
+        mConnectionRepository.addConnection(connection);
+        return mConnectionRepository.findPrimaryConnection(HereApi.class);
     }
 }

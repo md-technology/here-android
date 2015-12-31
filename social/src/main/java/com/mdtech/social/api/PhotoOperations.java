@@ -6,6 +6,7 @@ import com.mdtech.social.api.model.Photo;
 
 import org.springframework.core.io.Resource;
 
+import java.math.BigInteger;
 import java.util.Set;
 
 public interface PhotoOperations {
@@ -28,5 +29,5 @@ public interface PhotoOperations {
      * @param id
      * @return
      */
-    Photo get(String id);
+    Photo get(BigInteger id);
 }

@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.mdtech.here.AppApplication;
+import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.User;
@@ -24,7 +26,6 @@ import java.util.List;
 public abstract class AbstractListFragment extends Fragment implements View.OnClickListener {
 
     private static final String ARG_API = "api";
-    private static final String ARG_ID = "id";
 
     protected BigInteger mId;
     protected HereApi mApi;
@@ -40,10 +41,9 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
     protected MyAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
 
-    public static Fragment newInstance(AbstractListFragment fragment, HereApi api, BigInteger id){
+    public static Fragment newInstance(AbstractListFragment fragment, BigInteger id){
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_API, api);
-        bundle.putSerializable(ARG_ID, id);
+        bundle.putSerializable(Config.ARG_ENTITY_ID, id);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -55,8 +55,7 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
         Button button = (Button) view.findViewById(R.id.btn_load_more);
         button.setOnClickListener(this);
 
-        mApi = (HereApi) getArguments().getSerializable(ARG_API);
-        mId = (BigInteger) getArguments().getSerializable(ARG_ID);
+        mId = (BigInteger) getArguments().getSerializable(Config.ARG_ENTITY_ID);
 
         mRecyclerView.addOnScrollListener(new OnRcvScrollListener() {
             @Override
@@ -66,6 +65,8 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
         });
 
         picasso = new Picasso.Builder(getActivity()).build();
+        AppApplication app = (AppApplication)getActivity().getApplicationContext();
+        mApi = app.getConnectionRepository().getPrimaryConnection(HereApi.class).getApi();
     }
 
     @Override

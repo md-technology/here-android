@@ -27,21 +27,21 @@ import com.squareup.picasso.Transformation;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/18/2015.
+ * Created by Tiven.wang on 12/31/2015.
  */
-public class CircleTransformation implements Transformation {
+public class SquareTransformation implements Transformation {
 
     private float strokeWidth = 3;
     private int color = Color.WHITE;
     private Paint.Style style = Paint.Style.STROKE;
 
-    public CircleTransformation() {}
+    public SquareTransformation() {}
 
-    public CircleTransformation(float width) {
+    public SquareTransformation(float width) {
         this.strokeWidth = width;
     }
 
-    public CircleTransformation(@ColorInt int color, Paint.Style style, float width) {
+    public SquareTransformation(@ColorInt int color, Paint.Style style, float width) {
         this.color = color;
         this.style = style;
         this.strokeWidth = width;
@@ -73,17 +73,16 @@ public class CircleTransformation implements Transformation {
         outlinePaint.setStrokeWidth(this.strokeWidth);
         outlinePaint.setAntiAlias(true);
 
-        float r = size / 2f;
-        canvas.drawCircle(r, r, r, avatarPaint);
-        canvas.drawCircle(r, r, r - this.strokeWidth / 2, outlinePaint);
-
+        float r = size / 2f + this.strokeWidth;
+        canvas.drawRect(r, r, r, r, outlinePaint);
+        r = r - this.strokeWidth;
+        canvas.drawRect(r, r, r, r, avatarPaint);
         squaredBitmap.recycle();
         return bitmap;
     }
 
     @Override
     public String key() {
-        return "circleTransformation()";
+        return "squareTransformation()";
     }
-
 }

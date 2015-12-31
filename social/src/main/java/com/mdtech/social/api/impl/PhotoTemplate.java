@@ -11,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigInteger;
 import java.util.Set;
 
 /**
@@ -41,7 +42,7 @@ public class PhotoTemplate extends AbstractPonmapOperations implements PhotoOper
     }
 
     @Override
-    public Photo get(String id) {
+    public Photo get(BigInteger id) {
         return restTemplate.getForObject(BASE_API_URL + "/photo/{id}", Photo.class, id);
     }
 }

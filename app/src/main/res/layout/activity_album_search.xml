@@ -22,6 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="dismiss"
+    android:fitsSystemWindows="true"
     tools:context=".explore.AlbumSearchActivity">
 
     <!-- we use this scrim view rather than a semi-opaque window background so that we can

@@ -32,10 +32,15 @@ public class Config {
 
     public static final String EXTRA_ALBUM_ID =
             "com.mdtech.here.EXTRA_ALBUM_ID";
+    public static final String EXTRA_USER = "com.mdtech.here.extra_user";
 
+    public static final String OSS_STYLE_PREVIEW_LG = "@!photo-preview-lg";
     public static final String OSS_STYLE_PREVIEW_SM = "@!photo-preview-sm";
     public static final String OSS_STYLE_PREVIEW_SSM = "@!panor-lg";
 
-    public static final String MARKER_PHOTO = "photo";
+    public static final String MARKER_PHOTO = "com.mdtech.here.photo";
+
+    public static final String ARG_ENTITY_ID = "com.mdtech.here.entity_id";
+    public static final String ARG_ENTITY_PHOTO = "com.mdtech.here.entity_photo";
 
 }

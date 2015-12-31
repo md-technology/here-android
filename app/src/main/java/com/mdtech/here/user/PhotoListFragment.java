@@ -16,6 +16,7 @@
 
 package com.mdtech.here.user;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,15 +27,18 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.album.PhotoViewActivity;
 import com.mdtech.here.ui.AbstractListFragment;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.ui.OnRcvScrollListener;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.Photo;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigInteger;
@@ -50,7 +54,7 @@ public class PhotoListFragment extends AbstractListFragment {
     private static final String TAG = makeLogTag(PhotoListFragment.class);
 
     public static Fragment newInstance(HereApi api, BigInteger id){
-        return newInstance(new PhotoListFragment(), api, id);
+        return newInstance(new PhotoListFragment(), id);
     }
 
     @Override
@@ -67,7 +71,6 @@ public class PhotoListFragment extends AbstractListFragment {
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
 
         return root;
     }
@@ -99,7 +102,7 @@ public class PhotoListFragment extends AbstractListFragment {
             super(context, picasso);
         }
 
-        public static class ViewHolder extends AbstractListFragment.MyAdapter.ViewHolder<Photo>{
+        public class ViewHolder extends AbstractListFragment.MyAdapter.ViewHolder<Photo>{
             // each data item is just a string in this case
             public ImageView mView;
             public ViewHolder(ImageView v) {
@@ -109,7 +112,7 @@ public class PhotoListFragment extends AbstractListFragment {
 
             @Override
             public void onClick(View v) {
-
+                PhotoViewActivity.openWithPhoto((Activity)mContext, mEntity.getId());
             }
         }
 
@@ -128,12 +131,31 @@ public class PhotoListFragment extends AbstractListFragment {
 
         // Replace the contents of a view (invoked by the layout manager)
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int position) {
+            Photo photo = mDataset.get(position);
+            holder.mEntity = photo;
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
             picasso.load(((BaseActivity)mContext).getUrlFromOssKey(
-                    mDataset.get(position).getOssKey(), Config.OSS_STYLE_PREVIEW_SM))
-                    .into(holder.mView);
+                    photo.getOssKey(), Config.OSS_STYLE_PREVIEW_SM))
+                    .into(holder.mView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.mView.animate()
+                                    .alphaBy(0.5f)
+                                    .alpha(1.f)
+                                    .scaleXBy(0.8f).scaleYBy(0.8f)
+                                    .scaleX(1.f).scaleY(1.f)
+                                    .setInterpolator(new OvershootInterpolator())
+                                    .setDuration(400)
+                                    .setStartDelay(200)
+                                    .start();
+                        }
+
+                        @Override
+                        public void onError() {
+                        }
+                    });
         }
 
     }

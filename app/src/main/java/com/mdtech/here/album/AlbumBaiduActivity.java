@@ -43,9 +43,15 @@ import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.geojson.baidu.GeoJSONOverlay;
+import com.mdtech.here.util.CircleTransformation;
+import com.mdtech.here.util.SquareTransformation;
 import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import java.io.Serializable;
+
+import uk.co.senab.photoview.PhotoView;
 
 import static com.baidu.mapapi.utils.CoordinateConverter.*;
 import static com.mdtech.here.util.LogUtils.LOGD;
@@ -56,7 +62,7 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/23/2015.
  */
-public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapLoadedCallback {
+public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapLoadedCallback, BaiduMap.OnMarkerClickListener {
     private static final String TAG = makeLogTag(AlbumBaiduActivity.class);
 
     protected MapView mMapView = null;
@@ -99,6 +105,8 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
 
         // 设置坐标类型
         converter.from(CoordType.GPS);
+
+        this.mBaiduMap.setOnMarkerClickListener(this);
     }
 
     @Override
@@ -177,16 +185,17 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
 
             Marker marker = (Marker)this.mBaiduMap.addOverlay(markerOption);
 
+            PhotoMarker pMarker = new PhotoMarker(marker, photo);
             Bundle extraInfo = new Bundle();
-            extraInfo.putSerializable(Config.MARKER_PHOTO, photo);
+            extraInfo.putSerializable(Config.MARKER_PHOTO, pMarker);
             marker.setExtraInfo(extraInfo);
 
-            PhotoMarker pMarker = new PhotoMarker(marker);
             // Trigger the download of the URL asynchronously into the image view.
             picasso.load(getUrlFromOssKey(photo.getOssKey(), Config.OSS_STYLE_PREVIEW_SSM)) //
                     .placeholder(R.drawable.ic_my_location_white_24dp) //
                     .resize(getResources().getInteger(R.integer.map_photo_marker_width),
                             getResources().getInteger(R.integer.map_photo_marker_width))
+                    .transform(new CircleTransformation())
                     .into(pMarker);
         }
 
@@ -221,6 +230,20 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         super.onMapLoaded();
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Bundle bundle = marker.getExtraInfo();
+        if(null != bundle) {
+            PhotoMarker photoMarker = (PhotoMarker)bundle.getSerializable(Config.MARKER_PHOTO);
+            if(null != photoMarker) {
+                PhotoViewActivity.openWithPhoto(this, photoMarker.getPhoto().getId());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * 定位SDK监听函数
      */
@@ -248,11 +271,13 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         }
     }
 
-    public class PhotoMarker implements Target {
+    public class PhotoMarker implements Target, Serializable {
         Marker marker;
+        Photo photo;
 
-        public PhotoMarker(Marker marker) {
+        public PhotoMarker(Marker marker, Photo photo) {
             this.marker = marker;
+            this.photo = photo;
         }
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -270,8 +295,6 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         }
 
         public Photo getPhoto() {
-            Bundle bundle = marker.getExtraInfo();
-            Photo photo = (Photo)bundle.get(Config.MARKER_PHOTO);
             return photo;
         }
     }

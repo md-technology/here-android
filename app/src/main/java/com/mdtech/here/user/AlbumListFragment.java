@@ -52,7 +52,7 @@ public class AlbumListFragment extends AbstractListFragment {
     private static final String TAG = makeLogTag(AlbumListFragment.class);
 
     public static Fragment newInstance(HereApi api, BigInteger id){
-        return newInstance(new AlbumListFragment(), api, id);
+        return newInstance(new AlbumListFragment(), id);
     }
 
     @Override

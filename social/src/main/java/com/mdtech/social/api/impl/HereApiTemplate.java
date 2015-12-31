@@ -4,6 +4,7 @@ import com.mdtech.social.api.AlbumOperations;
 import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.PhotoOperations;
 import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.SignupOperations;
 import com.mdtech.social.api.UserOperations;
 
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -16,6 +17,7 @@ import org.springframework.social.support.ClientHttpRequestFactorySelector;
  */
 public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi {
 
+    private SignupOperations signupOperations;
     private UserOperations userOperations;
     private AlbumOperations albumOperations;
     private PanoramioOperations panoramioOperations;
@@ -24,6 +26,11 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     public HereApiTemplate(String accessToken) {
         super(accessToken);
         initialize();
+    }
+
+    @Override
+    public SignupOperations signupOperations() {
+        return signupOperations;
     }
 
     @Override
@@ -61,6 +68,8 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     }
 
     private void initSubApis() {
+
+        signupOperations = new SignupTemplate(getRestTemplate(), isAuthorized());
         userOperations = new UserTemplate(getRestTemplate(), isAuthorized());
         albumOperations = new AlbumTemplate(getRestTemplate(), isAuthorized());
         panoramioOperations = new PanoramioTemplate(getRestTemplate(), isAuthorized());

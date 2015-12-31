@@ -34,32 +34,7 @@
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <!--<LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editText" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_ok"
-                    android:id="@+id/explore_login_button"
-                    android:layout_gravity="center_horizontal" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="26750881779292192047881277021"
-                    android:id="@+id/explore_ok_button"
-                    android:layout_gravity="center_horizontal" />
-
-
-            </LinearLayout>-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/items_recycler_view"
                 android:layout_width="match_parent"

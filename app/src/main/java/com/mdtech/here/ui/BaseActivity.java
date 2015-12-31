@@ -41,6 +41,7 @@ import com.mdtech.here.AppApplication;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
+import com.mdtech.here.account.SignupActivity;
 import com.mdtech.here.album.AlbumBaiduActivity;
 import com.mdtech.here.user.UserActivity;
 import com.mdtech.here.util.AccountUtils;
@@ -118,7 +119,8 @@ public abstract class BaseActivity extends AppCompatActivity
         }
 
         Account chosenAccount = AccountUtils.getActiveAccount(this);
-        if(null == chosenAccount && !this.getClass().equals(LoginActivity.class)) {
+        if(null == chosenAccount && !this.getClass().equals(LoginActivity.class)
+                && !this.getClass().equals(SignupActivity.class)) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -365,10 +367,21 @@ public abstract class BaseActivity extends AppCompatActivity
         return null;
     }
 
+    /**
+     * 根据OSS key 获取链接
+     * @param ossKey
+     * @return
+     */
     public String getUrlFromOssKey(String ossKey) {
         return getUrlFromOssKey(ossKey, "");
     }
 
+    /**
+     * 根据OSS key和OSS style获取链接
+     * @param ossKey
+     * @param ossStyle
+     * @return
+     */
     public String getUrlFromOssKey(String ossKey, String ossStyle) {
         return getResources().getString(R.string.here_photo_base_url)+"/"+ossKey + ossStyle;
     }
@@ -394,9 +407,8 @@ public abstract class BaseActivity extends AppCompatActivity
             intent.putExtras(bundle);
             startActivity(intent);
         }
-        else if (id == R.id.nav_send) {
-            new LoginAndAuthHelper(this).logout();
-            getApplicationContext().clearConnections();
+        else if (id == R.id.nav_exit) {
+            logout();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -404,11 +416,23 @@ public abstract class BaseActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * 获取服务器API
+     * @return
+     */
     protected HereApi getApi() {
         if(null == mConnectionRepository) {
             mConnectionRepository = getApplicationContext().getConnectionRepository();
         }
-
         return mConnectionRepository.getPrimaryConnection(HereApi.class).getApi();
+    }
+
+    /**
+     * 退出账号
+     */
+    protected void logout() {
+        new LoginAndAuthHelper(this).logout();
+        getApplicationContext().clearConnections();
+        finish();
     }
 }

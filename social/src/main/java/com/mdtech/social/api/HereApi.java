@@ -10,6 +10,12 @@ import java.io.Serializable;
 public interface HereApi extends ApiBinding, Serializable {
 
     /**
+     * 注册用户
+     * @return
+     */
+    SignupOperations signupOperations();
+
+    /**
      * 专辑
      *
      * @return

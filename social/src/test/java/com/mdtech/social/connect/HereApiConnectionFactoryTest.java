@@ -33,7 +33,7 @@ public class HereApiConnectionFactoryTest {
     public void before() {
         connectionFactoryRegistry = new ConnectionFactoryRegistry();
         connectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory("ponmap-android-client", "92jasdjf8923oda"));
-        connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory("ponmap");
+        connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
 
         connectionRepository = new InMemoryUsersConnectionRepository(connectionFactoryRegistry).createConnectionRepository("user");
     }

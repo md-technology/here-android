@@ -18,6 +18,7 @@ package com.mdtech.here.user;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +44,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -59,8 +62,16 @@ public class UserActivity extends BaseActivity {
 
     private Picasso picasso;
 
-    private TextView mUserEmail;
-    private TextView mUserDesc;
+    @Bind(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @Bind(R.id.vUserEmail)
+    TextView mUserEmail;
+    @Bind(R.id.vUserDesc)
+    TextView mUserDesc;
+    @Bind(R.id.viewpager)
+    ViewPager mViewPager;
+    @Bind(R.id.tabs)
+    TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +95,8 @@ public class UserActivity extends BaseActivity {
 
         picasso = new Picasso.Builder(this).build();
 
-        mUserEmail = (TextView) findViewById(R.id.vUserEmail);
-        mUserDesc = (TextView) findViewById(R.id.vUserDesc);
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        setupViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -123,10 +128,10 @@ public class UserActivity extends BaseActivity {
                     .into(avatarImage);
         }
 
-        mUserEmail.setText(mUser.getEmail());
-        mUserDesc.setText(mUser.getDescription());
+        mUserEmail.setText(mUser.getUsername());
+        mUserDesc.setText(mUser.getEmail());
 
-        setTitle(mUser.getName());
+        collapsingToolbar.setTitle(mUser.getName());
     }
 
     private void setupViewPager(ViewPager viewPager) {

@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -42,10 +43,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.explore.ExploreActivity;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.util.LoginAndAuthHelper;
+import com.mdtech.here.welcome.WelcomeActivity;
 import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.model.User;
 import com.mdtech.social.connect.HereConnectionFactory;
 import com.mdtech.social.connect.HereServiceProvider;
 
@@ -57,6 +62,8 @@ import org.springframework.social.oauth2.AccessGrant;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
@@ -67,17 +74,25 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
+    private static final int REQUEST_SIGNUP = 1;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    @Bind(R.id.email)
+    AutoCompleteTextView mEmailView;
+    @Bind(R.id.password)
+    EditText mPasswordView;
+    @Bind(R.id.email_sign_in_button)
+    Button mEmailSignInButton;
+    @Bind(R.id.login_progress)
+    View mProgressView;
+    @Bind(R.id.login_form)
+    View mLoginFormView;
+    @Bind(R.id.link_signup)
+    TextView mSignupLink;
 
     // Spring social connection
     private ConnectionRepository connectionRepository;
@@ -88,10 +103,8 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -102,21 +115,13 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
                 return false;
             }
         });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mEmailSignInButton.setOnClickListener(this);
 
         // 设置spring social框架配置
         this.connectionRepository = getApplicationContext().getConnectionRepository();
         this.connectionFactory = getApplicationContext().getConnectionFactory();
+
+        mSignupLink.setOnClickListener(this);
     }
 
     private void populateAutoComplete() {
@@ -325,6 +330,43 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
         super.onBackPressed();
     }
 
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
+            case R.id.link_signup:
+                signup();
+                break;
+            case R.id.email_sign_in_button:
+                attemptLogin();
+                break;
+        }
+    }
+
+    /**
+     * 打开注册页面
+     */
+    private void signup() {
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivityForResult(intent, REQUEST_SIGNUP);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_SIGNUP && null != data) {
+                User user = (User)data.getSerializableExtra(Config.EXTRA_USER);
+                setUser(user);
+            }
+        }
+    }
+
+    private void setUser(User user) {
+        mEmailView.setText(user.getUsername());
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -375,8 +417,10 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
             showProgress(false);
 
             if (success) {
+                Intent intent = new Intent(LoginActivity.this, ExploreActivity.class);
+                startActivity(intent);
                 finish();
-
+                return;
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -389,5 +433,7 @@ public class LoginActivity extends BaseActivity implements LoaderManager.LoaderC
             showProgress(false);
         }
     }
+
+
 
 }

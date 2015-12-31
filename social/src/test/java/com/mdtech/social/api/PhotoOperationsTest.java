@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
+import java.math.BigInteger;
 
 import static org.junit.Assert.*;
 
@@ -37,7 +38,7 @@ public class PhotoOperationsTest extends AbstractOperationsTest {
     @Test
     public void testGet() {
         String id = "26494372977652047572995979284";
-        Photo photo = photoOperations.get(id);
+        Photo photo = photoOperations.get(new BigInteger(id));
         assertNotNull(photo);
     }
 

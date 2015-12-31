@@ -50,10 +50,8 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class UserListFragment extends AbstractListFragment {
     private static final String TAG = makeLogTag(UserListFragment.class);
 
-
-
     public static Fragment newInstance(HereApi api, BigInteger id){
-        return newInstance(new UserListFragment(), api, id);
+        return newInstance(new UserListFragment(), id);
     }
 
     @Override

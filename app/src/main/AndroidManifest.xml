@@ -53,12 +53,18 @@
             android:name=".account.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".explore.ExploreActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.Here.Account" />
+        <activity
+            android:name=".account.SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:parentActivityName=".account.LoginActivity"
+            android:theme="@style/Theme.Here.Account" />
         <activity
             android:name=".user.UserActivity"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".explore.ExploreActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".explore.AlbumSearchActivity"
             android:configChanges="orientation|screenSize"
@@ -69,6 +75,7 @@
         <activity
             android:name=".explore.CameraActivity"
             android:label="@string/title_activity_camera"
+            android:parentActivityName=".explore.ExploreActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -77,6 +84,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".album.PhotoViewActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!--
             Because android:exported is set to "false",
             the service is only available to this app.
