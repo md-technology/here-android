@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
 import com.mdtech.here.album.AlbumActivity;
+import com.mdtech.here.album.TrackActivity;
 import com.mdtech.here.service.PhotoPublishService;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.util.AccountUtils;
@@ -186,7 +187,8 @@ public class ExploreActivity extends BaseActivity {
 
     public Dialog onGetPictureDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        final CharSequence[] items = { "Take Photo", "Choose from Library",
+                "New track", "Cancel" };
         builder.setTitle("Select")
                 .setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -194,7 +196,9 @@ public class ExploreActivity extends BaseActivity {
                             CameraActivity.openTakePicture(ExploreActivity.this);
                         } else if (items[which].equals(items[1])) {
                             CameraActivity.openPickImage(ExploreActivity.this);
-                        } else if (items[which].equals(items[2])) {
+                        } else if(items[which].equals(items[2])) {
+                            TrackActivity.open(ExploreActivity.this);
+                        } else if (items[which].equals(items[3])) {
                             dialog.dismiss();
                         }
                     }

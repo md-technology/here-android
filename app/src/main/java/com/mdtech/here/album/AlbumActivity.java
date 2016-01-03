@@ -202,6 +202,7 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
             return true;
         }
     }
+
     private void addLocalGeoJSON() {
         ObjectMapper deserializer = new ObjectMapper();
         try {

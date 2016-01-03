@@ -17,6 +17,8 @@
 package com.mdtech.here.util;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 /**
  * TODO insert class's header comments
@@ -32,4 +34,8 @@ public class UIUtils {
         return 0;
     }
 
+    public static void makeSnackbar(View v, String text ) {
+        Snackbar.make(v, text, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
 }

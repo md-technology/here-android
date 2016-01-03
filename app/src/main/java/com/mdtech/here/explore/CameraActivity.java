@@ -379,7 +379,7 @@ public class CameraActivity extends BaseActivity {
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
             @Override
             public void onLocationChanged(android.location.Location location) {
                 setLocation(location);
