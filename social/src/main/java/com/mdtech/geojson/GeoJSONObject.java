@@ -16,17 +16,24 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/16/2015.
  */
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-public abstract class GeoJSONObject {
+//@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public abstract class GeoJSONObject implements Serializable {
 
     // ------------------------------------------------------------------------
     // Public Constants
@@ -75,4 +82,27 @@ public abstract class GeoJSONObject {
     public void setProperties(JsonNode properties) {
         this.properties = properties;
     }
+
+    public void setProperties(Properties properties) throws IOException {
+        if(null == properties) {
+            this.properties = null;
+            return;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        // Properties object -> String
+        String ps = objectMapper.writeValueAsString(properties);
+        // String -> JsonNode
+        JsonNode jsonNode = objectMapper.readValue(ps, JsonNode.class);
+        // set JsonNode to GeoJSON properties
+        setProperties(jsonNode);
+    }
+
+    public <T> T getProperties(Class<T> c) throws IOException {
+        if(null == this.properties) {
+            return null;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(this.properties.toString(), c);
+    }
+
 }

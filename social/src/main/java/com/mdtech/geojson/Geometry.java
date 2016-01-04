@@ -16,11 +16,13 @@
 
 package com.mdtech.geojson;
 
+import java.io.Serializable;
+
 /**
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/16/2015.
  */
-public interface Geometry<T extends Iterable<?>> {
+public interface Geometry<T extends Iterable<?>> extends Serializable {
 
     public static final String TYPE_POINT = "Point";
 
@@ -35,8 +37,6 @@ public interface Geometry<T extends Iterable<?>> {
     public static final String TYPE_MULTI_POLYGON = "MultiPolygon";
 
     public static final String TYPE_GEOMETRY_COLLECTION = "GeometryCollection";
-
-
 
     String getType();
 

@@ -16,6 +16,7 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class Point implements Geometry<List<Double>> {
         return Arrays.asList(new Double[]{Double.valueOf(this.mPosition.getLongitude()), Double.valueOf(this.mPosition.getLatitude()), Double.valueOf(this.mPosition.getAltitude())});
     }
 
+    @JsonIgnore
     public Position getPosition() {
         return mPosition;
     }

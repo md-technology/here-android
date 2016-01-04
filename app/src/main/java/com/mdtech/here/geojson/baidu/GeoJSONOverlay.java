@@ -22,6 +22,8 @@ import android.os.AsyncTask;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.Overlay;
@@ -30,6 +32,7 @@ import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.mdtech.geojson.Feature;
 import com.mdtech.geojson.FeatureCollection;
@@ -56,6 +59,7 @@ import java.util.List;
  */
 public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> implements IGeoJSONOverlay {
 
+    protected Callback listener;
     protected BaiduMap map;
     private GeoJSONObject source;
 
@@ -64,6 +68,13 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     private List<List<PolygonOptions>> multiPolygons = new ArrayList<List<PolygonOptions>>();
     private List<PolylineOptions> polylines = new ArrayList<PolylineOptions>();
     private List<List<PolylineOptions>> multiPolylines = new ArrayList<List<PolylineOptions>>();
+
+    // bounds
+    private double boundsSWLat;
+    private double boundsSWLng;
+    private double boundsNELat;
+    private double boundsNELng;
+    private LatLngBounds.Builder boundsBuilder;
 
     // 初始化全局 bitmap 信息，不用时及时 recycle
     BitmapDescriptor bdA = BitmapDescriptorFactory
@@ -164,6 +175,18 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         }
     }
 
+    @Override
+    public void fitBounds() {
+        if(null != boundsBuilder && null != map) {
+            map.animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(boundsBuilder.build()));
+        }
+    }
+
+    @Override
+    public void setCallbackListener(Callback listener) {
+        this.listener = listener;
+    }
+
     private void addOverlays(List list) {
         Iterator<OverlayOptions> iterator = list.iterator();
         while (iterator.hasNext()) {
@@ -178,6 +201,8 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         options.title(style.getTitle());
 //        options.snippet(style.getDescription());
         markers.add(options);
+
+        addToBounds(covert(position));
     }
 
     /**
@@ -203,6 +228,8 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
             options.color(Color.parseColor(style.getStroke()));
         }
         polylines.add(options); //TODO style
+
+        addToBounds(points);
     }
 
     public void addLineString(LineString lineString, GeoJSONStyle style) {
@@ -245,6 +272,8 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
             }
 
             polygons.add(options);
+
+            addToBounds(latLngs);
         }
     }
 
@@ -307,5 +336,20 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     @Override
     protected void onPostExecute(GeoJSONObject geoJSONObject) {
         draw();
+        this.listener.onPostDraw();
+    }
+
+    private void addToBounds(LatLng latLng) {
+        if(null == boundsBuilder) {
+            boundsBuilder = new LatLngBounds.Builder();
+        }
+        boundsBuilder.include(latLng);
+    }
+
+    private void addToBounds(List<LatLng> latLngs) {
+        Iterator<LatLng> iterator = latLngs.iterator();
+        while (iterator.hasNext()) {
+            addToBounds(iterator.next());
+        }
     }
 }

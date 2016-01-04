@@ -16,6 +16,7 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.springframework.util.Assert;
@@ -54,6 +55,7 @@ public class MultiPolygon implements Geometry<Iterable<Iterable<Iterable<Iterabl
         return list;
     }
 
+    @JsonIgnore
     public List<Polygon> getPolygons() {
         return coordinates;
     }

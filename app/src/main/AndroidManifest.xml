@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature android:name="android.hardware.camera" android:required="true" />
 
-
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
@@ -26,10 +25,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--android:value="n9tQvUFKOfi9N5pvhpwt8PM8"-->
+        <!--android:value="nYrkcvvOhDhGH1fVlz4zEdDi"-->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="nYrkcvvOhDhGH1fVlz4zEdDi"
+            android:value="n9tQvUFKOfi9N5pvhpwt8PM8"
             />
 
         <activity

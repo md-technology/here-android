@@ -16,6 +16,7 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.springframework.util.Assert;
@@ -76,6 +77,7 @@ public class Polygon implements Geometry<Iterable<Iterable<Iterable<Double>>>> {
                 ObjectUtils.nullSafeEquals(this.coordinates, ((Polygon)obj).coordinates));
     }
 
+    @JsonIgnore
     public List<Ring> getRings() {
         return coordinates;
     }

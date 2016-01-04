@@ -16,6 +16,7 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.springframework.util.Assert;
@@ -67,6 +68,7 @@ public class MultiPoint implements Geometry<Iterable<Iterable<Double>>> {
         return coordinates;
     }
 
+    @JsonIgnore
     public List<Position> getPositions() {
         return points;
     }

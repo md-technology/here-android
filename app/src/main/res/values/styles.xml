@@ -71,4 +71,29 @@
 
         <item name="colorButtonNormal">@color/primary_darker</item>
     </style>
+
+    <!-- 时间计时器文本样式 -->
+    <style name="TextTimer" parent="@android:style/TextAppearance">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/app_primary_accent</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="TrackList" parent="@android:style/TextAppearance">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/app_primary_accent</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="TrackList.Title" parent="TrackList">
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="TrackList.SecondTitle" parent="TrackList">
+        <item name="android:textColor">@color/app_secondary_accent</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    TrackListSecondTitle
 </resources>

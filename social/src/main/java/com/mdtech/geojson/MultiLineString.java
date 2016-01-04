@@ -16,6 +16,7 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.springframework.util.Assert;
@@ -76,6 +77,7 @@ public class MultiLineString implements Geometry<Iterable<Iterable<Iterable<Doub
                 ObjectUtils.nullSafeEquals(this.coordinates, ((MultiLineString)obj).coordinates));
     }
 
+    @JsonIgnore
     public List<LineString> getLineStrings() {
         return coordinates;
     }

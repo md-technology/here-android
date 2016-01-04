@@ -35,8 +35,6 @@ public class Feature extends GeoJSONObject {
 
     private Geometry geometry;
 
-    public Feature() {}
-
     public Feature(Geometry geometry) {
         this.geometry = geometry;
     }

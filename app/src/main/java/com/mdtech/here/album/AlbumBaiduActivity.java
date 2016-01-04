@@ -84,7 +84,6 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_album);
 
         // map

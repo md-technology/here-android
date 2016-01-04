@@ -30,6 +30,10 @@ import java.io.InputStream;
  */
 public interface IGeoJSONOverlay {
 
+    interface Callback {
+       void onPostDraw();
+    }
+
     /**
      * 添加到一个map上
      *
@@ -77,4 +81,15 @@ public interface IGeoJSONOverlay {
      *
      */
     void draw();
+
+    /**
+     * 地图适应此overlay大小
+     */
+    void fitBounds();
+
+    /**
+     *
+     * @param listener
+     */
+    void setCallbackListener(Callback listener);
 }

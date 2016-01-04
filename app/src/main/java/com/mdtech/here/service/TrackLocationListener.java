@@ -5,6 +5,7 @@ import android.location.LocationListener;
 import android.location.LocationProvider;
 import android.os.Bundle;
 
+import com.mdtech.here.BuildConfig;
 import com.mdtech.here.dao.ArchiveMeta;
 import com.mdtech.here.dao.Archiver;
 
@@ -63,7 +64,7 @@ public class TrackLocationListener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         // Save fitted location into database
-        if (filter(location)) {
+        if (BuildConfig.ENABLE_DEBUG_TOOLS || filter(location)) {
             locationCache.put(System.currentTimeMillis(), location);
             if (locationCache.size() > CACHE_SIZE) {
                 flushCache();

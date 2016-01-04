@@ -17,6 +17,7 @@
 package com.mdtech.geojson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.logging.Log;
@@ -74,13 +75,15 @@ public class FeatureCollectionTest {
     @Test
     public void testFeatureDeserializer() throws IOException {
         ObjectMapper deserializer = new ObjectMapper();
-        String result = "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[13.0,12.0,0.0]}}";
+        String result = "{\"type\":\"Feature\",\"properties\":{\"name\":\"test name\", \"style\":{\"color\":\"green\"}},\"geometry\":{\"type\":\"Point\",\"coordinates\":[13.0,12.0,0.0]}}";
 
         Feature feature = deserializer.readValue(result, Feature.class);
 
         log.info(feature.getType());
         log.info(feature.getGeometry().getType());
         log.info(feature.getGeometry().getCoordinates());
+        log.info(feature.getProperties().get("name").asText());
+        log.info(feature.getProperties().get("style").get("color").asText());
     }
 
     @Test
@@ -179,6 +182,68 @@ public class FeatureCollectionTest {
         log.info(out);
     }
 
+    @Test
+    public void testPropertiesDeserializer() throws IOException {
+        ObjectMapper deserializer = new ObjectMapper();
+        String result = "{\"type\":\"Feature\",\"properties\":{\"title\":\"test name\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[13.0,12.0,0.0]}}";
 
+        // String -> GeoJSON object
+        Feature feature = deserializer.readValue(result, Feature.class);
 
+        // JsonNode -> Properties object
+        Properties properties = deserializer.readValue(feature.getProperties().toString(), Properties.class);
+        log.info(properties.title);
+//
+        properties.title = "red";
+        // Properties object -> String
+        String ps = deserializer.writeValueAsString(properties);
+        // String -> JsonNode
+        JsonNode jsonNode = deserializer.readValue(ps, JsonNode.class);
+        // set back JsonNode to GeoJSON object
+        feature.setProperties(jsonNode);
+        String fs = deserializer.writeValueAsString(feature);
+
+        log.info(fs);
+    }
+
+    @Test
+    public void testProperties() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Point p = new Point(11, 12);
+        Feature feature = new Feature(p);
+        com.mdtech.geojson.Properties properties = new com.mdtech.geojson.Properties();
+        properties.title = "test properties title";
+        properties.fill = "#FFFFFF";
+
+        feature.setProperties(properties);
+
+        String fs = objectMapper.writeValueAsString(feature);
+
+        log.info(fs);
+    }
+
+    @Test
+    public void testExtendsProperties() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TrackProperties properties = new TrackProperties();
+
+        properties.title = "test extends properties";
+        properties.distance = 1001L;
+
+        Point p = new Point(11, 12);
+        Feature feature = new Feature(p);
+        feature.setProperties(properties);
+
+        String fs = objectMapper.writeValueAsString(feature);
+
+        log.info(fs);
+
+        Feature f2 = objectMapper.readValue(fs, Feature.class);
+        TrackProperties tp2 = objectMapper.readValue(f2.getProperties().toString(), TrackProperties.class);
+        Assert.assertEquals("something is error", properties.distance, tp2.distance);
+    }
+
+    public static class TrackProperties extends Properties {
+        public Long distance;
+    }
 }
