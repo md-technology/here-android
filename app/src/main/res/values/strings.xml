@@ -39,7 +39,18 @@
     <string name="search_hint_album">搜索专辑</string>
 
     <!-- Track -->
+    <string name="track_recording">Recording</string>
+    <string name="track_recording_info">Is recording</string>
+    <string name="track_km">km</string>
+    <string name="track_kmh">km/h</string>
+    <string name="track_average_speed">AVG.</string>
+    <string name="track_max_speed">MAX</string>
     <string name="track_formatter">%02.1f</string>
+    <string name="track_time_format">MM/dd HH:mm</string>
+    <string name="track_distance">Distance</string>
+    <string name="track_records">Records</string>
+    <string name="track_start_time">Start time</string>
+    <string name="track_end_time">End time</string>
     <string name="track_not_available">--</string>
     <string name="track_no_description">Empty Description</string>
 </resources>

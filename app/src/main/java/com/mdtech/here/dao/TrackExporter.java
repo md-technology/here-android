@@ -56,6 +56,7 @@ public class TrackExporter {
 
         TrackProperties properties = new TrackProperties();
         properties.stroke = "#FF26C6DA";
+        properties.strokeWidth = 8;
         ArchiveMeta meta = archiver.getMeta();
         if(null != meta) {
             setTrackProperties(meta, properties);

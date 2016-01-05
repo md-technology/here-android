@@ -225,9 +225,13 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         addPositionsTo(positions, points);
         PolylineOptions options = new PolylineOptions().points(points);
         if(null != style.getStroke()) {
-            options.color(Color.parseColor(style.getStroke()));
+            options.color(color(style.getStroke(), style.getStrokeOpacity()));
         }
-        polylines.add(options); //TODO style
+        if(null != style.getStrokeWidth()) {
+            options.width(Integer.parseInt(style.getStrokeWidth()));
+        }
+
+        polylines.add(options);
 
         addToBounds(points);
     }
@@ -243,7 +247,7 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         while (iterator.hasNext()) {
             polylines = new ArrayList<PolylineOptions>();
             addLineStringTo(iterator.next(), polylines, style);
-            multiPolylines.add(polylines); // TODO style
+            multiPolylines.add(polylines);
         }
     }
 

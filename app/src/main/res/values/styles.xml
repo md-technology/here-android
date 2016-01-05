@@ -79,21 +79,34 @@
         <item name="android:typeface">monospace</item>
         <item name="android:textSize">30sp</item>
     </style>
-    <style name="TrackList" parent="@android:style/TextAppearance">
-        <item name="android:textStyle">bold</item>
+    <style name="Track" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/app_primary_accent</item>
-        <item name="android:typeface">monospace</item>
         <item name="android:textSize">30sp</item>
     </style>
-    <style name="TrackList.Title" parent="TrackList">
+    <style name="Track.Title" parent="Track">
+        <item name="android:typeface">monospace</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:typeface">monospace</item>
         <item name="android:textSize">30sp</item>
     </style>
-    <style name="TrackList.SecondTitle" parent="TrackList">
+    <style name="Track.SecondTitle" parent="Track">
         <item name="android:textColor">@color/app_secondary_accent</item>
         <item name="android:typeface">monospace</item>
         <item name="android:textSize">20sp</item>
     </style>
-    TrackListSecondTitle
+    <style name="Track.Item.Title" parent="Track">
+        <item name="android:textColor">@color/app_body_text_2</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="Track.Digit" parent="Track">
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textColor">@color/app_primary_accent</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="Track.Unit" parent="Track">
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/app_body_text_2</item>
+        <item name="android:layout_marginLeft">@dimen/text_space</item>
+    </style>
 </resources>

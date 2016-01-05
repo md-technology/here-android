@@ -59,13 +59,57 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.design.widget.FloatingActionButton
+<!--        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_add_white_24dp" />
+            android:src="@drawable/ic_add_white_24dp" />-->
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/fab_margin"
+            here:fab_addButtonColorNormal="@color/colorAccent"
+            here:fab_addButtonColorPressed="@color/white_pressed"
+            here:fab_addButtonPlusIconColor="@color/white"
+            here:fab_labelsPosition="right"
+            android:layout_gravity="end|bottom">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_take"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_camera_black_24dp"
+                android:tint="@color/colorIcon"
+                here:fab_colorNormal="@color/white"
+                here:fab_title="Take photo"
+                here:fab_colorPressed="@color/white_pressed"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_pick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_collections_black_24dp"
+                android:tint="@color/colorIcon"
+                here:fab_colorNormal="@color/white"
+                here:fab_title="Pick picture"
+                here:fab_colorPressed="@color/white_pressed"/>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_near_me_black_24dp"
+                android:tint="@color/colorIcon"
+                here:fab_colorNormal="@color/white"
+                here:fab_title="Track"
+                here:fab_colorPressed="@color/white_pressed"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/navdrawer"></include>

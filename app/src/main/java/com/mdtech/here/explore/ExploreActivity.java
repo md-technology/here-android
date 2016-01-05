@@ -28,7 +28,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -44,6 +43,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
 import com.mdtech.here.album.AlbumActivity;
@@ -58,6 +58,8 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import butterknife.Bind;
 
 import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.LOGE;
@@ -75,6 +77,13 @@ public class ExploreActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    @Bind(R.id.btn_take)
+    FloatingActionButton mBtnTake;
+    @Bind(R.id.btn_pick)
+    FloatingActionButton mBtnPick;
+    @Bind(R.id.btn_track)
+    FloatingActionButton mBtnTrack;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -118,13 +127,25 @@ public class ExploreActivity extends BaseActivity {
         mAdapter = new MyAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
 
-        FloatingActionButton fabBtn = (FloatingActionButton)findViewById(R.id.fab);
-        fabBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGetPictureDialog(savedInstanceState).show();
-            }
-        });
+        mBtnTake.setOnClickListener(this);
+        mBtnPick.setOnClickListener(this);
+        mBtnTrack.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
+            case R.id.btn_take:
+                CameraActivity.openTakePicture(ExploreActivity.this);
+                break;
+            case R.id.btn_pick:
+                CameraActivity.openPickImage(ExploreActivity.this);
+                break;
+            case R.id.btn_track:
+                TrackActivity.open(ExploreActivity.this);
+                break;
+        }
     }
 
     void onItemsLoadComplete() {
@@ -185,7 +206,7 @@ public class ExploreActivity extends BaseActivity {
         }
     }
 
-    public Dialog onGetPictureDialog(Bundle savedInstanceState) {
+    /*public Dialog onGetPictureDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "New track", "Cancel" };
@@ -204,6 +225,5 @@ public class ExploreActivity extends BaseActivity {
                     }
                 });
         return builder.create();
-    }
-
+    }*/
 }

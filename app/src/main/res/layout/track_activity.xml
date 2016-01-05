@@ -9,75 +9,82 @@
     tools:context=".album.TrackActivity"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
-<android.support.design.widget.CoordinatorLayout
-    android:id="@+id/main_content"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:orientation="vertical">
-        <FrameLayout android:id="@+id/fl_container_map"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="200dp"></FrameLayout>
-        <TextView android:id="@+id/tv_cost_time"
-            style="@style/TextTimer"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:orientation="vertical">
+
+            <FrameLayout android:id="@+id/fl_container_map"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"></FrameLayout>
+
+            <TextView android:id="@+id/tv_cost_time"
+                style="@style/TextTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="00:00:00"
+                android:visibility="gone"/>
+
+            <include layout="@layout/track_meta"
+                android:visibility="gone"></include>
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="00:12:23"/>
-    </LinearLayout>
+            android:layout_gravity="center|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_play_arrow_white_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_play_arrow_white_24dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_pause_white_24dp"
+            android:visibility="gone"
+            />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_pause_white_24dp"
-        android:visibility="gone"
-        />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_stop_white_24dp"
+            android:visibility="gone"
+            />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_stop_white_24dp"
-        android:visibility="gone"
-        />
-
-</android.support.design.widget.CoordinatorLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/track_act_alt_drawer_layout"></include>
 </android.support.v4.widget.DrawerLayout>

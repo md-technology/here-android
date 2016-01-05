@@ -47,9 +47,12 @@
     <dimen name="divider_padding_top">7dp</dimen>
     <dimen name="divider_padding_bottom">8dp</dimen>
 
+    <dimen name="text_space">5dp</dimen>
+
     <!-- Map elements -->
     <integer name="map_photo_marker_width">120</integer>
 
     <dimen name="publish_photo_thumbnail_size">96dp</dimen>
 
+    <item name="ic_alpha" format="float" type="dimen">0.5</item>
 </resources>

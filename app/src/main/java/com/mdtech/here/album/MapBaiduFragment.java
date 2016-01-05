@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.here.R;
@@ -40,7 +41,8 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  * TODO insert class's header comments
  * Created by Tiven.wang on 1/4/2016.
  */
-public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment implements MapFragment, IGeoJSONOverlay.Callback {
+public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment
+        implements MapFragment, IGeoJSONOverlay.Callback {
     private static final String TAG = makeLogTag(MapBaiduFragment.class);
 
     private FeatureCollection mData;
@@ -65,9 +67,6 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment implement
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         LOGD(TAG, "Saved state: " + outState);
-        if(null != mData) {
-            outState.putSerializable(ARG_GEOJSON, mData);
-        }
     }
 
     @Override
@@ -92,7 +91,6 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment implement
         return mMapView;
     }
 
-
     @Override
     public void addGeoJSON(FeatureCollection geoJSON) {
         mData = geoJSON;
@@ -103,11 +101,27 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment implement
 
     @Override
     public void clear() {
-        mBaiduMap.clear();
+        if(null != mBaiduMap) {
+            mBaiduMap.clear();
+        }
+    }
+
+    @Override
+    public void fitBounds() {
     }
 
     @Override
     public void onPostDraw() {
-        mGeoJSONOverlay.fitBounds();
+        if(null != mBaiduMap && null != mGeoJSONOverlay) {
+            mGeoJSONOverlay.fitBounds();
+        }
     }
+
+    @Override
+    public void onPause() {
+        mGeoJSONOverlay = null;
+        mBaiduMap = null;
+        super.onPause();
+    }
+
 }

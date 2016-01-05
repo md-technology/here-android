@@ -40,4 +40,9 @@ public interface MapFragment {
      * 清除地图上所有的覆盖物overlays
      */
     void clear();
+
+    /**
+     * 地图适应覆盖物大小
+     */
+    void fitBounds();
 }

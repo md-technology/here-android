@@ -34,7 +34,7 @@ public class Properties implements Serializable {
     public String description;
 
     @JsonProperty("marker-size")
-    public String markerSize;
+    public Integer markerSize;
     @JsonProperty("marker-symbol")
     public String markerSymbol;
     @JsonProperty("marker-color")
@@ -42,13 +42,13 @@ public class Properties implements Serializable {
 
     public String stroke;
     @JsonProperty("stroke-opacity")
-    public String strokeOpacity;
+    public Float strokeOpacity;
     @JsonProperty("stroke-width")
-    public String strokeWidth;
+    public Integer strokeWidth;
 
     public String fill;
     @JsonProperty("fill-opacity")
-    public String fillOpacity;
+    public Float fillOpacity;
 
 
 }

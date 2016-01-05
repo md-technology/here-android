@@ -15,78 +15,105 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="15dp"
-    android:paddingBottom="20dp"
-    >
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/distance_layout"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_centerVertical="true"
-        android:gravity="bottom"
-        >
+    <!-- this view reveals when swipe left -->
+    <RelativeLayout
+        android:tag="reveal-left"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TrackList.Title"
-            android:text="19.9"
-            android:id="@+id/distance"
-            android:layout_marginRight="2dp"
-            />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:tint="@color/white"
+            android:src="@drawable/ic_delete_black_24dp"/>
+    </RelativeLayout>
 
-        <TextView android:layout_width="wrap_content"
+    <!-- this is the item front view -->
+    <RelativeLayout
+        android:tag="front"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:paddingBottom="20dp">
+        <LinearLayout
+            android:id="@+id/distance_layout"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TrackList.SecondTitle"
-            android:text="公里"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:gravity="bottom"
+            >
 
-    <LinearLayout
-        android:layout_toLeftOf="@id/distance_layout"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:layout_marginRight="15dp"
-        android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Track.Title"
+                android:text="19.9"
+                android:id="@+id/distance"
+                android:layout_marginRight="2dp"
+                />
 
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/description"
-            android:textSize="18sp"
-            android:text="On my way home"
-            android:singleLine="true"
-            />
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Track.SecondTitle"
+                android:text="公里"/>
+        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/cost_time_layout"
-            android:layout_marginTop="5dp"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/description"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:layout_toLeftOf="@id/distance_layout"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_marginRight="15dp"
             android:layout_height="wrap_content">
 
-            <ImageView android:src="@drawable/ic_access_time_black_24dp"
-                android:layout_marginRight="5dp"
+            <TextView android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:alpha="0.5"
+                android:id="@+id/description"
+                android:textSize="18sp"
+                android:text="On my way home"
+                android:singleLine="true"
                 />
 
-            <TextView
-                android:id="@+id/cost_time"
+            <LinearLayout
+                android:id="@+id/cost_time_layout"
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:33:223"
-                style="@style/TrackList.SecondTitle"
-                />
+                android:layout_below="@id/description"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
 
+                <ImageView android:src="@drawable/ic_access_time_black_24dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:alpha="0.5"
+                    />
+
+                <TextView
+                    android:id="@+id/cost_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:33:223"
+                    style="@style/Track.SecondTitle"
+                    />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/divider" />
+</FrameLayout>

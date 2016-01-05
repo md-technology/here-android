@@ -77,6 +77,83 @@ public class Recorder extends Service {
     private TimerTask notifierTask;
     private Timer timer = null;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        this.context = getApplicationContext();
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        this.nameHelper = new ArchiveNameHelper(context);
+//        this.helper = new Helper(context);
+        if (serviceBinder == null) {
+            serviceBinder = new ServiceBinder();
+        }
+
+        boolean alreadyStarted = (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING);
+        if(alreadyStarted) {
+            serviceBinder.resetStatus();
+            serviceBinder.startRecord();
+        }
+
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notification = new Notification.Builder(context);
+        notification.setOngoing(true);
+        notification.setSmallIcon(R.drawable.ic_my_location_white_24dp);
+        notification.setContentTitle("track title");
+        notification.setContentText("track text");
+        notification.setContentInfo("track info");
+        Intent intent = new Intent(context, TrackActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notifier);
+        notification.setContentIntent(contentIntent);
+//        notification.setContent(contentView);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // For each start request, send a message to start a job and deliver the
+        // start ID so we know which request we're stopping when we finish the job
+
+        // If we get killed, after returning from here, restart
+        return START_STICKY;
+    }
+
+    private void notificationPublish(float distance, double avgSpeed, double maxSpeed, String costTime) {
+        //实例化Notification
+        String title = getString(R.string.track_recording) + " " +
+                String.format(getString(R.string.track_formatter), distance) + getString(R.string.track_km);
+        notification.setContentTitle(title);
+
+        String text = getString(R.string.track_average_speed) +
+                String.format(getString(R.string.track_formatter), avgSpeed) + getString(R.string.track_kmh)
+                + " " + getString(R.string.track_max_speed)
+                + String.format(getString(R.string.track_formatter), maxSpeed)
+                + getString(R.string.track_kmh);
+        notification.setContentText(text);
+        notification.setContentInfo(costTime);
+        Notification noti = notification.build();
+        noti.flags = Notification.FLAG_NO_CLEAR;
+        notificationManager.notify(NOTIFICATION_ID, noti);
+    }
+
+    private void notificationCancel() {
+        notificationManager.cancel(NOTIFICATION_ID);
+    }
+
+    @Override
+    public void onDestroy() {
+        serviceBinder.stopRecord();
+        super.onDestroy();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return serviceBinder;
+    }
+
     public class ServiceBinder extends android.os.Binder implements Binder {
         ServiceBinder() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -154,8 +231,9 @@ public class Recorder extends Service {
                                 float distance = meta.getDistance() / ArchiveMeta.TO_KILOMETRE;
                                 double avgSpeed = meta.getAverageSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
                                 double maxSpeed = meta.getMaxSpeed() * ArchiveMeta.KM_PER_HOUR_CNT;
+                                String costTime = meta.getCostTimeStringByNow();
 
-                                notificationPublish();
+                                notificationPublish(distance, avgSpeed, maxSpeed, costTime);
                                 break;
 
                             case ServiceBinder.STATUS_STOPPED:
@@ -266,68 +344,5 @@ public class Recorder extends Service {
         public Location getLastRecord() {
             return archiver.getLastRecord();
         }
-    }
-
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        this.context = getApplicationContext();
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        this.nameHelper = new ArchiveNameHelper(context);
-//        this.helper = new Helper(context);
-        if (serviceBinder == null) {
-            serviceBinder = new ServiceBinder();
-        }
-
-//        boolean autoStart = sharedPreferences.getBoolean(Preference.AUTO_START, false);
-//        boolean alreadyStarted = (serviceBinder.getStatus() == ServiceBinder.STATUS_RECORDING);
-//
-//        if (autoStart || alreadyStarted) {
-//            if (alreadyStarted) {
-//                serviceBinder.resetStatus();
-//            }
-//            serviceBinder.startRecord();
-//        }
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notification = new Notification.Builder(context);
-        notification.setOngoing(true);
-        notification.setSmallIcon(R.drawable.ic_add_black_24dp);
-        notification.setContentTitle("test title");
-        notification.setContentText("test text");
-        notification.setContentInfo("test info");
-        Intent intent = new Intent(context, TrackActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notifier);
-        notification.setContentIntent(contentIntent);
-//        notification.setContent(contentView);
-    }
-
-    private void notificationPublish() {
-        //实例化Notification
-        long when = System.currentTimeMillis();
-//        Notification notification = new Notification(R.drawable.ic_add_black_24dp, "test", when);
-        Notification noti = notification.build();
-        noti.flags = Notification.FLAG_NO_CLEAR;
-        notificationManager.notify(NOTIFICATION_ID, noti);
-    }
-
-    private void notificationCancel() {
-        notificationManager.cancel(NOTIFICATION_ID);
-    }
-
-    @Override
-    public void onDestroy() {
-        serviceBinder.stopRecord();
-        super.onDestroy();
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return serviceBinder;
     }
 }
