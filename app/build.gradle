@@ -13,6 +13,8 @@ android {
 
         buildConfigField("boolean", "ENABLE_DEBUG_TOOLS", "true")
         buildConfigField("String", "INPERSON_TIMEZONE", "\"${inperson_timezone}\"")
+        buildConfigField("String", "DEFAULT_GPS_MINTIME", "\"${default_gps_mintime}\"")
+        buildConfigField("String", "DEFAULT_GPS_MINDISTANCE", "\"${default_gps_mindistance}\"")
     }
 
     packagingOptions {
@@ -63,5 +65,5 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.commit451:PhotoView:1.2.4'
-    compile 'com.getbase:floatingactionbutton:1.10.1'
+//    compile 'com.getbase:floatingactionbutton:1.10.1'
 }

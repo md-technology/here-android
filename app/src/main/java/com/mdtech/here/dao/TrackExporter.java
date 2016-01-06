@@ -21,6 +21,7 @@ import android.location.Location;
 import com.mdtech.geojson.Feature;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.geojson.LineString;
+import com.mdtech.geojson.Point;
 import com.mdtech.geojson.Position;
 import com.mdtech.here.geojson.TrackProperties;
 
@@ -81,8 +82,14 @@ public class TrackExporter {
 
     private Feature makeLineString() {
         List<Location> locations = archiver.fetchAll();
-        if(locations.size() < 2) {
+        if(locations.size() == 0) {
             return null;
+        }
+        if(locations.size() < 2) {
+            // 一个点就显示为起点
+            Location loc = locations.get(0);
+            Point point = new Point(new Position(loc.getLongitude(), loc.getLatitude(), loc.getAltitude()));
+            return new Feature(point);
         }
         Iterator<Location> iterator = locations.iterator();
         List<Position> points = new ArrayList<Position>(locations.size());

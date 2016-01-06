@@ -16,53 +16,31 @@
 
 package com.mdtech.here.explore;
 
-import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mdtech.here.R;
-import com.mdtech.here.account.LoginActivity;
-import com.mdtech.here.album.AlbumActivity;
 import com.mdtech.here.album.TrackActivity;
-import com.mdtech.here.service.PhotoPublishService;
 import com.mdtech.here.ui.BaseActivity;
-import com.mdtech.here.util.AccountUtils;
-import com.mdtech.social.api.model.Photo;
-
-import java.io.File;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import butterknife.Bind;
 
-import static com.mdtech.here.util.LogUtils.LOGD;
-import static com.mdtech.here.util.LogUtils.LOGE;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -78,6 +56,8 @@ public class ExploreActivity extends BaseActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
     @Bind(R.id.btn_take)
     FloatingActionButton mBtnTake;
     @Bind(R.id.btn_pick)
@@ -92,6 +72,7 @@ public class ExploreActivity extends BaseActivity {
         setContentView(R.layout.activity_explore);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -127,6 +108,7 @@ public class ExploreActivity extends BaseActivity {
         mAdapter = new MyAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
 
+        mFab.setOnClickListener(this);
         mBtnTake.setOnClickListener(this);
         mBtnPick.setOnClickListener(this);
         mBtnTrack.setOnClickListener(this);
@@ -138,14 +120,70 @@ public class ExploreActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.btn_take:
                 CameraActivity.openTakePicture(ExploreActivity.this);
+                animateButton();
                 break;
             case R.id.btn_pick:
                 CameraActivity.openPickImage(ExploreActivity.this);
+                animateButton();
                 break;
             case R.id.btn_track:
                 TrackActivity.open(ExploreActivity.this);
+                animateButton();
+                break;
+            case R.id.fab:
+                animateButton();
                 break;
         }
+    }
+
+    private boolean isExpand = false;
+
+    private void animateButton() {
+        if(isExpand) {
+            animateButton(mBtnTake, 3);
+            animateButton(mBtnPick, 2);
+            animateButton(mBtnTrack, 1);
+            isExpand = false;
+        }else {
+            animateButton(mBtnTake, 3);
+            animateButton(mBtnPick, 2);
+            animateButton(mBtnTrack, 1);
+            isExpand = true;
+        }
+    }
+
+    private void animateButton(final FloatingActionButton btn, int value) {
+
+        long mShortAnimationDuration = 300;
+        if(isExpand) {
+            btn.animate().translationY(0).alpha(0)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            btn.setVisibility(View.GONE);
+                        }
+                    });
+        }else {
+            btn.animate().alphaBy(0)
+                    .translationY(value * -200).alpha(1)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            btn.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            btn.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
+
     }
 
     void onItemsLoadComplete() {

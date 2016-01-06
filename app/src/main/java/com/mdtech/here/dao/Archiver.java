@@ -92,7 +92,6 @@ public class Archiver {
     public Archiver(Context context) {
         this.context = context;
         this.locations = new ArrayList<Location>();
-
     }
 
     public Archiver(Context context, String name) {

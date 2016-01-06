@@ -144,6 +144,9 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         mFabFinish.setOnClickListener(this);
     }
 
+    /**
+     * 设置右边栏track列表
+     */
     private void setupTrackList() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -155,18 +158,21 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         mSwipeToAction = new SwipeToAction(mRecyclerView, new SwipeToAction.SwipeListener<Archiver>() {
             @Override
             public boolean swipeLeft(final Archiver itemData) {
-                final int pos = removeArchiver(itemData);
-                displaySnackbar(itemData.getName() + " removed", "Undo", new View.OnClickListener() {
+                closeDrawer();
+//                final int pos = removeArchiver(itemData);
+                displaySnackbar(getString(R.string.track_remove) + "? " + itemData.getName(),
+                        getString(R.string.confirm_yes), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        addArchiver(pos, itemData);
+//                        addArchiver(pos, itemData);
+                        removeArchiver(itemData);
                     }
                 }, new Snackbar.Callback() {
                     public void onDismissed(Snackbar snackbar, @DismissEvent int event) {
                         // empty
-                        if(archives.indexOf(itemData)==-1) {
-                            itemData.delete();
-                        }
+//                        if(archives.indexOf(itemData)==-1) {
+//                            itemData.delete();
+//                        }
                     }
                 });
                 return true;
@@ -174,7 +180,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
 
             @Override
             public boolean swipeRight(Archiver itemData) {
-                displaySnackbar(itemData.getName() + " loved", null, null, null);
+                displaySnackbar(itemData.getName() + " uploading", null, null, null);
                 return true;
             }
 
@@ -262,12 +268,14 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
     }
 
     private boolean finishTrack() {
-        mFabStart.setVisibility(View.VISIBLE);
-        mFabStop.setVisibility(View.GONE);
-        mFabFinish.setVisibility(View.GONE);
         if (isRecording && mServiceBinder != null) {
             mServiceBinder.stopRecord();
             notifyUpdateView();
+        }
+        updateRecording(false);
+        Archiver archiver = mServiceBinder.getArchive();
+        if(archiver.exists()) {
+            insertArchiver(archiver);
         }
         return true;
     }
@@ -356,9 +364,20 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         closeArchives();
     }
 
-    private void displayArchiver(Archiver archiver) {
+    /**
+     * 关闭右边栏
+     */
+    private void closeDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.END);
+    }
+
+    /**
+     * 显示某个track
+     * @param archiver
+     */
+    private void displayArchiver(Archiver archiver) {
+        closeDrawer();
         if(isRecording) {
             displaySnackbar(getString(R.string.track_recording_info), null, null, null);
             return;
@@ -381,6 +400,13 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
     }
 
     private void addArchiverToMap(Archiver archiver) {
+        // 先清空地图
+        mMapFragment.clear();
+        mLayoutMeta.setVisibility(View.VISIBLE);
+        archiveMeta = archiver.getMeta();
+        if(archiveMeta.getCount() < 1) {
+            return;
+        }
         FeatureCollection featureCollection = new TrackExporter(archiver).execute();
 
 //        ObjectMapper serializer = new ObjectMapper();
@@ -391,11 +417,8 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
 //            e.printStackTrace();
 //        }
 //        LOGE(TAG, out);
-        // 先清空地图
-        mMapFragment.clear();
+
         mMapFragment.addGeoJSON(featureCollection);
-        mLayoutMeta.setVisibility(View.VISIBLE);
-        archiveMeta = archiver.getMeta();
         setArchiveMeta(archiveMeta);
     }
 
@@ -412,10 +435,29 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         while (iterator.hasNext()) {
             String name = iterator.next();
             Archiver archive = new Archiver(mContext, name);
+            archives.add(archive);
+//            if (archive.getMeta().getCount() > 0) {
+//
+//            }
+        }
+    }
 
-            if (archive.getMeta().getCount() > 0) {
-                archives.add(archive);
+    private boolean insertArchiver(Archiver archiver) {
+        Iterator<Archiver> iterator = archives.iterator();
+        boolean exist = false;
+        while (iterator.hasNext()) {
+            if(iterator.next().getName().equals(archiver.getName())) {
+                exist = true;
+                break;
             }
+        }
+
+        if(exist) {
+            return false;
+        }else {
+            archives.add(0, new Archiver(mContext, archiver.getName()));
+            mAdapter.notifyDataSetChanged();
+            return true;
         }
     }
 
@@ -448,7 +490,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         }
         View v = snack.getView();
         ((TextView) v.findViewById(android.support.design.R.id.snackbar_text)).setTextColor(Color.WHITE);
-        ((TextView) v.findViewById(android.support.design.R.id.snackbar_action)).setTextColor(Color.BLACK);
+        ((TextView) v.findViewById(android.support.design.R.id.snackbar_action)).setTextColor(getResources().getColor(R.color.colorAccent));
 
         snack.show();
     }
@@ -469,6 +511,10 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
     @Bind(R.id.layout_meta)
     View mLayoutMeta;
 
+    /**
+     * 设置pane各属性值
+     * @param meta
+     */
     private void setArchiveMeta(ArchiveMeta meta) {
         mLayoutMeta.setVisibility(View.VISIBLE);
         String formatter = getString(R.string.track_formatter);
@@ -493,6 +539,10 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         }
     }
 
+    /**
+     * 更新pane显示
+     * @param isRecording
+     */
     private void updateRecording(boolean isRecording) {
         this.isRecording = isRecording;
         if(isRecording) {
@@ -508,6 +558,9 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         }
     }
 
+    /**
+     * 设置定时刷新info pane
+     */
     private void scheduleRefreshUI() {
         stopRefreshUI();
         updateViewTimer = new Timer();
@@ -525,6 +578,11 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         updateViewTimer.purge();
     }
 
+    /**
+     * 从列表中删除track，并删除本地暂存track文件
+     * @param archiver
+     * @return
+     */
     private int removeArchiver(Archiver archiver) {
         archiver.delete();
         int pos = archives.indexOf(archiver);
@@ -533,6 +591,11 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         return pos;
     }
 
+    /**
+     * 添加track到右边栏列表位置
+     * @param pos
+     * @param archiver
+     */
     private void addArchiver(int pos, Archiver archiver) {
         archives.add(pos, archiver);
         mAdapter.notifyItemInserted(pos);

@@ -20,7 +20,7 @@ public class GpsStatusListener implements GpsStatus.Listener {
                 break;
 
             case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                LOGI(TAG, "GPS EVENT SATELLITE STATUS.");
+                LOGI(TAG, "GPS event satellite status.");
                 break;
 
             case GpsStatus.GPS_EVENT_STOPPED:

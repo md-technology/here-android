@@ -34,11 +34,14 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class SettingsUtils {
     private static final String TAG = makeLogTag(SettingsUtils.class);
 
+    public static final String PREF_GPS_MINTIME = "pref_gps_mintime";
+    public static final String PREF_GPS_MINDISTANCE = "pref_gps_mindistance";
+
     /**
      * This is changed each year to effectively reset certain preferences that should be re-asked
      * each year. Note, res/xml/settings_prefs.xml must be updated when this value is updated.
      */
-    private static final String CONFERENCE_YEAR_PREF_POSTFIX = "_2015";
+    private static final String CONFERENCE_YEAR_PREF_POSTFIX = "_2016";
 
     /**
      * Boolean preference indicating the user would like to see times in their local timezone

@@ -20,10 +20,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.widget.RemoteViews;
 
+import com.mdtech.here.BuildConfig;
 import com.mdtech.here.R;
 import com.mdtech.here.album.TrackActivity;
 import com.mdtech.here.dao.ArchiveMeta;
 import com.mdtech.here.dao.Archiver;
+import com.mdtech.here.settings.SettingsUtils;
 import com.mdtech.here.util.UIUtils;
 
 import java.io.File;
@@ -41,17 +43,28 @@ interface Binder {
     public static final int STATUS_RECORDING = 0x0000;
     public static final int STATUS_STOPPED = 0x1111;
 
-    public void startRecord();
+    /**
+     * require startLocate()
+     */
+    void startRecord();
 
-    public void stopRecord();
+    void stopRecord();
 
-    public int getStatus();
+    int getStatus();
 
-    public ArchiveMeta getMeta();
+    ArchiveMeta getMeta();
 
-    public Archiver getArchive();
+    Archiver getArchive();
 
-    public Location getLastRecord();
+    Location getLastRecord();
+
+    void startLocate();
+
+    void stopLocate();
+
+    void setCurrentLocation(Location location);
+
+    Location getCurrentLocation();
 }
 
 public class Recorder extends Service {
@@ -62,7 +75,8 @@ public class Recorder extends Service {
     private SharedPreferences sharedPreferences;
     private Archiver archiver;
 
-    private TrackLocationListener listener;
+    private TrackLocationListener gpsListener;
+    private TrackLocationListener netWorkListener;
     private GpsStatusListener statusListener;
     private LocationManager locationManager = null;
 
@@ -73,7 +87,7 @@ public class Recorder extends Service {
     private Notification.Builder notification;
 
     private static final String RECORDER_SERVER_ID = "Tracker Service";
-    private static final String PREF_STATUS_FLAG = "Tracker Service Status";
+    private static final String PREF_STATUS_FLAG = "tracker_service_status";
     private TimerTask notifierTask;
     private Timer timer = null;
 
@@ -122,6 +136,10 @@ public class Recorder extends Service {
     }
 
     private void notificationPublish(float distance, double avgSpeed, double maxSpeed, String costTime) {
+        // TODO FIX THIS BUG
+        if(null == notification) {
+            return;
+        }
         //实例化Notification
         String title = getString(R.string.track_recording) + " " +
                 String.format(getString(R.string.track_formatter), distance) + getString(R.string.track_km);
@@ -155,10 +173,13 @@ public class Recorder extends Service {
     }
 
     public class ServiceBinder extends android.os.Binder implements Binder {
+
+        private Location currentLocation;
+
         ServiceBinder() {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             archiver = new Archiver(getApplicationContext());
-            listener = new TrackLocationListener(archiver, this);
+            gpsListener = new TrackLocationListener(archiver, this);
             statusListener = new GpsStatusListener();
         }
 
@@ -171,12 +192,6 @@ public class Recorder extends Service {
 //                    helper.showLongToast(getString(R.string.external_storage_not_present));
                     return;
                 }
-
-                // 从配置文件获取距离和精度选项
-//                long minTime = Long.parseLong(sharedPreferences.getString(Preference.GPS_MINTIME,
-//                        Preference.DEFAULT_GPS_MINTIME));
-//                float minDistance = Float.parseFloat(sharedPreferences.getString(Preference.GPS_MINDISTANCE,
-//                        Preference.DEFAULT_GPS_MINDISTANCE));
 
                 // 判定是否上次为异常退出
                 boolean hasResumeName = nameHelper.hasResumeName();
@@ -197,23 +212,8 @@ public class Recorder extends Service {
                     if (!hasResumeName) {
                         getMeta().setStartTime(new Date());
                     }
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED &&
-                            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for Activity#requestPermissions for more details.
-                        LOGE(TAG, "No GPS Permission");
-                        return;
-                    }
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            0, 0, listener);
-                    locationManager.addGpsStatusListener(statusListener);
+                    // start recording
+                    requestLocationUpdates(gpsListener);
 
                     // 标记打开的文件，方便奔溃时恢复
                     nameHelper.setLastOpenedName(archivName);
@@ -268,26 +268,10 @@ public class Recorder extends Service {
         @Override
         public void stopRecord() {
             if (getStatus() == ServiceBinder.STATUS_RECORDING) {
-
                 // Flush listener cache
-                listener.flushCache();
-                // 绑定 GPS 回调
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for Activity#requestPermissions for more details.
-                    LOGE(TAG, "No GPS Permission");
-                    return;
-                }
-                locationManager.removeUpdates(listener);
-                locationManager.removeGpsStatusListener(statusListener);
+                gpsListener.flushCache();
+                // stop recording
+                removeUpdates();
 
                 ArchiveMeta meta = getMeta();
                 if(null == meta) {
@@ -343,6 +327,73 @@ public class Recorder extends Service {
         @Override
         public Location getLastRecord() {
             return archiver.getLastRecord();
+        }
+
+        private void requestLocationUpdates(TrackLocationListener listener) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                LOGE(TAG, "No GPS Permission");
+                return;
+            }
+            // 从配置文件获取距离和精度选项
+            long minTime = Long.parseLong(sharedPreferences.getString(SettingsUtils.PREF_GPS_MINTIME,
+                    BuildConfig.DEFAULT_GPS_MINTIME));
+            float minDistance = Float.parseFloat(sharedPreferences.getString(SettingsUtils.PREF_GPS_MINDISTANCE,
+                    BuildConfig.DEFAULT_GPS_MINDISTANCE));
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    minTime, minDistance, listener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    minTime, minDistance, listener);
+            locationManager.addGpsStatusListener(statusListener);
+        }
+
+        private void removeUpdates() {
+            // 绑定 GPS 回调
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                LOGE(TAG, "No GPS Permission");
+                return;
+            }
+            locationManager.removeUpdates(gpsListener);
+            locationManager.removeGpsStatusListener(statusListener);
+        }
+
+        @Override
+        public void startLocate() {
+            requestLocationUpdates(gpsListener);
+        }
+
+        @Override
+        public void stopLocate() {
+            removeUpdates();
+        }
+
+        @Override
+        public void setCurrentLocation(Location location) {
+            this.currentLocation = location;
+        }
+
+        @Override
+        public Location getCurrentLocation() {
+            return this.currentLocation;
         }
     }
 }
