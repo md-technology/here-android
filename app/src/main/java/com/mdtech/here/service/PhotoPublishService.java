@@ -18,14 +18,20 @@ package com.mdtech.here.service;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.NotificationCompat;
 
+import com.mdtech.here.R;
+import com.mdtech.here.album.TrackActivity;
+import com.mdtech.here.explore.ExploreActivity;
 import com.mdtech.here.util.FileUtils;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.PhotoOperations;
@@ -124,16 +130,36 @@ public class PhotoPublishService extends AbstractService {
             }
         };
 
-        mBuilder.setContentText("Uploading photo");
+//        Intent pIntent = new Intent(this, ExploreActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        mBuilder.setSmallIcon(R.drawable.ic_cloud_upload_white_24dp);
+        mBuilder.setOngoing(true);
+        mBuilder.setContentIntent(contentIntent);
+        mBuilder.setContentTitle("Uploading photo");
+        mBuilder.setContentText("");
+        mBuilder.setContentInfo("");
         // Sets an activity indicator for an operation of indeterminate length
-        mBuilder.setProgress(0, 0, true);
+        mBuilder.setProgress(100, 0, true);
         // Issues the notification
         mNotifyManager.notify(id, mBuilder.build());
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mBuilder.setContentTitle("Upload completed")
+//                        // Removes the progress bar
+//                        .setProgress(0, 0, false);
+//                mNotifyManager.notify(id, mBuilder.build());
+//                publishResults(null, Activity.RESULT_OK);
+//            }
+//        }, 5000);
+
         Photo photo = mPhotoOperations.upload(image, location, tags, album, is360, resource);
         publishResults(photo, Activity.RESULT_OK);
 
-        // When the loop is finished, updates the notification
-        mBuilder.setContentText("Uploading complete")
+        mBuilder.setOngoing(false);
+//         When the loop is finished, updates the notification
+        mBuilder.setContentTitle("Upload completed")
                 // Removes the progress bar
                 .setProgress(0, 0, false);
         mNotifyManager.notify(id, mBuilder.build());

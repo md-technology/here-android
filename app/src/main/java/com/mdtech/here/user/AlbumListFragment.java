@@ -86,8 +86,6 @@ public class AlbumListFragment extends AbstractListFragment {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
-            case R.id.btn_load_more:
-                break;
         }
     }
 

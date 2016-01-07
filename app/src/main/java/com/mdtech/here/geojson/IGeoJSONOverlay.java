@@ -21,6 +21,8 @@ import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.geojson.GeoJSONObject;
 import com.mdtech.geojson.LineString;
 import com.mdtech.geojson.Point;
+import com.mdtech.geojson.Position;
+import com.mdtech.geojson.Properties;
 
 import java.io.InputStream;
 
@@ -31,7 +33,7 @@ import java.io.InputStream;
 public interface IGeoJSONOverlay {
 
     interface Callback {
-       void onPostDraw();
+       void onPostDrawOverlay(IGeoJSONOverlay overlay);
     }
 
     /**
@@ -63,19 +65,7 @@ public interface IGeoJSONOverlay {
      * @param feature
      * @param style FeatureCollection style
      */
-    void addFeature(Feature feature, GeoJSONStyle style);
-
-    /**
-     *
-     * @param point
-     */
-    void addPoint(Point point, GeoJSONStyle style);
-
-    /**
-     *
-     * @param lineString
-     */
-    void addLineString(LineString lineString, GeoJSONStyle style);
+    void addFeature(Feature feature, Properties style);
 
     /**
      *
@@ -86,6 +76,13 @@ public interface IGeoJSONOverlay {
      * 地图适应此overlay大小
      */
     void fitBounds();
+
+    /**
+     * 地图适应输入bounds
+     * @param sw
+     * @param ne
+     */
+    void fitBounds(Position sw, Position ne);
 
     /**
      *

@@ -16,15 +16,23 @@
 
 package com.mdtech.social.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mdtech.geojson.Feature;
+import com.mdtech.geojson.FeatureCollection;
+import com.mdtech.geojson.Point;
+import com.mdtech.geojson.Properties;
 import com.mdtech.social.api.model.Album;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 /**
@@ -59,4 +67,29 @@ public class AlbumOperationsTest extends AbstractOperationsTest {
         log.info(album.getPhotos().size());
     }
 
+    @Test
+    public void testAddFeatures() throws IOException {
+        ObjectMapper serializer = new ObjectMapper();
+        super.login();
+        BigInteger id = new BigInteger("26750881779292192047881277021");
+        Album album = albumOperations.get(id);
+        int size = album.getFeatureCollection().getFeatures().size();
+
+        FeatureCollection featureCollection = new FeatureCollection();
+        Properties p =new Properties();
+        Point point = new Point(110.2944946, 31.47318153);
+        Feature feature = new Feature(point);
+        feature.setProperties(p);
+        featureCollection.addFeature(feature);
+
+        String s = serializer.writeValueAsString(featureCollection);
+        log.info(s);
+        try{
+            album = albumOperations.addFeatures(id, featureCollection);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Assert.assertEquals("Size is wrong", size+1, album.getFeatureCollection().getFeatures().size());
+    }
 }

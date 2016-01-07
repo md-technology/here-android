@@ -85,14 +85,12 @@ public class UserListFragment extends AbstractListFragment {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
-            case R.id.btn_load_more:
-                break;
         }
     }
 
     @Override
     protected int execLoadMoreTask() {
-        List<User> users = mApi.userOperations().getGroups(mId, pageSize, pageNo);
+        List<User> users = mApi.userOperations().getMembers(mId, pageSize, pageNo);
         mAdapter.addAll(users);
 
         return users.size();

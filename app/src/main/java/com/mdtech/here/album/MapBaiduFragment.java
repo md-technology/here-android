@@ -111,7 +111,7 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment
     }
 
     @Override
-    public void onPostDraw() {
+    public void onPostDrawOverlay(IGeoJSONOverlay overlay) {
         if(null != mBaiduMap && null != mGeoJSONOverlay) {
             mGeoJSONOverlay.fitBounds();
         }

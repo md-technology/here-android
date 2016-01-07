@@ -94,9 +94,6 @@ public class UserActivity extends BaseActivity {
         mApi = getApi();
 
         picasso = new Picasso.Builder(this).build();
-
-        setupViewPager(mViewPager);
-        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -132,6 +129,8 @@ public class UserActivity extends BaseActivity {
         mUserDesc.setText(mUser.getEmail());
 
         collapsingToolbar.setTitle(mUser.getName());
+
+        setupViewPager(mViewPager);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -139,9 +138,16 @@ public class UserActivity extends BaseActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(PhotoListFragment.newInstance(mApi, mUserId), "图片");
         adapter.addFrag(AlbumListFragment.newInstance(mApi, mUserId), "专辑");
-        adapter.addFrag(UserListFragment.newInstance(mApi, mUserId), "组");
+
+        if("group".equals(mUser.getRole())) {
+            adapter.addFrag(UserListFragment.newInstance(mApi, mUserId), "组");
+        }else {
+            adapter.addFrag(GroupListFragment.newInstance(mUserId), "组");
+        }
         adapter.addFrag(new DummyFragment(), "Map");
         viewPager.setAdapter(adapter);
+
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     class UserTask extends AsyncTask<Void, Void, User> {

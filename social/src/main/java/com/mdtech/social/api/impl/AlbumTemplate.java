@@ -16,6 +16,7 @@
 
 package com.mdtech.social.api.impl;
 
+import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.social.api.AlbumOperations;
 import com.mdtech.social.api.model.Album;
 
@@ -39,5 +40,10 @@ public class AlbumTemplate extends AbstractPonmapOperations implements AlbumOper
     @Override
     public Album get(BigInteger id) {
         return this.restTemplate.getForObject(BASE_API_URL + "/album/{id}", Album.class, id);
+    }
+
+    @Override
+    public Album addFeatures(BigInteger id, FeatureCollection featureCollection) {
+        return this.restTemplate.postForObject(BASE_API_URL + "/album/{id}/fc", featureCollection, Album.class, id);
     }
 }

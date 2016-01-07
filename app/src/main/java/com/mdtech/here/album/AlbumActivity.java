@@ -32,6 +32,7 @@ import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.geojson.Point;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.geojson.IGeoJSONOverlay;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.Album;
@@ -50,13 +51,16 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/14/2015.
  */
-public abstract class AlbumActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public abstract class AlbumActivity extends BaseActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        IGeoJSONOverlay.Callback{
     private static final String TAG = makeLogTag(AlbumActivity.class);
 
     // Identifies a particular Loader being used in this component
     private static final int ALBUM_LOADER = 0;
 
     private BigInteger mAlbumId;
+    protected Album mAlbum;
 
     private HereApi mApi;
 
@@ -128,6 +132,7 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putCharSequence(Config.EXTRA_ALBUM_ID, mAlbumId.toString());
     }
 
 //    @Override
@@ -158,6 +163,7 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
         protected void onPostExecute(final Album album) {
             if(null != album ) {
                 LOGD(TAG, "Loaded album " + album.getName());
+                mAlbum = album;
 
                 if(null != album.getFeatureCollection()) {
                     addGeoJSON(album.getFeatureCollection());
@@ -168,6 +174,7 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
                         addPhoto(iterator.next());
                     }
                 }
+                onPostDrawPhoto();
             }
         }
 
@@ -219,5 +226,7 @@ public abstract class AlbumActivity extends BaseActivity implements NavigationVi
                 new LocalGeoJSONTask().execute();
         }
     }
+
+    protected abstract void onPostDrawPhoto();
 
 }

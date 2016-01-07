@@ -9,6 +9,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,6 +82,12 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
     @Override
     public User get(BigInteger id) {
         User user = restTemplate.getForObject(BASE_API_URL + PATH + "/" + id, User.class);
+        // TODO
+        if(user.getMembers() != null && user.getMembers().size() > 0) {
+            user.setRole("group");
+        }else {
+            user.setRole("user");
+        }
         return user;
     }
 
@@ -106,6 +113,21 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
     public List<User> getGroups(BigInteger id, Integer pageSize, Integer pageNo) {
         return restTemplate.getForObject(
                 buildUri(PATH + "/" + id + "/groups", getPagableParams(pageSize, pageNo)), UserList.class);
+    }
+
+    @Override
+    public List<User> getMembers(BigInteger id, Integer pageSize, Integer pageNo) {
+        // TODO no implementation in server
+        User user = get(id);
+        int fromIndex = pageNo*pageSize;
+        int toIndex = (pageNo+1)*pageSize;
+        if(null == user.getMembers() || fromIndex+1 > user.getMembers().size()) {
+            return new ArrayList<User>();
+        }
+        if(toIndex>user.getMembers().size()) {
+            toIndex = user.getMembers().size();
+        }
+        return user.getMembers().subList(fromIndex, toIndex);
     }
 
     private MultiValueMap<String, String> getPagableParams(Integer pageSize, Integer pageNo) {

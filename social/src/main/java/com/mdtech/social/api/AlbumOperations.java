@@ -16,6 +16,7 @@
 
 package com.mdtech.social.api;
 
+import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.social.api.model.Album;
 
 import java.math.BigInteger;
@@ -31,4 +32,12 @@ public interface AlbumOperations {
      * @return
      */
     Album get(BigInteger id);
+
+    /**
+     * 向专辑中添加feature，feature有id的为更新
+     * @param id
+     * @param featureCollection
+     * @return
+     */
+    Album addFeatures(BigInteger id, FeatureCollection featureCollection);
 }

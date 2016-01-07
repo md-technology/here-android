@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -42,12 +43,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.service.PhotoPublishService;
 import com.mdtech.here.ui.BaseActivity;
-import com.mdtech.here.user.UserActivity;
-import com.mdtech.here.util.AccountUtils;
 import com.mdtech.here.util.FileUtils;
 import com.mdtech.here.util.MapUtils;
 import com.mdtech.social.api.model.Album;
@@ -75,6 +73,7 @@ public class CameraActivity extends BaseActivity {
 
     private Uri photoUri;
     private int photoSize;
+    private boolean mUploading = false;
 
     // number of images to select
     static final int REQUEST_PICK_IMAGE = 1;
@@ -87,7 +86,7 @@ public class CameraActivity extends BaseActivity {
     @Bind(R.id.iv_photo)
     ImageView ivPhoto;
     @Bind(R.id.fab)
-    ImageButton btnUpload;
+    ImageButton mBtnUpload;
     @Bind(R.id.et_title)
     TextView etTitle;
     @Bind(R.id.et_description)
@@ -121,6 +120,9 @@ public class CameraActivity extends BaseActivity {
         openingActivity.startActivity(intent);
     }
 
+    /**
+     * 接收上传结果消息
+     */
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -129,11 +131,11 @@ public class CameraActivity extends BaseActivity {
                 Photo photo = (Photo) bundle.getSerializable(PhotoPublishService.ARG_PHOTO);
                 int resultCode = bundle.getInt(PhotoPublishService.ARG_RESULT);
                 if (resultCode == RESULT_OK) {
-
-                    Snackbar.make(CameraActivity.this.btnUpload, "Uploaded: " + photo.getId(), Snackbar.LENGTH_LONG)
+                    Snackbar.make(CameraActivity.this.mBtnUpload, "Uploaded: " + photo.getId(), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 } else {
-                    Snackbar.make(CameraActivity.this.btnUpload, "Upload fail", Snackbar.LENGTH_LONG)
+                    updateUploadUI(false);
+                    Snackbar.make(CameraActivity.this.mBtnUpload, "Upload fail", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             }
@@ -157,7 +159,7 @@ public class CameraActivity extends BaseActivity {
 
         photoSize = getResources().getDimensionPixelSize(R.dimen.publish_photo_thumbnail_size);
 
-        btnUpload.setOnClickListener(this);
+        mBtnUpload.setOnClickListener(this);
         btnAlbum.setOnClickListener(this);
         btnLocation.setOnClickListener(this);
 
@@ -230,9 +232,7 @@ public class CameraActivity extends BaseActivity {
                 startActivity(new Intent(this, AlbumSearchActivity.class));
                 break;
             case R.id.fab:
-                uploadPhoto();
-                Snackbar.make(v, "uploading", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                uploadPhoto(v);
                 break;
             default:
         }
@@ -328,7 +328,7 @@ public class CameraActivity extends BaseActivity {
                 updateAlbum(id);
             }
         }
-        else if(null == photoUri){
+        else if(requestCode == REQUEST_PICK_IMAGE || requestCode == REQUEST_TAKE_PICTURE){
             finish();
         }
     }
@@ -352,7 +352,7 @@ public class CameraActivity extends BaseActivity {
     /**
      * 上传图片
      */
-    private void uploadPhoto() {
+    private void uploadPhoto(View v) {
         Image image = new Image();
         image.setTitle(etTitle.getText().toString());
         image.setDescription(etDescription.getText().toString());
@@ -361,11 +361,26 @@ public class CameraActivity extends BaseActivity {
         HashSet<String> tags = new HashSet<String>();
 
         if(null == mAlbum) {
-            Snackbar.make(this.btnUpload, "专辑不能为空", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, getString(R.string.info_album_empty), Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return;
         }
+        if(null == location) {
+            location = new Location();
+        }
+        updateUploadUI(true);
         PhotoPublishService.startService(this, image, location, tags, mAlbum.getId().toString(), false, photoUri);
+        Snackbar.make(v, getString(R.string.info_uploading), Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    private void updateUploadUI(boolean uploading) {
+        mUploading = uploading;
+        if(uploading) {
+            mBtnUpload.setClickable(false);
+        }else {
+            mBtnUpload.setClickable(true);
+        }
     }
 
     /**

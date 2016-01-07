@@ -121,7 +121,7 @@ public class Recorder extends Service {
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notifier);
+//        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notifier);
         notification.setContentIntent(contentIntent);
 //        notification.setContent(contentView);
     }

@@ -18,8 +18,10 @@ package com.mdtech.here.user;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +35,7 @@ import android.widget.ImageView;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.album.PhotoViewActivity;
+import com.mdtech.here.explore.CameraActivity;
 import com.mdtech.here.ui.AbstractListFragment;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.ui.OnRcvScrollListener;
@@ -44,6 +47,8 @@ import com.squareup.picasso.Picasso;
 import java.math.BigInteger;
 import java.util.List;
 
+import butterknife.Bind;
+
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -52,6 +57,8 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
  */
 public class PhotoListFragment extends AbstractListFragment {
     private static final String TAG = makeLogTag(PhotoListFragment.class);
+
+
 
     public static Fragment newInstance(HereApi api, BigInteger id){
         return newInstance(new PhotoListFragment(), id);
@@ -87,6 +94,10 @@ public class PhotoListFragment extends AbstractListFragment {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
+            case R.id.fab:
+                CameraActivity.openTakePicture(getActivity());
+                getActivity().finish();
+                break;
         }
     }
 
@@ -97,7 +108,7 @@ public class PhotoListFragment extends AbstractListFragment {
         return photos.size();
     }
 
-    public static class PhotoListAdapter extends AbstractListFragment.MyAdapter<Photo, PhotoListAdapter.ViewHolder> {
+    public class PhotoListAdapter extends AbstractListFragment.MyAdapter<Photo, PhotoListAdapter.ViewHolder> {
         public PhotoListAdapter(Context context, Picasso picasso) {
             super(context, picasso);
         }
@@ -131,9 +142,10 @@ public class PhotoListFragment extends AbstractListFragment {
 
         // Replace the contents of a view (invoked by the layout manager)
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             Photo photo = mDataset.get(position);
             holder.mEntity = photo;
+//            loadPhoto(photo, holder.mView);
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
             picasso.load(((BaseActivity)mContext).getUrlFromOssKey(
@@ -150,6 +162,8 @@ public class PhotoListFragment extends AbstractListFragment {
                                     .setDuration(400)
                                     .setStartDelay(200)
                                     .start();
+//                            mAdapter.notifyItemChanged(position);
+//                            uiHandler.dispatchMessage(uiHandler.obtainMessage(MESSAGE_UPDATE, position));
                         }
 
                         @Override
@@ -159,4 +173,35 @@ public class PhotoListFragment extends AbstractListFragment {
         }
 
     }
+//
+//    private void loadPhoto(Photo photo, final ImageView view) {
+//        picasso.load(((BaseActivity)this.getActivity()).getUrlFromOssKey(
+//                photo.getOssKey(), Config.OSS_STYLE_PREVIEW_SM))
+//                .into(view, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        view.animate()
+//                                .alphaBy(0.5f)
+//                                .alpha(1.f)
+//                                .scaleXBy(0.8f).scaleYBy(0.8f)
+//                                .scaleX(1.f).scaleY(1.f)
+//                                .setInterpolator(new OvershootInterpolator())
+//                                .setDuration(400)
+//                                .setStartDelay(200)
+//                                .start();
+//                        (new AsyncTask() {
+//                            @Override
+//                            protected Object doInBackground(Object[] params) {
+//                                mAdapter.notifyDataSetChanged();
+//                                return null;
+//                            }
+//                        }).execute();
+//
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                    }
+//                });
+//    }
 }

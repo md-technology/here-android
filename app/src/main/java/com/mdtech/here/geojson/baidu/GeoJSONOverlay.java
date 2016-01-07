@@ -22,11 +22,9 @@ import android.os.AsyncTask;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.DotOptions;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.PolylineOptions;
@@ -44,25 +42,28 @@ import com.mdtech.geojson.MultiPolygon;
 import com.mdtech.geojson.Point;
 import com.mdtech.geojson.Polygon;
 import com.mdtech.geojson.Position;
+import com.mdtech.geojson.Properties;
 import com.mdtech.geojson.Ring;
 import com.mdtech.here.R;
-import com.mdtech.here.geojson.GeoJSONStyle;
+import com.mdtech.here.geojson.AbstractGeoJSONOverlay;
 import com.mdtech.here.geojson.IGeoJSONOverlay;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.mdtech.here.util.LogUtils.makeLogTag;
+
 /**
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/11/2015.
  */
-public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> implements IGeoJSONOverlay {
+public class GeoJSONOverlay extends AbstractGeoJSONOverlay {
+    private static final String TAG = makeLogTag(GeoJSONOverlay.class);
 
-    protected Callback listener;
     protected BaiduMap map;
-    private GeoJSONObject source;
 
+    private List<DotOptions> dots = new ArrayList<DotOptions>();
     private List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
     private List<PolygonOptions> polygons = new ArrayList<PolygonOptions>();
     private List<List<PolygonOptions>> multiPolygons = new ArrayList<List<PolygonOptions>>();
@@ -70,10 +71,6 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     private List<List<PolylineOptions>> multiPolylines = new ArrayList<List<PolylineOptions>>();
 
     // bounds
-    private double boundsSWLat;
-    private double boundsSWLng;
-    private double boundsNELat;
-    private double boundsNELng;
     private LatLngBounds.Builder boundsBuilder;
 
     // 初始化全局 bitmap 信息，不用时及时 recycle
@@ -89,9 +86,10 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         converter.from(CoordinateConverter.CoordType.GPS);
     }
 
-    public GeoJSONOverlay(FeatureCollection featureCollection) {
-        this();
-        setSource(featureCollection);
+    public GeoJSONOverlay(FeatureCollection geoJSON) {
+        super(geoJSON);
+        // 设置坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
     }
 
     public void addTo(BaiduMap map) {
@@ -110,49 +108,10 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     }
 
     @Override
-    public void setSource(GeoJSONObject geoJSONObject) {
-        this.source = geoJSONObject;
-    }
-
-    @Override
-    public void addFeature(Feature feature) {
-
-        addFeature(feature, null);
-    }
-
-    @Override
-    public void addFeature(Feature feature, GeoJSONStyle geoJSONStyle) {
-        Geometry geometry = feature.getGeometry();
-        GeoJSONStyle style;
-        if(null != geoJSONStyle) {
-            style = geoJSONStyle.extend(feature.getProperties());
-        }else {
-            style = new GeoJSONStyle(feature.getProperties());
-        }
-
-        switch (geometry.getType()) {
-            case Geometry.TYPE_POINT:
-                addPoint((Point)geometry, style);
-                break;
-            case Geometry.TYPE_MULTI_POINT:
-                break;
-            case Geometry.TYPE_LINE_STRING:
-                addLineString((LineString)geometry, style);
-                break;
-            case Geometry.TYPE_MULTI_LINE_STRING:
-                addMultiLineString((MultiLineString) geometry, style);
-                break;
-            case Geometry.TYPE_POLYGON:
-                addPolygon((Polygon) geometry, style);
-                break;
-            case Geometry.TYPE_MULTI_POLYGON:
-                addMultiPolygon((MultiPolygon) geometry, style);
-                break;
-        }
-    }
-
-    @Override
     public void draw() {
+        if(dots.size() > 0) {
+            addOverlays(dots);
+        }
         if(markers.size() > 0) {
             addOverlays(markers);
         }
@@ -183,26 +142,12 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
     }
 
     @Override
-    public void setCallbackListener(Callback listener) {
-        this.listener = listener;
-    }
+    public void fitBounds(Position sw, Position ne) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(new LatLng(sw.getLatitude(), sw.getLongitude()));
+        builder.include(new LatLng(ne.getLatitude(), ne.getLongitude()));
 
-    private void addOverlays(List list) {
-        Iterator<OverlayOptions> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            map.addOverlay(iterator.next());
-        }
-    }
-
-    private void addMarker(Position position, GeoJSONStyle style) {
-        MarkerOptions options = new MarkerOptions()
-                .position(covert(position))
-                .icon(bdA);
-        options.title(style.getTitle());
-//        options.snippet(style.getDescription());
-        markers.add(options);
-
-        addToBounds(covert(position));
+        map.animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
     }
 
     /**
@@ -215,20 +160,46 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
                 .convert();
     }
 
-    public void addPoint(Point point, GeoJSONStyle style) {
-        addMarker(point.getPosition(), style);
+    private void addOverlays(List list) {
+        Iterator<OverlayOptions> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            map.addOverlay(iterator.next());
+        }
     }
 
-    private void addLineStringTo(LineString lineString, List<PolylineOptions> polylines, GeoJSONStyle style) {
+    @Override
+    protected void addMarker(Position position, Properties style) {
+        MarkerOptions options = new MarkerOptions()
+                .position(covert(position))
+                .icon(bdA);
+        options.title(style.title);
+//        options.snippet(style.getDescription());
+        markers.add(options);
+
+        addToBounds(covert(position));
+    }
+
+    @Override
+    protected void addPoint(Position position, Properties style) {
+        DotOptions dotOptions = new DotOptions()
+                .center(covert(position)).color(color(style.stroke, style.strokeOpacity))
+                .radius(style.strokeWidth);
+
+        dots.add(dotOptions);
+
+        addToBounds(covert(position));
+    }
+
+    private void addLineStringTo(LineString lineString, List<PolylineOptions> polylines, Properties style) {
         List<Position> positions = lineString.getPositions();
         ArrayList<LatLng> points = new ArrayList<LatLng>();
         addPositionsTo(positions, points);
         PolylineOptions options = new PolylineOptions().points(points);
-        if(null != style.getStroke()) {
-            options.color(color(style.getStroke(), style.getStrokeOpacity()));
+        if(null != style.stroke) {
+            options.color(color(style.stroke, style.strokeOpacity));
         }
-        if(null != style.getStrokeWidth()) {
-            options.width(Integer.parseInt(style.getStrokeWidth()));
+        if(null != style.strokeWidth) {
+            options.width(style.strokeWidth);
         }
 
         polylines.add(options);
@@ -236,11 +207,13 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         addToBounds(points);
     }
 
-    public void addLineString(LineString lineString, GeoJSONStyle style) {
+    @Override
+    public void addLineString(LineString lineString, Properties style) {
         addLineStringTo(lineString, polylines, style);
     }
 
-    public void addMultiLineString(MultiLineString multiLineString, GeoJSONStyle style) {
+    @Override
+    public void addMultiLineString(MultiLineString multiLineString, Properties style) {
         List<LineString> lineStrings =  multiLineString.getLineStrings();
         Iterator<LineString> iterator = lineStrings.iterator();
         List<PolylineOptions> polylines;
@@ -260,7 +233,7 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         }
     }
 
-    private void addPolygonTo(Polygon polygon, List<PolygonOptions> polygons, GeoJSONStyle style) {
+    private void addPolygonTo(Polygon polygon, List<PolygonOptions> polygons, Properties style) {
         List<Ring> rings = polygon.getRings();
         Iterator<Ring> iterator = rings.iterator();
         ArrayList<LatLng> latLngs;
@@ -268,11 +241,11 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
             latLngs = new ArrayList<>();
             addPositionsTo(iterator.next().getPositions(), latLngs);
             PolygonOptions options = new PolygonOptions().points(latLngs);
-            if(null != style.getFill()) {
-                options.fillColor(color(style.getFill(), style.getFillOpacity()));
+            if(null != style.fill) {
+                options.fillColor(color(style.fill, style.fillOpacity));
             }
-            if (null != style.getStroke()) {
-                options.stroke(new Stroke(Integer.parseInt(style.getStrokeWidth()), color(style.getStroke(), style.getStrokeOpacity())));
+            if (null != style.stroke) {
+                options.stroke(new Stroke(style.strokeWidth, color(style.stroke, style.strokeOpacity)));
             }
 
             polygons.add(options);
@@ -281,20 +254,20 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         }
     }
 
-    private int color(String color, String opacity) {
+    private int color(String color, Float opacity) {
         int c = Color.parseColor(color);
         int alpha = 0;
         if(null != opacity) {
-            alpha = Math.round(Float.parseFloat(opacity)*255);
+            alpha = Math.round(opacity*255);
         }
         return Color.argb(alpha, Color.red(c), Color.green(c), Color.blue(c));
     }
 
-    public void addPolygon(Polygon polygon, GeoJSONStyle style) {
+    public void addPolygon(Polygon polygon, Properties style) {
         addPolygonTo(polygon, polygons, style);
     }
 
-    public void addMultiPolygon(MultiPolygon multiPolygon, GeoJSONStyle style) {
+    public void addMultiPolygon(MultiPolygon multiPolygon, Properties style) {
         List<PolygonOptions> polygons;
         Iterator<Polygon> iterator = multiPolygon.getPolygons().iterator();
         while (iterator.hasNext()) {
@@ -302,45 +275,6 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
             addPolygonTo(iterator.next(), polygons, style);
             multiPolygons.add(polygons);
         }
-    }
-
-    private GeoJSONStyle getDefaultStyle() {
-        // default style
-        GeoJSONStyle style = new GeoJSONStyle();
-        style.setFill("blue");
-        style.setFillOpacity("0.3");
-        style.setStroke("blue");
-        style.setStrokeOpacity("0.8");
-        style.setStrokeWidth("2");
-        return style;
-    }
-
-    public void addFeatureCollection(FeatureCollection featureCollection) {
-        GeoJSONStyle style = getDefaultStyle().extend(featureCollection.getProperties());
-        Iterator<Feature> featureIterator = featureCollection.getFeatures().iterator();
-        while (featureIterator.hasNext()) {
-            addFeature(featureIterator.next(), style);
-        }
-    }
-
-    @Override
-    protected GeoJSONObject doInBackground(Void... params) {
-        switch (source.getType()) {
-            case GeoJSONObject.TYPE_FEATURE_COLLECTION:
-                addFeatureCollection((FeatureCollection) source);
-                break;
-            case GeoJSONObject.TYPE_FEATURE:
-                addFeature((Feature) source);
-                break;
-            default:
-        }
-        return source;
-    }
-
-    @Override
-    protected void onPostExecute(GeoJSONObject geoJSONObject) {
-        draw();
-        this.listener.onPostDraw();
     }
 
     private void addToBounds(LatLng latLng) {
@@ -355,5 +289,13 @@ public class GeoJSONOverlay extends AsyncTask<Void, Void, GeoJSONObject> impleme
         while (iterator.hasNext()) {
             addToBounds(iterator.next());
         }
+    }
+
+    public LatLngBounds.Builder getBoundsBuilder() {
+        return boundsBuilder;
+    }
+
+    public void setBoundsBuilder(LatLngBounds.Builder boundsBuilder) {
+        this.boundsBuilder = boundsBuilder;
     }
 }

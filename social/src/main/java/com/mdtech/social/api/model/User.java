@@ -12,6 +12,8 @@ import java.util.Set;
  */
 public class User implements Serializable {
 
+    private String role;
+
     private BigInteger id;
 
     // 系统用户名
@@ -167,5 +169,13 @@ public class User implements Serializable {
 
     public void setMembers(UserList members) {
         this.members = members;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

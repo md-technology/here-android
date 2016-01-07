@@ -34,14 +34,14 @@ public interface UserOperations {
     UserProfile getHereProfile();
 
     /**
-     *
+     * 获取用户
      * @param id
      * @return
      */
     User get(BigInteger id);
 
     /**
-     *
+     * 获取用户的图片
      * @param id
      * @param pageSize
      * @param pageNo
@@ -51,7 +51,7 @@ public interface UserOperations {
 
 
     /**
-     *
+     * 获取用户的专辑
      * @param id
      * @param pageSize
      * @param pageNo
@@ -60,11 +60,20 @@ public interface UserOperations {
     List<Album> getAlbums(BigInteger id, Integer pageSize, Integer pageNo);
 
     /**
-     *
+     * 获取用户所在组
      * @param id
      * @param pageSize
      * @param pageNo
      * @return
      */
     List<User> getGroups(BigInteger id, Integer pageSize, Integer pageNo);
+
+    /**
+     *
+     * @param id
+     * @param pageSize
+     * @param pageNo
+     * @return
+     */
+    List<User> getMembers(BigInteger id, Integer pageSize, Integer pageNo);
 }

@@ -3,6 +3,9 @@ package com.mdtech.here.ui;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,6 +14,8 @@ import android.widget.Button;
 import com.mdtech.here.AppApplication;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.service.Recorder;
+import com.mdtech.here.util.AccountUtils;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.User;
 import com.squareup.picasso.Picasso;
@@ -20,8 +25,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+import static com.mdtech.here.util.LogUtils.LOGI;
+
 /**
- * Created by Xiaoniu on 2015/12/25.
+ * TODO insert class's header comments
+ * Created by Tiven.wang on 12/25/2015.
  */
 public abstract class AbstractListFragment extends Fragment implements View.OnClickListener {
 
@@ -41,6 +52,9 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
     protected MyAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
 
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
+
     public static Fragment newInstance(AbstractListFragment fragment, BigInteger id){
         Bundle bundle = new Bundle();
         bundle.putSerializable(Config.ARG_ENTITY_ID, id);
@@ -52,11 +66,17 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button button = (Button) view.findViewById(R.id.btn_load_more);
-        button.setOnClickListener(this);
+        ButterKnife.bind(this, view);
+
+//        Button button = (Button) view.findViewById(R.id.btn_load_more);
+//        button.setOnClickListener(this);
 
         mId = (BigInteger) getArguments().getSerializable(Config.ARG_ENTITY_ID);
 
+        if(null != mId && mId.toString().equals(AccountUtils.getHereProfileId(getActivity()))) {
+            mFab.setVisibility(View.VISIBLE);
+            mFab.setOnClickListener(this);
+        }
         mRecyclerView.addOnScrollListener(new OnRcvScrollListener() {
             @Override
             public void onLoadMore(int current_page) {
@@ -67,16 +87,32 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
         picasso = new Picasso.Builder(getActivity()).build();
         AppApplication app = (AppApplication)getActivity().getApplicationContext();
         mApi = app.getConnectionRepository().getPrimaryConnection(HereApi.class).getApi();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadMore();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_load_more:
-                loadMore();
-                break;
+
         }
     }
+
+//    protected static final int MESSAGE_UPDATE = 1;
+//    protected Handler uiHandler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case MESSAGE_UPDATE:
+//                    mAdapter.notifyItemChanged(msg.arg1);
+//                    break;
+//            }
+//        }
+//    };
 
     /**
      * 加载更多
@@ -109,6 +145,7 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
                 return null;
             }
         }
+
         @Override
         protected void onPostExecute(final Integer size) {
             isLoading = false;

@@ -38,18 +38,22 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.geojson.IGeoJSONOverlay;
 import com.mdtech.here.geojson.baidu.GeoJSONOverlay;
 import com.mdtech.here.util.CircleTransformation;
 import com.mdtech.here.util.SquareTransformation;
+import com.mdtech.social.api.model.Location;
 import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -146,11 +150,7 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         });
     }
 
-    @Override
-    void addGeoJSON(FeatureCollection geoJSON) {
-        GeoJSONOverlay geoJSONOverlay = new GeoJSONOverlay(geoJSON);
-        geoJSONOverlay.addTo(mMapView.getMap());
-    }
+
 
     @Override
     void setMapStyleChangeListener(final ImageButton ib) {
@@ -230,6 +230,22 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
     }
 
     @Override
+    protected void onPostDrawPhoto() {
+        if(null != mAlbum.getPhotos()) {
+            Iterator<Photo> iterator = mAlbum.getPhotos().iterator();
+            while (iterator.hasNext()) {
+                Location location = iterator.next().getLocation();
+                if(null != location.getPosition()) {
+                    boundsBuilder.include(new LatLng(location.getPosition()[1], location.getPosition()[0]));
+                }
+            }
+        }
+        if(null == mAlbum.getFeatureCollection()) {
+            mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(boundsBuilder.build()));
+        }
+    }
+
+    @Override
     public boolean onMarkerClick(Marker marker) {
         Bundle bundle = marker.getExtraInfo();
         if(null != bundle) {
@@ -241,6 +257,27 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         }
 
         return false;
+    }
+
+    private LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+    private GeoJSONOverlay mGeoJSONOverlay;
+    @Override
+    void addGeoJSON(FeatureCollection geoJSON) {
+        mGeoJSONOverlay = new GeoJSONOverlay(geoJSON);
+        mGeoJSONOverlay.setCallbackListener(this);
+        mGeoJSONOverlay.addTo(mMapView.getMap());
+    }
+
+    @Override
+    public void onPostDrawOverlay(IGeoJSONOverlay overlay) {
+        if(null == mBaiduMap) {
+            return;
+        }
+        LatLngBounds.Builder builder = mGeoJSONOverlay.getBoundsBuilder();
+        LatLngBounds latLngBounds = builder.build();
+        boundsBuilder.include(latLngBounds.northeast);
+        boundsBuilder.include(latLngBounds.southwest);
+        mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(boundsBuilder.build()));
     }
 
     /**

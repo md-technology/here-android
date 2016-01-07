@@ -21,6 +21,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,14 +67,25 @@ public class ExploreActivity extends BaseActivity {
     @Bind(R.id.btn_track)
     FloatingActionButton mBtnTrack;
 
+    @Bind(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_explore);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+        toolbar.setTitle(getString(R.string.app_name));
+//        setSupportActionBar(toolbar);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -137,24 +150,24 @@ public class ExploreActivity extends BaseActivity {
     }
 
     private boolean isExpand = false;
-
+    private final long mShortAnimationDuration = 300;
     private void animateButton() {
         if(isExpand) {
             animateButton(mBtnTake, 3);
             animateButton(mBtnPick, 2);
             animateButton(mBtnTrack, 1);
+            mFab.animate().rotation(0).setDuration(mShortAnimationDuration);
             isExpand = false;
         }else {
             animateButton(mBtnTake, 3);
             animateButton(mBtnPick, 2);
             animateButton(mBtnTrack, 1);
+            mFab.animate().rotation(135).setDuration(mShortAnimationDuration);
             isExpand = true;
         }
     }
 
     private void animateButton(final FloatingActionButton btn, int value) {
-
-        long mShortAnimationDuration = 300;
         if(isExpand) {
             btn.animate().translationY(0).alpha(0)
                     .setInterpolator(new DecelerateInterpolator())

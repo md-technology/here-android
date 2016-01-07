@@ -16,7 +16,9 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,6 +77,8 @@ public abstract class GeoJSONObject implements Serializable {
         return this.id;
     }
 
+    @JsonProperty("properties")
+    @JsonSerialize
     public JsonNode getProperties() {
         return properties;
     }
@@ -83,6 +87,7 @@ public abstract class GeoJSONObject implements Serializable {
         this.properties = properties;
     }
 
+    @JsonIgnore
     public void setProperties(Properties properties) throws IOException {
         if(null == properties) {
             this.properties = null;
@@ -97,6 +102,7 @@ public abstract class GeoJSONObject implements Serializable {
         setProperties(jsonNode);
     }
 
+    @JsonIgnore
     public <T> T getProperties(Class<T> c) throws IOException {
         if(null == this.properties) {
             return null;

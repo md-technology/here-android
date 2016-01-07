@@ -73,7 +73,7 @@
                         android:layout_width="@dimen/publish_photo_thumbnail_size"
                         android:layout_height="@dimen/publish_photo_thumbnail_size"
                         android:layout_marginRight="16dp"
-                        android:background="#eeeeee" />
+                        android:background="@color/light_content_scrim" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -86,7 +86,9 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:padding="2dp"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse" />
+                            android:hint="@string/hint_title"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                            />
                         <EditText
                             android:id="@+id/et_description"
                             android:layout_width="match_parent"
@@ -95,6 +97,7 @@
                             android:background="@android:color/transparent"
                             android:lines="4"
                             android:padding="2dp"
+                            android:hint="@string/hint_desc"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -112,19 +115,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_place_black_24dp"
+            android:backgroundTint="@color/white"
             android:layout_gravity="start"
             android:textAlignment="viewStart"
-            android:background="@android:color/transparent"
-            android:text="photo's location"
+            android:text="Locating"
             />
 
         <Button android:id="@+id/btn_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_place_black_24dp"
+            android:drawableLeft="@drawable/ic_collections_black_24dp"
+            android:backgroundTint="@color/white"
             android:layout_gravity="start"
             android:textAlignment="viewStart"
-            android:text="photo's album"
+            android:text="Album"
             />
     </LinearLayout>
 
@@ -134,7 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email"
+        android:src="@drawable/ic_cloud_upload_white_24dp"
         />
 
 </android.support.design.widget.CoordinatorLayout>
