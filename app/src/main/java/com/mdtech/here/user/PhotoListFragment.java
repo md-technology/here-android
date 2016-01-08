@@ -58,8 +58,6 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class PhotoListFragment extends AbstractListFragment {
     private static final String TAG = makeLogTag(PhotoListFragment.class);
 
-
-
     public static Fragment newInstance(HereApi api, BigInteger id){
         return newInstance(new PhotoListFragment(), id);
     }
@@ -75,7 +73,6 @@ public class PhotoListFragment extends AbstractListFragment {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this.getActivity());
         mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 

@@ -69,16 +69,17 @@ public class AlbumSearchActivity extends BaseActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_search);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Add the back button to the toolbar.
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateUpOrBack(AlbumSearchActivity.this, null);
-            }
-        });
+        setupAppbar(this);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        // Add the back button to the toolbar.
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                navigateUpOrBack(AlbumSearchActivity.this, null);
+//            }
+//        });
 
         setupSearchView();
         mResultsAdapter = new SimpleAdapter(this,

@@ -123,16 +123,17 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
 
         setContentView(R.layout.track_activity);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Add the back button to the toolbar.
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateUpOrBack(TrackActivity.this, null);
-            }
-        });
+        setupAppbar(this);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        // Add the back button to the toolbar.
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                navigateUpOrBack(TrackActivity.this, null);
+//            }
+//        });
 
         this.mContext = getApplicationContext();
         // Track list
@@ -574,8 +575,10 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
     }
 
     private void stopRefreshUI() {
-        updateViewTimer.cancel();
-        updateViewTimer.purge();
+        if(null != updateViewTimer) {
+            updateViewTimer.cancel();
+            updateViewTimer.purge();
+        }
     }
 
     /**

@@ -46,4 +46,11 @@ public class AbstractPonmapOperations {
         return URIBuilder.fromUri(BASE_API_URL + path).queryParams(parameters)
                 .build();
     }
+
+    protected MultiValueMap<String, String> getPagableParams(Integer pageSize, Integer pageNo) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+        parameters.add("pageSize", pageSize.toString());
+        parameters.add("pageNo", pageNo.toString());
+        return parameters;
+    }
 }

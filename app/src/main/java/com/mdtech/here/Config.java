@@ -24,14 +24,14 @@ import java.util.TimeZone;
  */
 public class Config {
 
-    public static final TimeZone CONFERENCE_TIMEZONE =
-            TimeZone.getTimeZone(null);
+    public enum EntityType {
+        photo,
+        album
+    }
 
-    public static final String EXTRA_USER_ID =
-            "com.mdtech.here.EXTRA_USER_ID";
+    public static final TimeZone CONFERENCE_TIMEZONE = TimeZone.getTimeZone(null);
 
-    public static final String EXTRA_ALBUM_ID =
-            "com.mdtech.here.EXTRA_ALBUM_ID";
+    public static final String EXTRA_ALBUM_ID = "com.mdtech.here.EXTRA_ALBUM_ID";
     public static final String EXTRA_USER = "com.mdtech.here.extra_user";
 
     public static final String OSS_STYLE_PREVIEW_LG = "@!photo-preview-lg";
@@ -40,6 +40,7 @@ public class Config {
 
     public static final String MARKER_PHOTO = "com.mdtech.here.photo";
 
+    public static final String ARG_ENTITY_TYPE = "com.mdtech.here.entity_type";
     public static final String ARG_ENTITY_ID = "com.mdtech.here.entity_id";
     public static final String ARG_ENTITY_PHOTO = "com.mdtech.here.entity_photo";
 

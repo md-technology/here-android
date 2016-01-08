@@ -55,6 +55,12 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
     @Bind(R.id.fab)
     FloatingActionButton mFab;
 
+    public static Fragment newInstance(AbstractListFragment fragment, Bundle bundle, BigInteger id){
+        bundle.putSerializable(Config.ARG_ENTITY_ID, id);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public static Fragment newInstance(AbstractListFragment fragment, BigInteger id){
         Bundle bundle = new Bundle();
         bundle.putSerializable(Config.ARG_ENTITY_ID, id);
@@ -70,8 +76,11 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
 
 //        Button button = (Button) view.findViewById(R.id.btn_load_more);
 //        button.setOnClickListener(this);
-
-        mId = (BigInteger) getArguments().getSerializable(Config.ARG_ENTITY_ID);
+        if(null != savedInstanceState) {
+            mId = (BigInteger) savedInstanceState.getSerializable(Config.ARG_ENTITY_ID);
+        }else {
+            mId = (BigInteger) getArguments().getSerializable(Config.ARG_ENTITY_ID);
+        }
 
         if(null != mId && mId.toString().equals(AccountUtils.getHereProfileId(getActivity()))) {
             mFab.setVisibility(View.VISIBLE);
@@ -94,6 +103,12 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
     public void onResume() {
         super.onResume();
         loadMore();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(Config.ARG_ENTITY_ID, mId);
     }
 
     @Override

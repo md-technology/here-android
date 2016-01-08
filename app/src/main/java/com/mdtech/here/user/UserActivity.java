@@ -16,6 +16,9 @@
 
 package com.mdtech.here.user;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -73,23 +76,25 @@ public class UserActivity extends BaseActivity {
     @Bind(R.id.tabs)
     TabLayout mTabLayout;
 
+    public static void open(Context openingActivity, BigInteger id) {
+        Intent intent = new Intent(openingActivity, UserActivity.class);
+        intent.putExtra(Config.ARG_ENTITY_ID, id);
+        openingActivity.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.user_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        // Add the back button to the toolbar.
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateUpOrBack(UserActivity.this, null);
-            }
-        });
+        setupAppbar(this);
 
-        mUserId = getIdFromBundle(savedInstanceState, Config.EXTRA_USER_ID);
+        if(savedInstanceState == null) {
+            mUserId = (BigInteger)getIntent().getSerializableExtra(Config.ARG_ENTITY_ID);
+        }else {
+            mUserId = (BigInteger)savedInstanceState.getSerializable(Config.ARG_ENTITY_ID);
+        }
 
         mApi = getApi();
 
@@ -99,8 +104,6 @@ public class UserActivity extends BaseActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // get user then set user
         if(null != mUserId) {
@@ -136,13 +139,13 @@ public class UserActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         viewPager.setOffscreenPageLimit(3);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(PhotoListFragment.newInstance(mApi, mUserId), "图片");
-        adapter.addFrag(AlbumListFragment.newInstance(mApi, mUserId), "专辑");
+        adapter.addFrag(PhotoListFragment.newInstance(mApi, mUserId), getString(R.string.label_photo));
+        adapter.addFrag(AlbumListFragment.newInstance(mApi, mUserId), getString(R.string.label_album));
 
         if("group".equals(mUser.getRole())) {
-            adapter.addFrag(UserListFragment.newInstance(mApi, mUserId), "组");
+            adapter.addFrag(UserListFragment.newInstance(mApi, mUserId), getString(R.string.label_member));
         }else {
-            adapter.addFrag(GroupListFragment.newInstance(mUserId), "组");
+            adapter.addFrag(GroupListFragment.newInstance(mUserId), getString(R.string.label_group));
         }
         adapter.addFrag(new DummyFragment(), "Map");
         viewPager.setAdapter(adapter);

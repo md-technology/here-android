@@ -41,6 +41,11 @@ public class CircleTransformation implements Transformation {
         this.strokeWidth = width;
     }
 
+    public CircleTransformation(@ColorInt int color, float width) {
+        this.strokeWidth = width;
+        this.color = color;
+    }
+
     public CircleTransformation(@ColorInt int color, Paint.Style style, float width) {
         this.color = color;
         this.style = style;

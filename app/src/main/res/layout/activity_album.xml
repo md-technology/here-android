@@ -34,12 +34,20 @@
 
         <include layout="@layout/app_bar" />
 
-        <LinearLayout
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="56dp">
+            android:layout_marginTop="?attr/actionBarSize">
             <include layout="@layout/content_main" />
-        </LinearLayout>
+
+            <ImageButton android:id="@+id/ib_map_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginRight="@dimen/fab_margin"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:src="@drawable/ic_map_black_24dp" />
+        </android.support.design.widget.CoordinatorLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -48,14 +56,6 @@
             android:layout_gravity="bottom|start"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_location_searching_white_24dp" />
-
-        <ImageButton android:id="@+id/ib_map_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/profile_image_size"
-            android:src="@drawable/ic_map_black_24dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 

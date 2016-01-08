@@ -35,13 +35,23 @@
     </string>
     <string name="title_activity_camera">照片</string>
 
-    <!-- ui hit -->
+    <!-- UI hit -->
     <string name="search_hint_album">搜索专辑</string>
     <string name="confirm_yes">Yes</string>
     <string name="hint_title">title</string>
     <string name="hint_desc">description</string>
+    <string name="hint_comment">comment</string>
     <string name="info_uploading">Uploading</string>
     <string name="info_album_empty">Album empty</string>
+
+    <!-- UI label -->
+    <string name="label_photo">photo</string>
+    <string name="label_album">album</string>
+    <string name="label_member">member</string>
+    <string name="label_group">group</string>
+
+    <!-- UI format -->
+    <string name="list_title_time_format">yyyy MM/dd HH:mm</string>
 
     <!-- Track -->
     <string name="track_recording">Recording</string>

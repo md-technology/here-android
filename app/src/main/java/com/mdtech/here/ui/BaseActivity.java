@@ -53,11 +53,13 @@ import com.mdtech.social.connect.HereConnectionFactory;
 import com.squareup.picasso.Picasso;
 
 import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.NotConnectedException;
 
 import java.math.BigInteger;
 
 import butterknife.ButterKnife;
 
+import static com.mdtech.here.util.LogUtils.LOGE;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -264,11 +266,7 @@ public abstract class BaseActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profile_image:
-                Intent intent = new Intent(this, UserActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putCharSequence(Config.EXTRA_USER_ID, AccountUtils.getHereProfileId(getApplicationContext()));
-                intent.putExtras(bundle);
-                startActivity(intent);
+                UserActivity.open(this, new BigInteger(AccountUtils.getHereProfileId(getApplicationContext())));
                 break;
             default:
         }
@@ -424,7 +422,14 @@ public abstract class BaseActivity extends AppCompatActivity
         if(null == mConnectionRepository) {
             mConnectionRepository = getApplicationContext().getConnectionRepository();
         }
-        return mConnectionRepository.getPrimaryConnection(HereApi.class).getApi();
+
+        try {
+            return mConnectionRepository.getPrimaryConnection(HereApi.class).getApi();
+        }catch (NotConnectedException ex) {
+            LOGE(TAG, ex.getMessage());
+            logout();
+        }
+        return null;
     }
 
     /**
@@ -434,5 +439,17 @@ public abstract class BaseActivity extends AppCompatActivity
         new LoginAndAuthHelper(this).logout();
         getApplicationContext().clearConnections();
         finish();
+    }
+
+    protected void setupAppbar(final Activity currentActivity) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateUpOrBack(currentActivity, null);
+            }
+        });
     }
 }

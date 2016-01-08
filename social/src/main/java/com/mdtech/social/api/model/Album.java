@@ -16,6 +16,7 @@
 
 package com.mdtech.social.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mdtech.geojson.FeatureCollection;
 
@@ -27,6 +28,7 @@ import java.util.Date;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/11/2015.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Album implements Serializable {
     private BigInteger id;
     private String name;

@@ -1,5 +1,6 @@
 package com.mdtech.social.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Set;
 /**
  * Created by tiwen.wang on 7/8/2015.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AbstractEntity implements Serializable {
 
     private BigInteger id;

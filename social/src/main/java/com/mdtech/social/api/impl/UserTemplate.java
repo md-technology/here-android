@@ -130,10 +130,4 @@ public class UserTemplate extends AbstractPonmapOperations implements UserOperat
         return user.getMembers().subList(fromIndex, toIndex);
     }
 
-    private MultiValueMap<String, String> getPagableParams(Integer pageSize, Integer pageNo) {
-        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
-        parameters.add("pageSize", pageSize.toString());
-        parameters.add("pageNo", pageNo.toString());
-        return parameters;
-    }
 }

@@ -47,7 +47,7 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
 
     protected Callback listener;
     protected GeoJSONObject source;
-    protected Class<Properties> propertiesClass = Properties.class;
+    protected Class<? extends Properties> propertiesClass = Properties.class;
 
     public AbstractGeoJSONOverlay() {
     }
@@ -70,11 +70,14 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
     @Override
     public void addFeature(Feature feature, Properties properties) {
         Geometry geometry = feature.getGeometry();
-        Properties style = new Properties();
+        Properties style = null;
         try {
             style = feature.getProperties(propertiesClass);
         } catch (IOException e) {
             LOGE(TAG, e.getMessage());
+        }
+        if(null == style) {
+            style = new Properties();
         }
         if(null != properties) {
             style = extendPropperties(properties, style);
@@ -206,5 +209,13 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
         }
 
         return sub;
+    }
+
+    public Class<? extends Properties> getPropertiesClass() {
+        return propertiesClass;
+    }
+
+    public void setPropertiesClass(Class<? extends Properties> propertiesClass) {
+        this.propertiesClass = propertiesClass;
     }
 }

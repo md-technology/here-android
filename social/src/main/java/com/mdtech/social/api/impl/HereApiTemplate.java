@@ -1,11 +1,13 @@
 package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.AlbumOperations;
+import com.mdtech.social.api.CommentOperations;
 import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.PhotoOperations;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.SignupOperations;
 import com.mdtech.social.api.UserOperations;
+import com.mdtech.social.api.model.Comment;
 
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,6 +24,7 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     private AlbumOperations albumOperations;
     private PanoramioOperations panoramioOperations;
     private PhotoOperations photoOperations;
+    private CommentOperations commentOperations;
 
     public HereApiTemplate(String accessToken) {
         super(accessToken);
@@ -54,6 +57,11 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     }
 
     @Override
+    public CommentOperations commentOperations() {
+        return commentOperations;
+    }
+
+    @Override
     protected FormHttpMessageConverter getFormMessageConverter() {
         FormHttpMessageConverter formHttpMessageConverter = super.getFormMessageConverter();
         formHttpMessageConverter.addPartConverter(getJsonMessageConverter());
@@ -68,11 +76,11 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     }
 
     private void initSubApis() {
-
         signupOperations = new SignupTemplate(getRestTemplate(), isAuthorized());
         userOperations = new UserTemplate(getRestTemplate(), isAuthorized());
         albumOperations = new AlbumTemplate(getRestTemplate(), isAuthorized());
         panoramioOperations = new PanoramioTemplate(getRestTemplate(), isAuthorized());
         photoOperations = new PhotoTemplate(getRestTemplate(), isAuthorized());
+        commentOperations = new CommentTemplate(getRestTemplate(), isAuthorized());
     }
 }

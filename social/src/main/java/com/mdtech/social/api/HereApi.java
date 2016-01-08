@@ -43,4 +43,9 @@ public interface HereApi extends ApiBinding, Serializable {
      */
     PhotoOperations photoOperations();
 
+    /**
+     * 评论接口
+     * @return
+     */
+    CommentOperations commentOperations();
 }

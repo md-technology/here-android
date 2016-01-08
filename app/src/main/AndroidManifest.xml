@@ -61,7 +61,6 @@
         <activity
             android:name=".user.UserActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".explore.ExploreActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
@@ -73,8 +72,8 @@
 
         <activity
             android:name=".explore.CameraActivity"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_camera"
-            android:parentActivityName=".explore.ExploreActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -93,6 +92,14 @@
         <activity
             android:name=".album.TrackActivity"
             android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.CommentsActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:launchMode="singleTop"
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />

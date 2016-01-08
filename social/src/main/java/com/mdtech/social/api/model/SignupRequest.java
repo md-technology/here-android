@@ -16,10 +16,13 @@
 
 package com.mdtech.social.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/31/2015.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SignupRequest {
     public String username;
     public String password;

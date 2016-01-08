@@ -111,12 +111,7 @@ public class UserListFragment extends AbstractListFragment {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), UserActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putCharSequence(Config.EXTRA_USER_ID, mEntity.getId().toString());
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-                ((Activity)mContext).finish();
+                UserActivity.open(v.getContext(), mEntity.getId());
             }
         }
 

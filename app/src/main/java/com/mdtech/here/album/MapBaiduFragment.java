@@ -28,6 +28,7 @@ import com.baidu.mapapi.map.MapView;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.here.R;
 import com.mdtech.here.geojson.IGeoJSONOverlay;
+import com.mdtech.here.geojson.TrackProperties;
 import com.mdtech.here.geojson.baidu.GeoJSONOverlay;
 import com.mdtech.here.ui.MapFragment;
 
@@ -95,6 +96,7 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment
     public void addGeoJSON(FeatureCollection geoJSON) {
         mData = geoJSON;
         mGeoJSONOverlay = new GeoJSONOverlay(geoJSON);
+        mGeoJSONOverlay.setPropertiesClass(TrackProperties.class);
         mGeoJSONOverlay.setCallbackListener(this);
         mGeoJSONOverlay.addTo(mMapView.getMap());
     }
