@@ -2,6 +2,7 @@ package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.AlbumOperations;
 import com.mdtech.social.api.CommentOperations;
+import com.mdtech.social.api.LikeOperations;
 import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.PhotoOperations;
 import com.mdtech.social.api.HereApi;
@@ -25,6 +26,7 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     private PanoramioOperations panoramioOperations;
     private PhotoOperations photoOperations;
     private CommentOperations commentOperations;
+    private LikeOperations likeOperations;
 
     public HereApiTemplate(String accessToken) {
         super(accessToken);
@@ -62,6 +64,11 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     }
 
     @Override
+    public LikeOperations likeOperation() {
+        return likeOperations;
+    }
+
+    @Override
     protected FormHttpMessageConverter getFormMessageConverter() {
         FormHttpMessageConverter formHttpMessageConverter = super.getFormMessageConverter();
         formHttpMessageConverter.addPartConverter(getJsonMessageConverter());
@@ -82,5 +89,6 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
         panoramioOperations = new PanoramioTemplate(getRestTemplate(), isAuthorized());
         photoOperations = new PhotoTemplate(getRestTemplate(), isAuthorized());
         commentOperations = new CommentTemplate(getRestTemplate(), isAuthorized());
+        likeOperations = new LikeTemplate(getRestTemplate(), isAuthorized());
     }
 }

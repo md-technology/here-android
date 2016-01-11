@@ -16,32 +16,46 @@
 
 package com.mdtech.here.album;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
+import com.mdtech.here.explore.AlbumSearchActivity;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.ui.CommentsActivity;
-import com.mdtech.social.api.CommentOperations;
-import com.mdtech.social.api.HereApi;
+import com.mdtech.here.util.SocialAsyncTask;
+import com.mdtech.social.api.*;
+import com.mdtech.social.api.Error;
+import com.mdtech.social.api.model.Album;
+import com.mdtech.social.api.model.EntityType;
+import com.mdtech.social.api.model.Like;
 import com.mdtech.social.api.model.Photo;
 import com.squareup.picasso.Callback;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
+import static com.mdtech.here.util.LogUtils.LOGE;
+import static com.mdtech.here.util.LogUtils.LOGI;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -67,13 +81,20 @@ public class PhotoViewActivity extends BaseActivity implements PhotoViewAttacher
     View mPhotoView;
     @Bind(R.id.tv_description)
     TextView mDescription;
+    @Bind(R.id.tv_address)
+    TextView mAddress;
     @Bind(R.id.ll_photo_actions)
     View mViewActions;
     @Bind(R.id.btn_like)
-    View mBtnLike;
+    Button mBtnLike;
     @Bind(R.id.btn_comment)
-    View mBtnComment;
+    Button mBtnComment;
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
+
     private PhotoViewAttacher mAttacher;
+
+    static final int REQUEST_PICK_ALBUM = 1;
 
     public static void openWithPhoto(Activity openingActivity, BigInteger id) {
         Intent intent = new Intent(openingActivity, PhotoViewActivity.class);
@@ -103,6 +124,7 @@ public class PhotoViewActivity extends BaseActivity implements PhotoViewAttacher
         mPhotoView.setOnClickListener(this);
         mBtnLike.setOnClickListener(this);
         mBtnComment.setOnClickListener(this);
+        mFab.setOnClickListener(this);
     }
 
     @Override
@@ -118,11 +140,11 @@ public class PhotoViewActivity extends BaseActivity implements PhotoViewAttacher
                 @Override
                 protected void onPostExecute(Photo photo) {
                     super.onPostExecute(photo);
-                    setPhoto(photo);
+                    setupPhoto(photo);
                 }
             }.execute();
         }else if(null != mPhoto) {
-            setPhoto(mPhoto);
+            setupPhoto(mPhoto);
         }
     }
 
@@ -135,10 +157,13 @@ public class PhotoViewActivity extends BaseActivity implements PhotoViewAttacher
                 break;
             case R.id.btn_comment:
                 final Intent intent = new Intent(this, CommentsActivity.class);
-                intent.putExtra(Config.ARG_ENTITY_TYPE, CommentOperations.CommentType.photo);
+                intent.putExtra(Config.ARG_ENTITY_TYPE, EntityType.photo);
                 intent.putExtra(Config.ARG_ENTITY_ID, mPhotoId);
                 startActivity(intent);
-                overridePendingTransition(0, 0);
+                break;
+            case R.id.fab:
+                startActivityForResult(new Intent(this, AlbumSearchActivity.class), REQUEST_PICK_ALBUM);
+                break;
         }
     }
 
@@ -153,19 +178,98 @@ public class PhotoViewActivity extends BaseActivity implements PhotoViewAttacher
     }
 
     private void like() {
+        mBtnLike.setClickable(false);
+        new SocialAsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean request(Void... params) {
+                if(mPhoto.isLike()) {
+                    mApi.likeOperation().delete(EntityType.photo, mPhotoId);
+                }else {
+                    mApi.likeOperation().create(EntityType.photo, mPhotoId);
+                }
+                return true;
+            }
 
+            @Override
+            protected void error(com.mdtech.social.api.Error error) {
+                mBtnLike.setClickable(true);
+                LOGE(TAG, error.info);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean res) {
+                super.onPostExecute(res);
+                if(null != res) {
+                    mPhoto.setLike(!mPhoto.isLike());
+                    if(mPhoto.isLike()) {
+                        mPhoto.setLikeCount(mPhoto.getLikeCount()+1);
+                    }else {
+                        mPhoto.setLikeCount(mPhoto.getLikeCount()-1);
+                    }
+                    mBtnLike.setClickable(true);
+                    setPhotoInfo(mPhoto);
+                }
+            }
+        }.execute();
+    }
+
+    private void getLike(final Photo photo) {
+        new SocialAsyncTask<Void, Void, Like>() {
+
+            @Override
+            protected Like request(Void... params) {
+                return mApi.likeOperation().get(EntityType.photo, photo.getId());
+            }
+
+            @Override
+            protected void error(Error error) {
+
+            }
+
+            protected void onPostExecute(Like res) {
+                super.onPostExecute(res);
+
+                if(res != null) {
+                    mPhoto.setLike(true);
+                    setPhotoInfo(mPhoto);
+                }
+            }
+        }.execute();
     }
 
     /**
      * 设置图片加载小图
      * @param photo
      */
-    private void setPhoto(final Photo photo) {
+    private void setupPhoto(final Photo photo) {
         mPhoto = photo;
-        mDescription.setText(photo.getTitle());
-//        picasso.load(getUrlFromOssKey(photo.getOssKey(), Config.OSS_STYLE_PREVIEW_SM))
-//                .into(mImageView);
+        setPhotoInfo(photo);
         loadLGPhoto(photo);
+        getLike(mPhoto);
+    }
+
+    private void setPhotoInfo(Photo photo) {
+        if(null != photo.getLocation()) {
+            mAddress.setText(photo.getLocation().getAddress());
+        }else {
+            mAddress.setText("");
+        }
+        mDescription.setText(photo.getTitle());
+        mBtnComment.setText(String.valueOf(photo.getCommentCount()));
+        mBtnLike.setText(String.valueOf(photo.getLikeCount()));
+        if(photo.isLike()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mBtnLike.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.mipmap.ic_favorite_white_24dp), null, null, null);
+            }else {
+                mBtnLike.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.ic_favorite_white_24dp), null, null, null);
+            }
+        }else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mBtnLike.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_favorite_border_white_24dp), null, null, null);
+            }else {
+                mBtnLike.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp), null, null, null);
+            }
+        }
     }
 
     /**
@@ -195,5 +299,45 @@ public class PhotoViewActivity extends BaseActivity implements PhotoViewAttacher
     @Override
     public void onViewTap(View view, float x, float y) {
         showHideBarInfo();
+    }
+
+    private void addToAlbum(final BigInteger id) {
+
+        final List<Photo> photos = new ArrayList<Photo>(1);
+        photos.add(mPhoto);
+
+        new SocialAsyncTask<Void, Void, Album>() {
+
+            @Override
+            protected Album request(Void... params) {
+                return mApi.albumOperations().addPhotos(id, photos);
+            }
+
+            @Override
+            protected void error(Error error) {
+
+            }
+
+            protected void onPostExecute(Album album) {
+                super.onPostExecute(album);
+                if(null != album) {
+                    LOGI(TAG, "Added photo");
+                    showSnackbarInfo(mFab, R.string.info_photo_collected, Snackbar.LENGTH_SHORT);
+                    mFab.setVisibility(View.GONE);
+                }
+            }
+        }.execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_PICK_ALBUM && null != data) {
+                String id = data.getStringExtra(AlbumSearchActivity.ARG_ALBUM_ID);
+                addToAlbum(new BigInteger(id));
+            }
+        }
     }
 }

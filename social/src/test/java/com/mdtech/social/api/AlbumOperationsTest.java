@@ -26,9 +26,13 @@ import com.mdtech.social.api.model.Album;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import static org.junit.Assert.*;
 
@@ -45,15 +49,30 @@ public class AlbumOperationsTest extends AbstractOperationsTest {
 
     private AlbumOperations albumOperations;
 
+    private Album album;
+
     @Before
     public void setup() {
         super.setup();
-        super.authenticateClient();
+        authenticateClient();
+        albumOperations = connectionRepository.findPrimaryConnection(HereApi.class).getApi().albumOperations();
+    }
+
+    @After
+    public void setdown() {
+        if( null != album && null != album.getId()) {
+            albumOperations.delete(album.getId());
+        }
+    }
+
+    private void setupLogin() {
+        super.login();
         albumOperations = connectionRepository.findPrimaryConnection(HereApi.class).getApi().albumOperations();
     }
 
     @Test
     public void testGet() {
+
         BigInteger id = new BigInteger("26750881779292192047881277021");
         Album album = albumOperations.get(id);
 
@@ -68,9 +87,34 @@ public class AlbumOperationsTest extends AbstractOperationsTest {
     }
 
     @Test
+    public void testCreate() {
+        setupLogin();
+        Album album = new Album();
+        album.setType("FeatureCollection");
+        album.setName("Sanqing-Shan2");
+        album.setTitle("三清山mountain");
+
+        Album res = null;
+        try {
+            res = albumOperations.create(album);
+        }catch (HttpStatusCodeException ex) {
+            ex.printStackTrace();
+            log.error(ex.getResponseBodyAsString());
+        }
+        this.album = res;
+
+        assertNotNull(res);
+        assertNotNull(res.getId());
+        assertEquals("Something is wrong", album.getType(), res.getType());
+        assertEquals("Something is wrong", album.getTitle(), res.getTitle());
+        assertEquals("Something is wrong", album.getName().toLowerCase(), res.getName());
+    }
+
+    @Test
     public void testAddFeatures() throws IOException {
+        setupLogin();
+
         ObjectMapper serializer = new ObjectMapper();
-        super.login();
         BigInteger id = new BigInteger("26750881779292192047881277021");
         Album album = albumOperations.get(id);
         int size = album.getFeatureCollection().getFeatures().size();

@@ -68,6 +68,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_email"
                         android:inputType="textEmailAddress"
+                        android:text="sdfa"
                         android:maxLines="1"
                         android:singleLine="true" />
 
@@ -87,7 +88,9 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:text="sdfa"
+                        />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -97,7 +100,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/action_sign_in"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
 
                 <TextView android:id="@+id/link_signup"
                     android:layout_width="match_parent"
@@ -105,7 +109,8 @@
                     android:text="@string/action_sign_up"
                     android:clickable="true"
                     android:gravity="center_horizontal"
-                    android:layout_marginTop="20dp" />
+                    android:layout_marginTop="20dp"
+                    />
             </LinearLayout>
         </LinearLayout>
 

@@ -55,6 +55,7 @@ import com.squareup.picasso.Target;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import butterknife.Bind;
 import uk.co.senab.photoview.PhotoView;
 
 import static com.baidu.mapapi.utils.CoordinateConverter.*;
@@ -69,7 +70,8 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapLoadedCallback, BaiduMap.OnMarkerClickListener {
     private static final String TAG = makeLogTag(AlbumBaiduActivity.class);
 
-    protected MapView mMapView = null;
+    @Bind(R.id.mapview)
+    MapView mMapView = null;
 
     // baidu map
     private MyLocationConfiguration.LocationMode mCurrentMode;
@@ -91,7 +93,6 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         setContentView(R.layout.activity_album);
 
         // map
-        mMapView = (MapView) findViewById(R.id.mapview);
         mBaiduMap = mMapView.getMap();
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
@@ -173,7 +174,7 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
 
     @Override
     void addPhoto(Photo photo) {
-        if(null != photo.getLocation()) {
+        if(null != photo.getLocation() && null != photo.getLocation().getPosition()) {
             double[] position = photo.getLocation().getPosition();
             MarkerOptions markerOption = new MarkerOptions();
             // sourceLatLng待转换坐标
@@ -307,6 +308,9 @@ public class AlbumBaiduActivity extends AlbumActivity implements BaiduMap.OnMapL
         }
     }
 
+    /**
+     * Picasso's target object of photo's marker
+     */
     public class PhotoMarker implements Target, Serializable {
         Marker marker;
         Photo photo;

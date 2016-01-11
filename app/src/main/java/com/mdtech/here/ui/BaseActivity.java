@@ -23,7 +23,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
@@ -451,5 +453,22 @@ public abstract class BaseActivity extends AppCompatActivity
                 navigateUpOrBack(currentActivity, null);
             }
         });
+    }
+
+    protected void showSnackbarInfo(View view, String text) {
+        showSnackbarInfo(view, text, Snackbar.LENGTH_LONG);
+    }
+
+    protected void showSnackbarInfo(View view, String text, @Snackbar.Duration int duration) {
+        Snackbar.make(view, text, duration)
+                .setAction("Action", null).show();
+    }
+
+    protected void showSnackbarInfo(View view, @StringRes int resId) {
+        showSnackbarInfo(view, getString(resId));
+    }
+
+    protected void showSnackbarInfo(View view, @StringRes int resId, @Snackbar.Duration int duration) {
+        showSnackbarInfo(view, getString(resId), duration);
     }
 }

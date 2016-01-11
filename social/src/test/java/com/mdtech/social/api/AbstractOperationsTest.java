@@ -22,7 +22,6 @@ public abstract class AbstractOperationsTest {
     ConnectionRepository connectionRepository;
 
     public void setup() {
-
         connectionFactoryRegistry = new ConnectionFactoryRegistry();
         connectionFactoryRegistry.addConnectionFactory(new HereConnectionFactory("ponmap-android-client", "92jasdjf8923oda"));
         connectionFactory = (OAuth2ConnectionFactory)connectionFactoryRegistry.getConnectionFactory(HereServiceProvider.PROVIDER_ID);
@@ -33,7 +32,6 @@ public abstract class AbstractOperationsTest {
         AccessGrant accessGrant = connectionFactory.getOAuthOperations().authenticateClient("read");
 
         assertNotNull(accessGrant);
-
         assertNotNull(accessGrant.getAccessToken());
 
         Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);
@@ -44,7 +42,6 @@ public abstract class AbstractOperationsTest {
         AccessGrant accessGrant = connectionFactory.getOAuthOperations().exchangeCredentialsForAccess("user", "user", null);
 
         assertNotNull(accessGrant);
-
         assertNotNull(accessGrant.getAccessToken());
 
         Connection<HereApi> connection = connectionFactory.createConnection(accessGrant);

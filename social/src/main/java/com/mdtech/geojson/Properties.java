@@ -43,32 +43,47 @@ public class Properties implements Serializable {
         wiki // 代表维基标记
     }
 
+    public enum CoordinateSystem {
+        WGS84, // 标准
+        GCJ02, // 火星
+        BD09 // 百度
+    }
+
     public String title;
     public String description;
 
+    // 标记大小
     @JsonProperty("marker-size")
     public Integer markerSize;
+    // 标记图标
     @JsonProperty("marker-symbol")
     public String markerSymbol;
+    // 标记颜色
     @JsonProperty("marker-color")
     public String markerColor;
 
+    // 线颜色
     public String stroke;
+    // 线透明度
     @JsonProperty("stroke-opacity")
     public Float strokeOpacity;
+    // 线粗
     @JsonProperty("stroke-width")
     public Integer strokeWidth;
-
+    // 填充颜色
     public String fill;
+    // 填充透明度
     @JsonProperty("fill-opacity")
     public Float fillOpacity;
 
+    // 点类型
     @JsonProperty("point-type")
     public PointType pointType = PointType.point;
+    // 商业信息类型
     @JsonProperty("business-type")
     public BusinessType businessType = BusinessType.geo;
-
-    @JsonProperty("photo-id")
-    public String photoId;
+    // 坐标系统
+    @JsonProperty("coordinate-system")
+    public CoordinateSystem coordinateSystem = CoordinateSystem.WGS84;
 
 }

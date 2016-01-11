@@ -31,6 +31,7 @@ import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.social.api.CommentOperations;
 import com.mdtech.social.api.HereApi;
+import com.mdtech.social.api.model.EntityType;
 
 import java.math.BigInteger;
 
@@ -48,7 +49,7 @@ public class CommentsActivity extends BaseActivity {
     private HereApi mApi;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private CommentOperations.CommentType mCommentType;
+    private EntityType mCommentType;
     private BigInteger mEntityId;
 
     @Bind(R.id.swipe_refresh_layout)
@@ -64,10 +65,10 @@ public class CommentsActivity extends BaseActivity {
         setupAppbar(this);
 
         if (savedInstanceState == null) {
-            mCommentType = (CommentOperations.CommentType)getIntent().getSerializableExtra(Config.ARG_ENTITY_TYPE);
+            mCommentType = (EntityType)getIntent().getSerializableExtra(Config.ARG_ENTITY_TYPE);
             mEntityId = (BigInteger)getIntent().getSerializableExtra(Config.ARG_ENTITY_ID);
         } else {
-            mCommentType = (CommentOperations.CommentType)savedInstanceState.getSerializable(Config.ARG_ENTITY_TYPE);
+            mCommentType = (EntityType)savedInstanceState.getSerializable(Config.ARG_ENTITY_TYPE);
             mEntityId = (BigInteger)savedInstanceState.getSerializable(Config.ARG_ENTITY_ID);
         }
 

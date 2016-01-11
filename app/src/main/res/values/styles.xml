@@ -68,8 +68,15 @@
         <item name="colorControlActivated">@color/white</item>
         <item name="colorControlHighlight">@color/white</item>
         <item name="android:textColorHint">@color/iron</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:editTextStyle">@style/Widget.EditText.HereWhite</item>
+        <item name="android:autoCompleteTextViewStyle">@style/Widget.EditText.HereWhite</item>
 
         <item name="colorButtonNormal">@color/primary_darker</item>
+    </style>
+
+    <style name="Widget.EditText.HereWhite" parent="@android:style/Widget.EditText">
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- 时间计时器文本样式 -->

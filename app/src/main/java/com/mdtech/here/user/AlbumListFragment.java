@@ -42,6 +42,8 @@ import com.squareup.picasso.Picasso;
 import java.math.BigInteger;
 import java.util.List;
 
+import butterknife.Bind;
+
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -102,6 +104,14 @@ public class AlbumListFragment extends AbstractListFragment {
         }
 
         public class ViewHolder extends AbstractListFragment.MyAdapter.ViewHolder<Album> {
+
+            @Bind(R.id.iv_album_cover)
+            ImageView mAlbumCover;
+            @Bind(R.id.tv_album_title)
+            TextView mAlbumTitle;
+            @Bind(R.id.tv_album_description)
+            TextView mAlbumDesc;
+
             public ViewHolder(View v) {
                 super(v);
             }
@@ -136,17 +146,16 @@ public class AlbumListFragment extends AbstractListFragment {
             Album album = mDataset.get(position);
             Photo cover = album.getCover();
             if(null != cover) {
-                ImageView view = (ImageView) holder.mView.findViewById(R.id.iv_album_cover);
                 picasso.load(((BaseActivity)mContext).getUrlFromOssKey(
                         cover.getOssKey(), Config.OSS_STYLE_PREVIEW_SM))
-                        .into(view);
+                        .into(holder.mAlbumCover);
+            }else {
+                picasso.load(R.mipmap.ic_profile_image)
+                        .into(holder.mAlbumCover);
             }
 
-            TextView title = (TextView) holder.mView.findViewById(R.id.tv_album_title);
-            TextView desc = (TextView) holder.mView.findViewById(R.id.tv_album_description);
-
-            title.setText(album.getTitle());
-            desc.setText(album.getDescription());
+            holder.mAlbumTitle.setText(album.getTitle());
+            holder.mAlbumDesc.setText(album.getDescription());
             holder.mEntity = album;
         }
     }

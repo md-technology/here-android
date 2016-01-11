@@ -18,8 +18,10 @@ package com.mdtech.social.api;
 
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.social.api.model.Album;
+import com.mdtech.social.api.model.Photo;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * TODO insert class's header comments
@@ -32,6 +34,36 @@ public interface AlbumOperations {
      * @return
      */
     Album get(BigInteger id);
+
+    /**
+     * 创建专辑
+     * @param album
+     * @return
+     */
+    Album create(Album album);
+
+    /**
+     * 删除专辑
+     * @param id
+     * @return
+     */
+    void delete(BigInteger id);
+
+    /**
+     * 添加图片
+     * @param id
+     * @param photos
+     * @return
+     */
+    Album addPhotos(BigInteger id, List<Photo> photos);
+
+    /**
+     * 删除图片
+     * @param id
+     * @param photos
+     * @return
+     */
+    Album deletePhotos(BigInteger id, List<Photo> photos);
 
     /**
      * 向专辑中添加feature，feature有id的为更新

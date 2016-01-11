@@ -16,37 +16,37 @@
 
 package com.mdtech.social.api;
 
-import com.mdtech.geojson.FeatureCollection;
-import com.mdtech.social.api.model.Album;
-import com.mdtech.social.api.model.Comment;
 import com.mdtech.social.api.model.EntityType;
+import com.mdtech.social.api.model.Like;
 
-import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/11/2015.
+ * Created by Tiven.wang on 1/11/2016.
  */
-public interface CommentOperations {
-
+public interface LikeOperations {
     /**
-     * 查询评论
+     * 加星
      * @param type
      * @param id
-     * @param pageSize
-     * @param pageNo
      * @return
      */
-    List<Comment> get(EntityType type, BigInteger id, int pageSize, int pageNo);
+    Like create(EntityType type, BigInteger id);
 
     /**
-     * 创建一条评论
+     * 查询本人是否加星
      * @param type
      * @param id
-     * @param content
      * @return
      */
-    Comment create(EntityType type, BigInteger id, String content);
+    Like get(EntityType type, BigInteger id);
+
+    /**
+     * 取消加星
+     * @param type
+     * @param id
+     */
+    void delete(EntityType type, BigInteger id);
+
 }

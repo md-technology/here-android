@@ -19,17 +19,21 @@ package com.mdtech.social.api.impl;
 import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.social.api.AlbumOperations;
 import com.mdtech.social.api.model.Album;
+import com.mdtech.social.api.model.Photo;
 
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/11/2015.
  */
 public class AlbumTemplate extends AbstractPonmapOperations implements AlbumOperations {
-
+    private static final String PATH = "/album";
     private final RestTemplate restTemplate;
 
     public AlbumTemplate(RestTemplate restTemplate, boolean isAuthorized) {
@@ -43,7 +47,37 @@ public class AlbumTemplate extends AbstractPonmapOperations implements AlbumOper
     }
 
     @Override
+    public Album create(Album album) {
+        return this.restTemplate.postForObject(BASE_API_URL + "/album", album, Album.class);
+    }
+
+    @Override
+    public void delete(BigInteger id) {
+        this.restTemplate.delete(BASE_API_URL + "/album/{id}", id);
+    }
+
+    @Override
+    public Album addPhotos(BigInteger id, List<Photo> photos) {
+        List<String> photoIds = new ArrayList<String>(photos.size());
+        Iterator<Photo> iterator = photos.iterator();
+        while (iterator.hasNext()) {
+            photoIds.add(iterator.next().getId().toString());
+        }
+        return this.restTemplate.postForObject(BASE_API_URL + PATH + "/{id}/add", photoIds, Album.class, id);
+    }
+
+    @Override
+    public Album deletePhotos(BigInteger id, List<Photo> photos) {
+        List<String> photoIds = new ArrayList<String>(photos.size());
+        Iterator<Photo> iterator = photos.iterator();
+        while (iterator.hasNext()) {
+            photoIds.add(iterator.next().getId().toString());
+        }
+        return this.restTemplate.postForObject(BASE_API_URL + PATH + "/{id}/remove", photoIds, Album.class, id);
+    }
+
+    @Override
     public Album addFeatures(BigInteger id, FeatureCollection featureCollection) {
-        return this.restTemplate.postForObject(BASE_API_URL + "/album/{id}/fc", featureCollection, Album.class, id);
+        return this.restTemplate.postForObject(BASE_API_URL + PATH + "/{id}/fc", featureCollection, Album.class, id);
     }
 }

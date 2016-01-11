@@ -41,6 +41,7 @@ import com.mdtech.here.util.SocialAsyncTask;
 import com.mdtech.social.api.*;
 import com.mdtech.social.api.Error;
 import com.mdtech.social.api.model.Comment;
+import com.mdtech.social.api.model.EntityType;
 import com.mdtech.social.api.model.User;
 import com.squareup.picasso.Picasso;
 
@@ -62,14 +63,14 @@ import static com.mdtech.here.util.LogUtils.makeLogTag;
 public class CommentListFragment extends AbstractListFragment {
     private static final String TAG = makeLogTag(CommentListFragment.class);
 
-    private CommentOperations.CommentType mCommentType;
+    private EntityType mCommentType;
 
     @Bind(R.id.btn_comment)
     Button mBtnComment;
     @Bind(R.id.et_comment)
     EditText mCommentContent;
 
-    public static Fragment newInstance(CommentOperations.CommentType type, BigInteger id){
+    public static Fragment newInstance(EntityType type, BigInteger id){
         Bundle bundle = new Bundle();
         bundle.putSerializable(Config.ARG_ENTITY_TYPE, type);
         return newInstance(new CommentListFragment(), bundle, id);
@@ -97,9 +98,9 @@ public class CommentListFragment extends AbstractListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if(null != savedInstanceState) {
-            mCommentType = (CommentOperations.CommentType) savedInstanceState.getSerializable(Config.ARG_ENTITY_TYPE);
+            mCommentType = (EntityType) savedInstanceState.getSerializable(Config.ARG_ENTITY_TYPE);
         }else {
-            mCommentType = (CommentOperations.CommentType) getArguments().getSerializable(Config.ARG_ENTITY_TYPE);
+            mCommentType = (EntityType) getArguments().getSerializable(Config.ARG_ENTITY_TYPE);
         }
 
         // specify an adapter (see also next example)
@@ -134,7 +135,7 @@ public class CommentListFragment extends AbstractListFragment {
     private void sendComment() {
         if(validateComment()) {
             final String content = mCommentContent.getText().toString();
-
+            disableComment();
             new SocialAsyncTask<Void, Void, Comment>() {
 
                 @Override
@@ -154,6 +155,7 @@ public class CommentListFragment extends AbstractListFragment {
                 @Override
                 protected void onPostExecute(Comment comment) {
                     super.onPostExecute(comment);
+                    enableComment();
                     if(null != comment) {
                         ((CommentListAdapter)mAdapter).insertTop(comment);
                         mAdapter.notifyDataSetChanged();
@@ -162,6 +164,14 @@ public class CommentListFragment extends AbstractListFragment {
                 }
             }.execute();
         }
+    }
+
+    private void disableComment() {
+        mBtnComment.setClickable(false);
+    }
+
+    private void enableComment() {
+        mBtnComment.setClickable(true);
     }
 
     private boolean validateComment() {
@@ -193,7 +203,7 @@ public class CommentListFragment extends AbstractListFragment {
 
             public ViewHolder(View v) {
                 super(v);
-                ButterKnife.bind(this, v);
+
                 mUserProfile.setOnClickListener(this);
             }
 
@@ -230,7 +240,6 @@ public class CommentListFragment extends AbstractListFragment {
             if(null != comment.getUser().getAvatar()) {
                 String uri = ((BaseActivity) getActivity()).getUrlFromOssKey(comment.getUser().getAvatar().getOssKey());
                 picasso.load(uri)
-                        .placeholder(R.mipmap.ic_profile_image)
                         .transform(new CircleTransformation(mContext.getResources().getColor(R.color.light_content_scrim), 1))
                         .into(holder.mUserProfile);
             }else {

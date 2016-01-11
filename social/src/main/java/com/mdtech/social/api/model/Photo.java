@@ -126,7 +126,7 @@ public class Photo extends Image implements Comparable<Photo> {
     }
 
     public Boolean isIs360() {
-        return is360;
+        return is360!=null&&is360;
     }
 
     public void setIs360(Boolean is360) {
@@ -135,6 +135,10 @@ public class Photo extends Image implements Comparable<Photo> {
 
     public Boolean getLike() {
         return like;
+    }
+
+    public Boolean isLike() {
+        return like!=null&&like;
     }
 
     public void setLike(Boolean like) {

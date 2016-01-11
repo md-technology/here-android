@@ -19,6 +19,7 @@ package com.mdtech.social.api.impl;
 import com.mdtech.social.api.CommentOperations;
 import com.mdtech.social.api.model.Comment;
 import com.mdtech.social.api.model.CommentList;
+import com.mdtech.social.api.model.EntityType;
 import com.mdtech.social.api.model.UserList;
 
 import org.springframework.util.MultiValueMap;
@@ -43,7 +44,7 @@ public class CommentTemplate extends AbstractPonmapOperations implements Comment
     }
 
     @Override
-    public List<Comment> get(CommentType type, BigInteger id, int pageSize, int pageNo) {
+    public List<Comment> get(EntityType type, BigInteger id, int pageSize, int pageNo) {
         MultiValueMap<String, String> params = getPagableParams(pageSize, pageNo);
         params.add("type", type.name());
         params.add("id", id.toString());
@@ -51,7 +52,7 @@ public class CommentTemplate extends AbstractPonmapOperations implements Comment
     }
 
     @Override
-    public Comment create(CommentType type, BigInteger id, String content) {
+    public Comment create(EntityType type, BigInteger id, String content) {
         Comment comment = new Comment();
         comment.setType(type.name());
         comment.setId(id);

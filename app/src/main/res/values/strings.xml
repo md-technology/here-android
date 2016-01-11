@@ -43,6 +43,10 @@
     <string name="hint_comment">comment</string>
     <string name="info_uploading">Uploading</string>
     <string name="info_album_empty">Album empty</string>
+    <string name="info_photo_collected">Photo has added</string>
+    <string name="placeholder_map_title">Design, Develop Distribute</string>
+    <string name="placeholder_map_subtitle">Design, Develop Distribute</string>
+
 
     <!-- UI label -->
     <string name="label_photo">photo</string>

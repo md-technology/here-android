@@ -1,5 +1,6 @@
 package com.mdtech.social.api.impl;
 
+import com.mdtech.social.api.model.EntityType;
 import com.mdtech.social.connect.HereServiceProvider;
 
 import org.springframework.social.MissingAuthorizationException;
@@ -7,6 +8,7 @@ import org.springframework.social.support.URIBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.math.BigInteger;
 import java.net.URI;
 
 /**
@@ -19,7 +21,6 @@ public class AbstractPonmapOperations {
     private final boolean isAuthorized;
 
     private static final LinkedMultiValueMap<String, String> EMPTY_PARAMETERS = new LinkedMultiValueMap<String, String>();
-
 
     public AbstractPonmapOperations(boolean isAuthorized) {
         this.isAuthorized = isAuthorized;
@@ -51,6 +52,13 @@ public class AbstractPonmapOperations {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
         parameters.add("pageSize", pageSize.toString());
         parameters.add("pageNo", pageNo.toString());
+        return parameters;
+    }
+
+    protected MultiValueMap<String, String> getEntityParams(EntityType type, BigInteger id) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+        parameters.add("type", type.name());
+        parameters.add("id", id.toString());
         return parameters;
     }
 }

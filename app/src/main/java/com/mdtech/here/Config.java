@@ -24,11 +24,6 @@ import java.util.TimeZone;
  */
 public class Config {
 
-    public enum EntityType {
-        photo,
-        album
-    }
-
     public static final TimeZone CONFERENCE_TIMEZONE = TimeZone.getTimeZone(null);
 
     public static final String EXTRA_ALBUM_ID = "com.mdtech.here.EXTRA_ALBUM_ID";

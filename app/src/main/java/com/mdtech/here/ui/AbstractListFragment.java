@@ -188,6 +188,7 @@ public abstract class AbstractListFragment extends Fragment implements View.OnCl
                 super(itemView);
                 mView = itemView;
                 mView.setOnClickListener(this);
+                ButterKnife.bind(this, itemView);
             }
         }
 

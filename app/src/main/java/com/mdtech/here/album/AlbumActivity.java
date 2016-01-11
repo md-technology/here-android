@@ -22,18 +22,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mdtech.geojson.FeatureCollection;
-import com.mdtech.geojson.Point;
 import com.mdtech.here.Config;
 import com.mdtech.here.R;
 import com.mdtech.here.geojson.IGeoJSONOverlay;
 import com.mdtech.here.ui.BaseActivity;
+import com.mdtech.here.util.SocialAsyncTask;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.Photo;
@@ -43,8 +41,9 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Iterator;
 
+import butterknife.Bind;
+
 import static com.mdtech.here.util.LogUtils.LOGD;
-import static com.mdtech.here.util.LogUtils.LOGI;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 /**
@@ -64,8 +63,14 @@ public abstract class AlbumActivity extends BaseActivity
 
     private HereApi mApi;
 
-    private DrawerLayout mDrawerLayout;
-    protected FloatingActionButton mFab;
+    private MapInfoFragment mInfoFragment;
+
+    @Bind(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
+    @Bind(R.id.ib_map_style)
+    ImageButton mMapStyle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,23 +84,18 @@ public abstract class AlbumActivity extends BaseActivity
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Add the back button to the toolbar.
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateUpOrBack(AlbumActivity.this, null);
-            }
-        });
+        setupAppbar(AlbumActivity.this);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        if (mInfoFragment == null) {
+            mInfoFragment = MapInfoFragment.newInstace(this);
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container_map_info, mInfoFragment, "mapsheet")
+                    .commit();
+        }
+
         mAlbumId = getIdFromBundle(savedInstanceState, Config.EXTRA_ALBUM_ID);
 
-        ImageButton ibMapStyle = (ImageButton)findViewById(R.id.ib_map_style);
-        setMapStyleChangeListener(ibMapStyle);
+        setMapStyleChangeListener(mMapStyle);
 
         if(null != mAlbumId) {
             if(mAlbumId.equals(new BigInteger("0"))) {
@@ -103,6 +103,15 @@ public abstract class AlbumActivity extends BaseActivity
             }else {
                 new AlbumTask(mAlbumId).execute();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mInfoFragment != null && mInfoFragment.isExpanded()) {
+            mInfoFragment.minimize();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -135,13 +144,7 @@ public abstract class AlbumActivity extends BaseActivity
         outState.putCharSequence(Config.EXTRA_ALBUM_ID, mAlbumId.toString());
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        // Disable going back to the MainActivity
-//        moveTaskToBack(true);
-//    }
-
-    protected class AlbumTask extends AsyncTask<Void, Void, Album> {
+    protected class AlbumTask extends SocialAsyncTask<Void, Void, Album> {
 
         private BigInteger mId;
 
@@ -150,13 +153,13 @@ public abstract class AlbumActivity extends BaseActivity
         }
 
         @Override
-        protected Album doInBackground(Void... params) {
-            try {
-                return mApi.albumOperations().get(mId);
-            }catch (Exception ex) {
-                ex.printStackTrace();
-                return null;
-            }
+        protected Album request(Void... params) {
+            return mApi.albumOperations().get(mId);
+        }
+
+        @Override
+        protected void error(com.mdtech.social.api.Error error) {
+
         }
 
         @Override

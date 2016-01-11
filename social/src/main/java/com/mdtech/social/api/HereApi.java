@@ -48,4 +48,10 @@ public interface HereApi extends ApiBinding, Serializable {
      * @return
      */
     CommentOperations commentOperations();
+
+    /**
+     * 加星接口
+     * @return
+     */
+    LikeOperations likeOperation();
 }

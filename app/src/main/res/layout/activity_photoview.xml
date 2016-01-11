@@ -39,6 +39,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical">
+        <TextView android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            style="@style/TextAppearance.AppCompat.Medium.Inverse"
+            android:text="Address"/>
         <TextView android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +82,6 @@
         app:layout_anchor="@id/ll_info_container"
         app:layout_anchorGravity="top|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_mylocation"
+        android:src="@drawable/ic_add_white_24dp"
         app:borderWidth="0dp"/>
 </android.support.design.widget.CoordinatorLayout>
