@@ -12,9 +12,10 @@ import java.math.BigInteger;
 import java.net.URI;
 
 /**
- * Created by any on 2014/10/30.
+ *
+ * Created by Tiven.wang on 2014/10/30.
  */
-public class AbstractPonmapOperations {
+public class AbstractHereOperations {
 
     static final String BASE_API_URL = HereServiceProvider.BASE_URL + "/api/rest";
 
@@ -22,7 +23,7 @@ public class AbstractPonmapOperations {
 
     private static final LinkedMultiValueMap<String, String> EMPTY_PARAMETERS = new LinkedMultiValueMap<String, String>();
 
-    public AbstractPonmapOperations(boolean isAuthorized) {
+    public AbstractHereOperations(boolean isAuthorized) {
         this.isAuthorized = isAuthorized;
     }
 

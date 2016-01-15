@@ -5,7 +5,6 @@ import com.mdtech.social.api.model.Image;
 import com.mdtech.social.api.model.Location;
 import com.mdtech.social.api.model.Photo;
 
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,7 +16,7 @@ import java.util.Set;
 /**
  * Created by tiwen.wang on 11/18/2014.
  */
-public class PhotoTemplate extends AbstractPonmapOperations implements PhotoOperations {
+public class PhotoTemplate extends AbstractHereOperations implements PhotoOperations {
 
     private final RestTemplate restTemplate;
 

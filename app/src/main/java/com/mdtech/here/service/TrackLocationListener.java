@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.LOGI;
 import static com.mdtech.here.util.LogUtils.LOGW;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
@@ -65,6 +66,7 @@ public class TrackLocationListener implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        LOGD(TAG, "Location Provider:" + location.getProvider() + ", Accuracy:" + location.getAccuracy());
         // Save fitted location into database
         if (BuildConfig.ENABLE_DEBUG_TOOLS || filter(location)) {
             locationCache.put(System.currentTimeMillis(), location);

@@ -49,7 +49,7 @@ public abstract class GeoJSONObject implements Serializable {
 
     public BigInteger id;
 
-    private JsonNode properties;
+    private Properties properties;
 
     // ------------------------------------------------------------------------
     // Constructor
@@ -79,36 +79,11 @@ public abstract class GeoJSONObject implements Serializable {
 
     @JsonProperty("properties")
     @JsonSerialize
-    public JsonNode getProperties() {
+    public Properties getProperties() {
         return properties;
     }
 
-    public void setProperties(JsonNode properties) {
+    public void setProperties(Properties properties) {
         this.properties = properties;
     }
-
-    @JsonIgnore
-    public void setProperties(Properties properties) throws IOException {
-        if(null == properties) {
-            this.properties = null;
-            return;
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        // Properties object -> String
-        String ps = objectMapper.writeValueAsString(properties);
-        // String -> JsonNode
-        JsonNode jsonNode = objectMapper.readValue(ps, JsonNode.class);
-        // set JsonNode to GeoJSON properties
-        setProperties(jsonNode);
-    }
-
-    @JsonIgnore
-    public <T> T getProperties(Class<T> c) throws IOException {
-        if(null == this.properties) {
-            return null;
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(this.properties.toString(), c);
-    }
-
 }

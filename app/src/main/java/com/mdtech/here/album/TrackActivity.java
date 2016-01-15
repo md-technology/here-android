@@ -17,11 +17,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.mdtech.geojson.FeatureCollection;
@@ -33,7 +32,9 @@ import com.mdtech.here.service.ArchiveNameHelper;
 import com.mdtech.here.service.Recorder;
 import com.mdtech.here.ui.BaseActivity;
 import com.mdtech.here.ui.SwipeToAction;
-import com.mdtech.social.api.HereApi;
+import com.mdtech.here.util.SocialAsyncTask;
+import com.mdtech.social.api.*;
+import com.mdtech.social.api.model.Track;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ import static com.mdtech.here.util.LogUtils.LOGI;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
 
 
-public class TrackActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class TrackActivity extends BaseActivity {
     private static final String TAG = makeLogTag(TrackActivity.class);
 
     public static final String BUNDLE_STATE_MAPVIEW = "mapview";
@@ -89,7 +90,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
     public static final int MESSAGE_START_RECORDING = 0x012;
     private static final int FLAG_RECORDING = 0x001;
     private static final int FLAG_ENDED = 0x002;
-    private ArchiveMeta archiveMeta;
+    private ArchiveMeta mArchiveMeta;
 
     // recording service
     private Recorder.ServiceBinder mServiceBinder;
@@ -124,16 +125,6 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         setContentView(R.layout.track_activity);
 
         setupAppbar(this);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        // Add the back button to the toolbar.
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                navigateUpOrBack(TrackActivity.this, null);
-//            }
-//        });
 
         this.mContext = getApplicationContext();
         // Track list
@@ -182,6 +173,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
             @Override
             public boolean swipeRight(Archiver itemData) {
                 displaySnackbar(itemData.getName() + " uploading", null, null, null);
+                upload(itemData);
                 return true;
             }
 
@@ -311,7 +303,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
                         return;
                     }
 
-                    archiveMeta = mServiceBinder.getMeta();
+                    mArchiveMeta = mServiceBinder.getMeta();
 
                     switch (mServiceBinder.getStatus()) {
                         case Recorder.ServiceBinder.STATUS_RECORDING:
@@ -327,7 +319,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
                         return;
                     }
 
-                    archiveMeta = mServiceBinder.getMeta();
+                    mArchiveMeta = mServiceBinder.getMeta();
 
                     switch (mServiceBinder.getStatus()) {
                         case Recorder.ServiceBinder.STATUS_RECORDING:
@@ -343,9 +335,9 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
     private void setViewStatus(int status) {
         switch (status) {
             case FLAG_RECORDING:
-                if (archiveMeta != null) {
-                    mCostTime.setText(archiveMeta.getCostTimeStringByNow());
-                    setArchiveMeta(archiveMeta);
+                if (mArchiveMeta != null) {
+                    mCostTime.setText(mArchiveMeta.getCostTimeStringByNow());
+                    setmArchiveMeta(mArchiveMeta);
                     addArchiverToMap(mServiceBinder.getArchive());
                 }
                 break;
@@ -383,29 +375,22 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
             displaySnackbar(getString(R.string.track_recording_info), null, null, null);
             return;
         }
+        clearMap();
         addArchiverToMap(archiver);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        addMapFragment(null);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.END);
-        if(isRecording) {
-            Snackbar.make(view, getString(R.string.track_recording_info), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            return;
-        }
-        Archiver archiver = archives.get(position);
-        addArchiverToMap(archiver);
+    /**
+     * 清空地图
+     */
+    private void clearMap() {
+        mMapFragment.clear();
     }
 
     private void addArchiverToMap(Archiver archiver) {
-        // 先清空地图
-        mMapFragment.clear();
+
         mLayoutMeta.setVisibility(View.VISIBLE);
-        archiveMeta = archiver.getMeta();
-        if(archiveMeta.getCount() < 1) {
+        mArchiveMeta = archiver.getMeta();
+        if(mArchiveMeta.getCount() < 1) {
             return;
         }
         FeatureCollection featureCollection = new TrackExporter(archiver).execute();
@@ -420,7 +405,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
 //        LOGE(TAG, out);
 
         mMapFragment.addGeoJSON(featureCollection);
-        setArchiveMeta(archiveMeta);
+        setmArchiveMeta(mArchiveMeta);
     }
 
     private void getArchiveFilesByMonth(Date date) {
@@ -516,7 +501,7 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
      * 设置pane各属性值
      * @param meta
      */
-    private void setArchiveMeta(ArchiveMeta meta) {
+    private void setmArchiveMeta(ArchiveMeta meta) {
         mLayoutMeta.setVisibility(View.VISIBLE);
         String formatter = getString(R.string.track_formatter);
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.track_time_format), Locale.CHINA);
@@ -594,15 +579,51 @@ public class TrackActivity extends BaseActivity implements AdapterView.OnItemCli
         return pos;
     }
 
-    /**
-     * 添加track到右边栏列表位置
-     * @param pos
-     * @param archiver
-     */
-    private void addArchiver(int pos, Archiver archiver) {
-        archives.add(pos, archiver);
-        mAdapter.notifyItemInserted(pos);
+    private void upload(final Archiver archiver) {
+        if(!TextUtils.isEmpty(archiver.getName()) && archiver.getName().equals(mArchiveMeta.getName())) {
+            showSnackbarInfo(mFabStart, "recording");
+            return;
+        }
+
+        FeatureCollection featureCollection = new TrackExporter(archiver).execute();
+        final Track track = new Track();
+        track.setName("");
+        track.setTitle("");
+        track.setDescription("");
+        track.setFeatureCollection(featureCollection);
+
+        new SocialAsyncTask<Track, Void, Track>() {
+
+            @Override
+            protected Track request(Track... params) {
+                return mApi.trackOperations().create(params[0]);
+            }
+
+            @Override
+            protected void error(com.mdtech.social.api.Error error) {
+                showSnackbarInfo(mFabStart, error.info);
+            }
+
+            @Override
+            protected void onPostExecute(Track track) {
+                super.onPostExecute(track);
+                if(null != track) {
+                    removeArchiver(archiver);
+                }
+            }
+        }.execute(track);
+
     }
+
+//    /**
+//     * 添加track到右边栏列表位置
+//     * @param pos
+//     * @param archiver
+//     */
+//    private void addArchiver(int pos, Archiver archiver) {
+//        archives.add(pos, archiver);
+//        mAdapter.notifyItemInserted(pos);
+//    }
 
     /**
      * Track draw list adapter

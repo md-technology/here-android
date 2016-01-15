@@ -16,6 +16,7 @@
 
 package com.mdtech.here.geojson;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 
 import com.baidu.mapapi.map.PolygonOptions;
@@ -46,8 +47,8 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
     private static final String TAG = makeLogTag(AbstractGeoJSONOverlay.class);
 
     protected Callback listener;
-    protected GeoJSONObject source;
-    protected Class<? extends Properties> propertiesClass = Properties.class;
+    protected FeatureCollection source;
+//    protected Class<? extends Properties> propertiesClass = Properties.class;
 
     public AbstractGeoJSONOverlay() {
     }
@@ -58,8 +59,8 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
     }
 
     @Override
-    public void setSource(GeoJSONObject geoJSONObject) {
-        this.source = geoJSONObject;
+    public void setSource(FeatureCollection featureCollection) {
+        this.source = featureCollection;
     }
 
     @Override
@@ -70,12 +71,7 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
     @Override
     public void addFeature(Feature feature, Properties properties) {
         Geometry geometry = feature.getGeometry();
-        Properties style = null;
-        try {
-            style = feature.getProperties(propertiesClass);
-        } catch (IOException e) {
-            LOGE(TAG, e.getMessage());
-        }
+        Properties style = feature.getProperties();
         if(null == style) {
             style = new Properties();
         }
@@ -103,6 +99,7 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
                 break;
         }
     }
+
     protected abstract void addLineString(LineString lineString, Properties style);
     protected abstract void addMultiLineString(MultiLineString multiLineString, Properties style);
     protected abstract void addPolygon(Polygon polygon, Properties style);
@@ -120,12 +117,7 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
     }
 
     public void addFeatureCollection(FeatureCollection featureCollection) {
-        Properties properties = null;
-        try {
-            properties = featureCollection.getProperties(propertiesClass);
-        } catch (IOException e) {
-            LOGE(TAG, e.getMessage());
-        }
+        Properties properties = featureCollection.getProperties();
         if(properties == null) {
             properties = new Properties();
         }
@@ -155,15 +147,16 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
 
     @Override
     protected GeoJSONObject doInBackground(Void... params) {
-        switch (source.getType()) {
-            case GeoJSONObject.TYPE_FEATURE_COLLECTION:
-                addFeatureCollection((FeatureCollection) source);
-                break;
-            case GeoJSONObject.TYPE_FEATURE:
-                addFeature((Feature) source);
-                break;
-            default:
-        }
+        addFeatureCollection(source);
+//        switch (source.getType()) {
+//            case GeoJSONObject.TYPE_FEATURE_COLLECTION:
+//
+//                break;
+//            case GeoJSONObject.TYPE_FEATURE:
+//                addFeature((Feature) source);
+//                break;
+//            default:
+//        }
         return source;
     }
 
@@ -211,11 +204,17 @@ public abstract class AbstractGeoJSONOverlay extends AsyncTask<Void, Void, GeoJS
         return sub;
     }
 
-    public Class<? extends Properties> getPropertiesClass() {
-        return propertiesClass;
+    protected int color(String color, Float opacity) {
+        int c = Color.parseColor(color);
+        int alpha = 0;
+        if(null != opacity) {
+            alpha = Math.round(opacity*255);
+        }
+        return Color.argb(alpha, Color.red(c), Color.green(c), Color.blue(c));
     }
 
-    public void setPropertiesClass(Class<? extends Properties> propertiesClass) {
-        this.propertiesClass = propertiesClass;
-    }
+    /**
+     *
+     */
+    protected abstract void draw();
 }

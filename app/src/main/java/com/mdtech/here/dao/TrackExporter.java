@@ -23,6 +23,7 @@ import com.mdtech.geojson.FeatureCollection;
 import com.mdtech.geojson.LineString;
 import com.mdtech.geojson.Point;
 import com.mdtech.geojson.Position;
+import com.mdtech.geojson.Properties;
 import com.mdtech.here.geojson.TrackProperties;
 
 import java.io.IOException;
@@ -50,34 +51,40 @@ public class TrackExporter {
 
     public FeatureCollection execute() {
         FeatureCollection featureCollection = new FeatureCollection();
+
+        Properties properties = new Properties();
+        properties.stroke = "#FF26C6DA";
+        properties.strokeWidth = 8;
+
+        ArchiveMeta meta = this.archiver.getMeta();
+        if(null != meta) {
+            try {
+                properties.setCusts(getTrackProperties(meta));
+            } catch (IOException e) {
+                LOGE(TAG, e.getMessage());
+            }
+        }
+
         Feature feature = makeLineString();
         if(null != feature) {
+            feature.setProperties(properties);
             featureCollection.addFeature(feature);
         }
 
-        TrackProperties properties = new TrackProperties();
-        properties.stroke = "#FF26C6DA";
-        properties.strokeWidth = 8;
-        ArchiveMeta meta = archiver.getMeta();
-        if(null != meta) {
-            setTrackProperties(meta, properties);
-        }
-        try {
-            featureCollection.setProperties(properties);
-        } catch (IOException e) {
-            LOGE(TAG, e.getMessage());
-        }
+        featureCollection.setProperties(properties);
         return featureCollection;
     }
 
     /**
-     * 设置track属性到geojson的properties中
+     * 设置track属性到geojson的cust properties中
      * @param meta
-     * @param properties
      */
-    private void setTrackProperties(ArchiveMeta meta, TrackProperties properties ) {
-        properties.track.distance = meta.getDistance();
-        properties.track.averageSpeed = meta.getAverageSpeed();
+    private TrackProperties getTrackProperties(ArchiveMeta meta) {
+        TrackProperties properties = new TrackProperties();
+        properties.id = meta.getName();
+        properties.distance = meta.getDistance();
+        properties.averageSpeed = meta.getAverageSpeed();
+        return properties;
     }
 
     private Feature makeLineString() {

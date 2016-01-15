@@ -16,24 +16,17 @@
 
 package com.mdtech.here.album;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.mdtech.geojson.FeatureCollection;
-import com.mdtech.here.R;
 import com.mdtech.here.geojson.IGeoJSONOverlay;
-import com.mdtech.here.geojson.TrackProperties;
-import com.mdtech.here.geojson.baidu.GeoJSONOverlay;
+import com.mdtech.here.geojson.baidu.TrackOverlay;
 import com.mdtech.here.ui.MapFragment;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 import static com.mdtech.here.util.LogUtils.LOGD;
 import static com.mdtech.here.util.LogUtils.makeLogTag;
@@ -47,7 +40,7 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment
     private static final String TAG = makeLogTag(MapBaiduFragment.class);
 
     private FeatureCollection mData;
-    private GeoJSONOverlay mGeoJSONOverlay;
+    private TrackOverlay mTrackOverlay;
 
     MapView mMapView;
     BaiduMap mBaiduMap;
@@ -88,17 +81,21 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment
 //        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 //        ButterKnife.bind(this, mMapView);
 
-        mBaiduMap = mMapView.getMap();
         return mMapView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBaiduMap = mMapView.getMap();
     }
 
     @Override
     public void addGeoJSON(FeatureCollection geoJSON) {
         mData = geoJSON;
-        mGeoJSONOverlay = new GeoJSONOverlay(geoJSON);
-        mGeoJSONOverlay.setPropertiesClass(TrackProperties.class);
-        mGeoJSONOverlay.setCallbackListener(this);
-        mGeoJSONOverlay.addTo(mMapView.getMap());
+        mTrackOverlay = new TrackOverlay(geoJSON);
+        mTrackOverlay.setCallbackListener(this);
+        mTrackOverlay.addTo(mMapView.getMap());
     }
 
     @Override
@@ -114,14 +111,14 @@ public class MapBaiduFragment extends com.baidu.mapapi.map.MapFragment
 
     @Override
     public void onPostDrawOverlay(IGeoJSONOverlay overlay) {
-        if(null != mBaiduMap && null != mGeoJSONOverlay) {
-            mGeoJSONOverlay.fitBounds();
+        if(null != mBaiduMap && null != mTrackOverlay) {
+            mTrackOverlay.fitBounds();
         }
     }
 
     @Override
     public void onPause() {
-        mGeoJSONOverlay = null;
+        mTrackOverlay = null;
         mBaiduMap = null;
         super.onPause();
     }

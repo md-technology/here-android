@@ -103,11 +103,6 @@ public class GeoJSONOverlay extends AbstractGeoJSONOverlay {
     }
 
     @Override
-    public void setSource(String geoJSON) {
-
-    }
-
-    @Override
     public void draw() {
         if(dots.size() > 0) {
             addOverlays(dots);
@@ -139,15 +134,6 @@ public class GeoJSONOverlay extends AbstractGeoJSONOverlay {
         if(null != boundsBuilder && null != map) {
             map.animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(boundsBuilder.build()));
         }
-    }
-
-    @Override
-    public void fitBounds(Position sw, Position ne) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(new LatLng(sw.getLatitude(), sw.getLongitude()));
-        builder.include(new LatLng(ne.getLatitude(), ne.getLongitude()));
-
-        map.animateMapStatus(MapStatusUpdateFactory.newLatLngBounds(builder.build()));
     }
 
     /**
@@ -252,15 +238,6 @@ public class GeoJSONOverlay extends AbstractGeoJSONOverlay {
 
             addToBounds(latLngs);
         }
-    }
-
-    private int color(String color, Float opacity) {
-        int c = Color.parseColor(color);
-        int alpha = 0;
-        if(null != opacity) {
-            alpha = Math.round(opacity*255);
-        }
-        return Color.argb(alpha, Color.red(c), Color.green(c), Color.blue(c));
     }
 
     public void addPolygon(Polygon polygon, Properties style) {

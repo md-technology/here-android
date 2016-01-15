@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Here Android Project
+ * Copyright (C) 2016 The Here Android Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package com.mdtech.geojson;
+package com.mdtech.here.geojson;
 
-import java.io.Serializable;
+import com.mdtech.geojson.Position;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 12/16/2015.
+ * Created by Tiven.wang on 1/15/2016.
  */
-public interface Geometry<T extends Iterable<?>> extends Serializable {
+public interface IOverlay {
+    interface Callback {
+        void onPostDrawOverlay(IGeoJSONOverlay overlay);
+    }
 
-    String TYPE_POINT = "Point";
+    /**
+     * 添加到一个map上
+     *
+     */
+    void addTo();
 
-    String TYPE_MULTI_POINT = "MultiPoint";
+    /**
+     * 地图适应此overlay大小
+     */
+    void fitBounds();
 
-    String TYPE_LINE_STRING = "LineString";
-
-    String TYPE_MULTI_LINE_STRING = "MultiLineString";
-
-    String TYPE_POLYGON = "Polygon";
-
-    String TYPE_MULTI_POLYGON = "MultiPolygon";
-
-    String TYPE_GEOMETRY_COLLECTION = "GeometryCollection";
-
-    String getType();
-
-    T getCoordinates();
-
+    /**
+     *
+     * @param listener
+     */
+    void setCallbackListener(Callback listener);
 }

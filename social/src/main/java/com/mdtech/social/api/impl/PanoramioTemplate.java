@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by any on 2014/10/31.
  */
-public class PanoramioTemplate extends AbstractPonmapOperations implements PanoramioOperations {
+public class PanoramioTemplate extends AbstractHereOperations implements PanoramioOperations {
 
     private final RestTemplate restTemplate;
 

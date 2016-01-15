@@ -16,10 +16,14 @@
 
 package com.mdtech.geojson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -86,4 +90,30 @@ public class Properties implements Serializable {
     @JsonProperty("coordinate-system")
     public CoordinateSystem coordinateSystem = CoordinateSystem.WGS84;
 
+    // 自定义属性
+    public JsonNode custs;
+
+    @JsonIgnore
+    public void setCusts(Object custs) throws IOException {
+        if(custs == null) {
+            this.custs = null;
+            return;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        // Properties object -> String
+        String ps = objectMapper.writeValueAsString(custs);
+        // String -> JsonNode
+        JsonNode jsonNode = objectMapper.readValue(ps, JsonNode.class);
+        // set JsonNode to GeoJSON properties
+        this.custs = jsonNode;
+    }
+
+    @JsonIgnore
+    public <T> T getCusts(Class<T> c) throws IOException {
+        if(null == this.custs) {
+            return null;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(this.custs.toString(), c);
+    }
 }

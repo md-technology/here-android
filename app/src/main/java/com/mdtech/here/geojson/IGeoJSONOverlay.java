@@ -30,29 +30,13 @@ import java.io.InputStream;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/11/2015.
  */
-public interface IGeoJSONOverlay {
-
-    interface Callback {
-       void onPostDrawOverlay(IGeoJSONOverlay overlay);
-    }
-
-    /**
-     * 添加到一个map上
-     *
-     */
-    void addTo();
+public interface IGeoJSONOverlay extends IOverlay {
 
     /**
      *
-     * @param geoJSON
+     * @param featureCollection
      */
-    void setSource(String geoJSON);
-
-    /**
-     *
-     * @param geoJSONObject
-     */
-    void setSource(GeoJSONObject geoJSONObject);
+    void setSource(FeatureCollection featureCollection);
 
     /**
      *
@@ -67,26 +51,6 @@ public interface IGeoJSONOverlay {
      */
     void addFeature(Feature feature, Properties style);
 
-    /**
-     *
-     */
-    void draw();
 
-    /**
-     * 地图适应此overlay大小
-     */
-    void fitBounds();
 
-    /**
-     * 地图适应输入bounds
-     * @param sw
-     * @param ne
-     */
-    void fitBounds(Position sw, Position ne);
-
-    /**
-     *
-     * @param listener
-     */
-    void setCallbackListener(Callback listener);
 }

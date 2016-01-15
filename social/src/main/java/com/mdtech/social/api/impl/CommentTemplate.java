@@ -20,7 +20,6 @@ import com.mdtech.social.api.CommentOperations;
 import com.mdtech.social.api.model.Comment;
 import com.mdtech.social.api.model.CommentList;
 import com.mdtech.social.api.model.EntityType;
-import com.mdtech.social.api.model.UserList;
 
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -32,7 +31,7 @@ import java.util.List;
  * TODO insert class's header comments
  * Created by Tiven.wang on 1/8/2016.
  */
-public class CommentTemplate extends AbstractPonmapOperations implements CommentOperations {
+public class CommentTemplate extends AbstractHereOperations implements CommentOperations {
 
     private static final String PATH = "/comment";
 

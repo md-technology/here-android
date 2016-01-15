@@ -67,6 +67,9 @@ interface Binder {
     Location getCurrentLocation();
 }
 
+/**
+ *
+ */
 public class Recorder extends Service {
     private static final String TAG = makeLogTag(Recorder.class);
     public static final int NOTIFICATION_ID = 0x0001;

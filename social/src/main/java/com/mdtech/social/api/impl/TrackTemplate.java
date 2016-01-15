@@ -16,9 +16,8 @@
 
 package com.mdtech.social.api.impl;
 
-import com.mdtech.social.api.LikeOperations;
-import com.mdtech.social.api.model.EntityType;
-import com.mdtech.social.api.model.Like;
+import com.mdtech.social.api.TrackOperations;
+import com.mdtech.social.api.model.Track;
 
 import org.springframework.web.client.RestTemplate;
 
@@ -26,35 +25,30 @@ import java.math.BigInteger;
 
 /**
  * TODO insert class's header comments
- * Created by Tiven.wang on 1/11/2016.
+ * Created by Tiven.wang on 1/15/2016.
  */
-public class LikeTemplate extends AbstractHereOperations implements LikeOperations {
-    private static final String PATH = "/like";
+public class TrackTemplate extends AbstractHereOperations implements TrackOperations {
 
+    private static final String PATH = "/track";
     private final RestTemplate restTemplate;
 
-    public LikeTemplate(RestTemplate restTemplate, boolean isAuthorized) {
+    public TrackTemplate(RestTemplate restTemplate, boolean isAuthorized) {
         super(isAuthorized);
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public Like create(EntityType type, BigInteger id) {
-        Like like = new Like();
-        like.setId(id);
-        like.setType(type);
-        return restTemplate.postForObject(buildUri(PATH), like, Like.class);
+    public Track create(Track track) {
+        return this.restTemplate.postForObject(buildUri(PATH), track, Track.class);
     }
 
     @Override
-    public Like get(EntityType type, BigInteger id) {
-        return restTemplate.getForObject(buildUri(PATH, getEntityParams(type, id)), Like.class);
+    public Track get(BigInteger id) {
+        return this.restTemplate.getForObject(BASE_API_URL+PATH+"/{id}", Track.class, id);
     }
 
     @Override
-    public void delete(EntityType type, BigInteger id) {
-        restTemplate.delete(buildUri(PATH, getEntityParams(type, id)));
+    public void delete(BigInteger id) {
+        this.restTemplate.delete(BASE_API_URL + PATH + "/{id}", id);
     }
-
-
 }

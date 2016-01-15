@@ -132,8 +132,7 @@ public class GeoJsonModule extends SimpleModule {
             Feature feature = null;
             JsonNode node = p.readValueAsTree();
             JsonNode properties = node.get("properties");
-//            Map<String, String> props = mapper.readValue(properties.toString(), Map.class);
-
+            Properties props = mapper.readValue(properties.toString(), Properties.class);
             JsonNode geometry = node.get("geometry");
             String type = geometry.get("type").asText();
 
@@ -169,7 +168,7 @@ public class GeoJsonModule extends SimpleModule {
             if (null != id) {
                 feature.setId(new BigInteger(id.asText()));
             }
-            feature.setProperties(properties);
+            feature.setProperties(props);
             return feature;
         }
     }

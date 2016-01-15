@@ -71,9 +71,11 @@ public class ArchiveMeta {
                 + " LIMIT 1";
 
             cursor = database.rawQuery(sql, null);
-            cursor.moveToFirst();
+            if(cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                result = cursor.getString(cursor.getColumnIndex(Archiver.DATABASE_COLUMN.META_VALUE));
+            }
 
-            result = cursor.getString(cursor.getColumnIndex(Archiver.DATABASE_COLUMN.META_VALUE));
             cursor.close();
         } catch (SQLiteException e) {
             LOGE(TAG, e.getMessage());

@@ -32,7 +32,7 @@ import java.util.List;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/11/2015.
  */
-public class AlbumTemplate extends AbstractPonmapOperations implements AlbumOperations {
+public class AlbumTemplate extends AbstractHereOperations implements AlbumOperations {
     private static final String PATH = "/album";
     private final RestTemplate restTemplate;
 

@@ -22,12 +22,8 @@ import com.mdtech.geojson.Properties;
  * TODO insert class's header comments
  * Created by Tiven.wang on 1/4/2016.
  */
-public class TrackProperties extends Properties {
-
-    public Track track = new Track();
-
-    public static class Track {
-        public Float distance;
-        public Float averageSpeed;
-    }
+public class TrackProperties {
+    public String id;
+    public Float distance;
+    public Float averageSpeed;
 }

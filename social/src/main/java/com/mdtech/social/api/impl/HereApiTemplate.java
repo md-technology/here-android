@@ -7,8 +7,10 @@ import com.mdtech.social.api.PanoramioOperations;
 import com.mdtech.social.api.PhotoOperations;
 import com.mdtech.social.api.HereApi;
 import com.mdtech.social.api.SignupOperations;
+import com.mdtech.social.api.TrackOperations;
 import com.mdtech.social.api.UserOperations;
 import com.mdtech.social.api.model.Comment;
+import com.mdtech.social.api.model.Track;
 
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -16,7 +18,7 @@ import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.support.ClientHttpRequestFactorySelector;
 
 /**
- * Created by any on 2014/10/29.
+ * Created by Tiven.wang on 2014/10/29.
  */
 public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi {
 
@@ -27,6 +29,7 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     private PhotoOperations photoOperations;
     private CommentOperations commentOperations;
     private LikeOperations likeOperations;
+    private TrackOperations trackOperations;
 
     public HereApiTemplate(String accessToken) {
         super(accessToken);
@@ -69,6 +72,11 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
     }
 
     @Override
+    public TrackOperations trackOperations() {
+        return trackOperations;
+    }
+
+    @Override
     protected FormHttpMessageConverter getFormMessageConverter() {
         FormHttpMessageConverter formHttpMessageConverter = super.getFormMessageConverter();
         formHttpMessageConverter.addPartConverter(getJsonMessageConverter());
@@ -90,5 +98,6 @@ public class HereApiTemplate extends AbstractOAuth2ApiBinding implements HereApi
         photoOperations = new PhotoTemplate(getRestTemplate(), isAuthorized());
         commentOperations = new CommentTemplate(getRestTemplate(), isAuthorized());
         likeOperations = new LikeTemplate(getRestTemplate(), isAuthorized());
+        trackOperations = new TrackTemplate(getRestTemplate(), isAuthorized());
     }
 }

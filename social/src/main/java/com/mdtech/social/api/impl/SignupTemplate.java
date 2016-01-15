@@ -17,7 +17,6 @@
 package com.mdtech.social.api.impl;
 
 import com.mdtech.social.api.SignupOperations;
-import com.mdtech.social.api.model.Album;
 import com.mdtech.social.api.model.SignupRequest;
 import com.mdtech.social.api.model.User;
 
@@ -27,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
  * TODO insert class's header comments
  * Created by Tiven.wang on 12/31/2015.
  */
-public class SignupTemplate extends AbstractPonmapOperations implements SignupOperations {
+public class SignupTemplate extends AbstractHereOperations implements SignupOperations {
 
     private final RestTemplate restTemplate;
 

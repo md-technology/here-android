@@ -5,7 +5,7 @@ import org.springframework.social.ApiBinding;
 import java.io.Serializable;
 
 /**
- * Created by any on 2014/10/29.
+ * Created by Tiven.wang on 2014/10/29.
  */
 public interface HereApi extends ApiBinding, Serializable {
 
@@ -54,4 +54,10 @@ public interface HereApi extends ApiBinding, Serializable {
      * @return
      */
     LikeOperations likeOperation();
+
+    /**
+     * 轨迹接口
+     * @return
+     */
+    TrackOperations trackOperations();
 }

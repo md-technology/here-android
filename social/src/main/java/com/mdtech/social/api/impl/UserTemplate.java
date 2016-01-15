@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by any on 2014/10/30.
+ * Created by Tiven.wang on 2014/10/30.
  */
-public class UserTemplate extends AbstractPonmapOperations implements UserOperations {
+public class UserTemplate extends AbstractHereOperations implements UserOperations {
 
     private static final String PATH = "/user";
 
