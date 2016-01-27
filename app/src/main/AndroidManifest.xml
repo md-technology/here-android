@@ -104,6 +104,12 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!--
             Because android:exported is set to "false",
             the service is only available to this app.

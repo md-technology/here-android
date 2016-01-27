@@ -32,6 +32,7 @@ public class TrackLocationListener implements LocationListener {
     private ArchiveMeta meta = null;
     private BigDecimal lastLatitude;
     private BigDecimal lastLongitude;
+    public Location lastLocation;
     private HashMap<Long, Location> locationCache;
     private Recorder.ServiceBinder binder = null;
 
@@ -61,6 +62,7 @@ public class TrackLocationListener implements LocationListener {
 
         lastLatitude = latitude;
         lastLongitude = longitude;
+        lastLocation = location;
         return true;
     }
 

@@ -17,6 +17,7 @@
 package com.mdtech.geojson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,6 +33,7 @@ import java.io.Serializable;
  */
 //@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Properties implements Serializable {
 
     public enum PointType {

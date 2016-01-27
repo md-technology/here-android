@@ -352,10 +352,15 @@ public class Recorder extends Service {
                     BuildConfig.DEFAULT_GPS_MINTIME));
             float minDistance = Float.parseFloat(sharedPreferences.getString(SettingsUtils.PREF_GPS_MINDISTANCE,
                     BuildConfig.DEFAULT_GPS_MINDISTANCE));
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    minTime, minDistance, listener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    minTime, minDistance, listener);
+            if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        minTime, minDistance, listener);
+            }
+            if (locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        minTime, minDistance, listener);
+            }
+
             locationManager.addGpsStatusListener(statusListener);
         }
 

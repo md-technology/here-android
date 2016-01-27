@@ -73,4 +73,24 @@
     <string name="track_not_available">--</string>
     <string name="track_no_description">Empty Description</string>
     <string name="track_remove">Remove track</string>
+
+    <string name="pref_track_accuracy">Track accuracy</string>
+    <string name="pref_track_accuracy_description">Track accuracy desc</string>
+    <string name="pref_track_accuracy_default">500</string>
+    <string-array name="pref_track_accuracys">
+        <item >Low</item>
+        <item >Mid</item>
+        <item >Hig</item>
+    </string-array>
+    <string-array name="pref_track_accuracy_values">
+        <item >100</item>
+        <item >500</item>
+        <item >1000</item>
+    </string-array>
+
+    <string name="pref_gps_mintime">GPS mintime</string>
+    <string name="pref_gps_mintime_description">GPS mintime desc</string>
+    <string name="pref_gps_mindistance">GPS mindistance</string>
+    <string name="pref_gps_mindistance_description">GPS mindistance desc</string>
+
 </resources>

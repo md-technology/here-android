@@ -45,6 +45,7 @@ import com.mdtech.here.R;
 import com.mdtech.here.account.LoginActivity;
 import com.mdtech.here.account.SignupActivity;
 import com.mdtech.here.album.AlbumBaiduActivity;
+import com.mdtech.here.settings.SettingsActivity;
 import com.mdtech.here.user.UserActivity;
 import com.mdtech.here.util.AccountUtils;
 import com.mdtech.here.util.CircleTransformation;
@@ -400,15 +401,20 @@ public abstract class BaseActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id == R.id.nav_camara) {
-            Intent intent = new Intent(this, AlbumBaiduActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putCharSequence(Config.EXTRA_ALBUM_ID, "0");
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
-        else if (id == R.id.nav_exit) {
-            logout();
+        switch (id) {
+            case R.id.nav_camara:
+                Intent intent = new Intent(this, AlbumBaiduActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence(Config.EXTRA_ALBUM_ID, "0");
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.nav_exit:
+                logout();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
